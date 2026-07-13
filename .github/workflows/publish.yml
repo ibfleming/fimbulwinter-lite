@@ -106,5 +106,5 @@ jobs:
         with:
           files: dist/*.zip
           body_path: CHANGELOG.md
-          name: Fimbulwinter v${{ needs.build-and-publish.outputs.version }}
+          name: Fimbulwinter Lite v${{ needs.build-and-publish.outputs.version }}
           generate_release_notes: true

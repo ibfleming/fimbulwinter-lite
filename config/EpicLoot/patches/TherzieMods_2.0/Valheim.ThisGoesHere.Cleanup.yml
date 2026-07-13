@@ -1,6 +1,0 @@
-﻿PrintComment: ThisGoesHere is cleaning up files
-DeleteFile:
-- config\EpicLoot\patches\TherzieMods_2.0\AdventureData_Gamble.json
-- config\EpicLoot\patches\TherzieMods_2.0\_VanillaAshlands.iteminfo.json
-DeleteFolder:
-- config\EpicLoot\patches\TherzieMods

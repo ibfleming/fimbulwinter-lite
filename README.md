@@ -1,149 +1,88 @@
-[![Build Status](https://github.com/ibfleming/fimbulwinter/actions/workflows/publish.yml/badge.svg)](https://github.com/ibfleming/fimbulwinter/actions/workflows/publish.yml)
+[![Build Status](https://github.com/ibfleming/fimbulwinter-lite/actions/workflows/publish.yml/badge.svg)](https://github.com/ibfleming/fimbulwinter-lite/actions/workflows/publish.yml)
 
-# Fimbulwinter - A Veteran's Valheim Modpack
+# Fimbulwinter Lite - A Vanilla+ Valheim Modpack
 
-**Tuned for veteran multiplayer. No shortcuts, no cheese -- just deeper Valheim.**
+**Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter is a curated modpack of **many mods** designed for experienced players returning to Valheim in a multiplayer group. Every mod has been hand-picked, configured, and balance-tested to enhance combat, exploration, visuals, and quality of life -- without betraying the core spirit of Valheim.
+Fimbulwinter Lite is a curated, lightweight modpack of **43 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
-- **Preserve the Spirit of Valheim** -- No flying, no teleport-cheese, no game-breaking shortcuts. Progression still requires biome exploration and earned power.
-- **Reward Skill & Mastery** -- New content rewards experienced players with meaningful choices, deeper combat, and harder-earned victories.
-- **Depth Over Breadth** -- Each mod adds genuine depth, not just volume. Quality over quantity.
-- **Multiplayer-First** -- Every mod works on dedicated servers. Role specialization and group play are enhanced.
-- **Actively Maintained** -- All mods are confirmed working with the current Valheim version.
+- **Preserve the Spirit of Valheim** -- No teleport-cheese (ore transport carries a 10% tax), no game-breaking shortcuts. Progression still requires biome exploration and earned power.
+- **Vanilla+ Over Overhaul** -- Enhance what exists instead of replacing it. No new biomes, gear tiers, magic systems, or creature packs.
+- **Multiplayer-First** -- Every mod works on dedicated servers, with server-enforced config sync.
+- **Actively Maintained** -- Every mod verified current against Thunderstore; no deprecated or abandoned mods.
 
 ## What's Included
 
-### Difficulty & Loot (3 mods)
-- **CreatureLevelAndLootControl** -- Hard difficulty, 5-star creatures, biome-scaling sectors
-- **EpicLoot** -- Diablo-style magic/rare/epic/legendary loot with enchanting
-- **EpicLoot_Therzie** -- Bridge patch integrating EpicLoot with all Therzie content
+### Core & Frameworks (6 mods)
+- **BepInExPack_Valheim** -- Mod loader
+- **Jotunn** -- Modding framework
+- **JsonDotNET / YamlDotNet** -- Shared libraries
+- **ConfigurationManager** (shudnal) -- In-game config editing (F1)
+- **ConditionalConfigSync** -- Server-enforced config ownership and sync policies
 
-### Content: Weapons, Armor & Magic (4 mods)
-- **Warfare** -- 200+ new weapons across all biome tiers
-- **WarfareFireAndIce** -- Deep North endgame weapons
-- **Armory** -- New armor sets with set bonuses
-- **Wizardry** -- Full magic system with staves, spells, and elemental damage
+### Inventory & Crafting (8 mods)
+- **AzuExtendedPlayerInventory** -- Dedicated equipment and quick slots
+- **AzuCraftyBoxes** -- Craft using materials from nearby containers
+- **AzuAutoStore** -- Auto-deposit items into nearby containers
+- **AzuContainerSizes** -- Larger chest capacities
+- **AAA Crafting** -- Improved crafting UI with bulk crafting and upgrades
+- **Recycle N Reclaim** -- Recycle items back into materials
+- **Quick Stack Store Sort Trash Restock** -- One-key chest stacking, sorting, and trash
+- **MultiUserChest** -- Multiple players can use one chest simultaneously
 
-### Content: Creatures & World (14 mods)
-- **Monstrum + Deep North** -- 100+ new creatures across every biome
-- **RtD Suite** (Ocean, Dungeons, Horrors, Monsters, Monstrum) -- Massive world expansion with sea creatures, procedural dungeons, night horrors, and fantasy monsters
-- **Fee Fi Fo Fum** -- Giants roaming across biomes
-- **EpicValheimsAdditions** -- Mistlands, DeepNorth, and Ashlands content expansion
-- **Bestiary** -- 30+ new creatures (Crocodiles, Scorpions, Panthers, etc.)
-- **MushroomMonsters** -- Mushroom-themed creatures across biomes
-- **Custom Raids** -- Configurable raid events with custom creature spawns
-- **Forbidden Catacombs** -- Handcrafted swamp dungeon with bosses
-- **More World Locations AIO** -- 153 new points of interest
+### UI & HUD (4 mods)
+- **MyLittleUI** -- Lightweight UI upgrades: timers, stats, chest contents, weather
+- **VNEI** -- In-game item and recipe browser
+- **HUDCompass** -- Compass bar with map pins
+- **AzuHoverStats** -- Detailed hover tooltips
 
-### Content: Ships, Mounts, Equipment & Cooking (6 mods)
-- **OdinShip** -- 14 new ships and boats
-- **SeaAnimals** -- Ocean creatures and rideable marine beasts
-- **OdinHorse** -- Tameable horses with saddles and armor
-- **DragoonCapes** -- 20+ capes with unique combat effects
-- **CircletExtended** -- Dverger circlet upgrades with light, demister, and overload
-- **CookingAdditions** -- 23 new foods and cooking stations
+### Building (4 mods)
+- **Gizmo** -- Precise build-piece rotation on all axes
+- **Extra Snap Points Made Easy** -- More snap points on every piece
+- **AzuAreaRepair** -- Repair all nearby build pieces with one hammer hit
+- **MissingPieces** -- Vanilla-styled build pieces that should have existed
 
-### Combat & Progression (18 mods)
-- **Headshots + BetterArchery + ReliableBlock** -- Deeper, more rewarding ranged and melee combat
-- **DualWield** -- Dual-wield weapons with offhand skill progression
-- **ShieldBash** -- Shield bash attack for melee combat depth
-- **ProjectileTweaks** -- Improved arrow and projectile physics
-- **Agility + Endurance + Tenacity + SmartSkills** -- Movement, stamina, stagger, and skill recovery progression
-- **Evasion** -- Dodge/evasion skill that rewards combat timing
-- **Lumberjacking + Building + Blacksmithing** -- Woodcutting, construction, and crafting skills
-- **Mining + Farming + Foraging** -- Resource gathering scales with skill
-- **SkilledCarryWeight** -- Carry weight scales with skill levels
+### Farming (3 mods)
+- **PlantEverything** -- Plant every gatherable resource and tree
+- **PlantEasily** -- Grid-aligned planting and mass harvesting
+- **MassFarming** -- Bulk plant and pick with a modifier key
 
-### Visual & Atmosphere (8 mods)
-- **Seasonality + HD Seasonality** -- Dynamic 4-season system with HD textures
-- **GammaOfNightLights** -- Darker, moodier nights
-- **HUDCompass** -- Map-pin compass with dynamic markers
-- **BetterUI** -- Enemy HP bars, XP tracking, skill display
-- **CameraTweaks** -- FOV and zoom distance adjustments
-- **BreatheEasy** -- Removes annoying smoke and dust screen effects
-- **Scenic** -- Client-side visual scene tools
+### Travel & World QoL (3 mods)
+- **TeleportEverything** -- Portal everything, with a 10% ore transport tax
+- **SpeedyPaths** -- Move faster on paths, roads, and cleared ground
+- **WieldEquipmentWhileSwimming** -- Keep gear in hand while swimming
 
-### Quality of Life (32 mods)
-- **Extended Inventory + CraftyBoxes + AutoStore + ContainerSizes + ItemDrawers** -- Inventory overhaul
-- **Quick Stack + Recycle + AAA Crafting + HoverStats** -- Streamlined crafting with item details
-- **AdventureBackpacks** -- Tiered backpacks with biome-specific perks
-- **LazyVikings + Eternal Fire + PetPantry** -- Automation for smelters, fires, and animal feeding
-- **PlantEverything + PlantEasily** -- Advanced farming with grid planting and bulk harvest
-- **SpeedyPaths + TeleportEverything** -- Movement QoL (ore teleport with 10% transport tax)
-- **MissingPieces + NoRainDamage + Structure Tweaks + MyPitsDontLeak** -- Building improvements
-- **AdvancedTerrainModifiers** -- Improved hoe and cultivator tools
-- **TrueInstantLootDrop** -- Loot drops instantly at creature death location
-- **TradersExtended** -- Expanded trader UI with sell lists and economy
-- **WieldEquipmentWhileSwimming** -- Use equipment while swimming
-- **AzuWorkbenchTweaks** -- Auto-repair items at workbenches
-- **Venture Floating Items** -- Items float on water instead of sinking
-- **QuickConnect** -- Quick connect window with configurable server list
-- **ChangelogEditor** -- Customize or hide the main menu changelog
-- **SaveCrossbowState + StumpsAreOneHp + ShutUp** -- Small polish fixes
+### Fixes & Performance (5 mods)
+- **AzuMiscPatches** -- Collection of small vanilla fixes and tweaks
+- **LocalizationCache** -- Dramatically faster load times
+- **TimeoutLimit** -- Fixes join timeouts on modded servers
+- **NetworkTweaks** -- Improved network throughput
+- **TrueInstantLootDrop** -- Loot drops instantly on kill
 
-### Sailing (2 mods)
-- **Sailing Skill + SailingSpeed** -- Ship speed, health, and exploration scale with skill
+### Multiplayer & Server (6 mods)
+- **ServerCharacters** -- Server-side character saves (anti-dupe, anti-cheat)
+- **Server devcommands** -- Better admin commands and permissions
+- **Upgrade World** -- Regenerate world locations after game updates
+- **QuickConnect** -- One-click server join
+- **Venture Logout Tweaks** -- Safe logout handling
+- **ShutUp** -- Silences console log spam
 
-### Multiplayer & Server (5 mods)
-- **ServerCharacters** -- Server-side character saves with encryption
-- **Resurrection** -- Resurrect dead players with configurable cost
-- **MultiUserChest** -- Multiple players access chests simultaneously
-- **BetterCartographyTable** -- Better map sharing with public/guild pin modes
-- **Venture Logout Tweaks** -- Preserves status effects across logout (no combat-logging)
-
-### Network & Performance (4 mods)
-- **LeanNet + NetworkTweaks** -- Network optimization for smoother multiplayer
-- **TimeoutLimit** -- Prevents disconnects during heavy loading
-- **LocalizationCache** -- Faster game startup
-
-### Admin Tools (4 mods)
-- **ConfigurationManager + Server Devcommands + Gungnir** -- Full server admin toolkit
-- **Upgrade_World** -- Console commands for regenerating world zones (used for mod migration)
-
-*Plus 5 framework libraries (BepInEx, Jotunn, etc.) and 3 spawn/drop infrastructure mods that run invisibly in the background.*
-
-## Key Configuration Highlights
-
-All mods have been individually configured for balanced veteran multiplayer:
-
-- **Difficulty:** Hard mode, 5-star creatures, HP +50%/player scaling, elemental infusions
-- **Loot:** Balanced preset, 80% unidentified drops, boss trophies per nearby player
-- **Ore Teleporting:** Enabled with 10% transport tax (vanilla spirit preserved)
-- **Seasons:** 4-hour real-time cycles with gameplay modifiers (Winter is harsh, Fall boosts damage)
-- **Night Danger:** Darker nights (0.65 luminance) + horror spawns
-- **Death Penalty:** No skill loss on death for mod skills; 75% vanilla skill recovery via SmartSkills
-- **Sailing:** Skill-based speed/health/exploration bonuses, raft gets 2x boost
-- **Raids:** ~Every 2 hours of play (36min interval, 30% chance)
+### Progression & Content (4 mods)
+- **SmartSkills** -- 75% skill recovery after death; death matters but isn't crushing
+- **AdventureBackpacks** -- Progression-gated craftable backpacks
+- **Groups** -- Party system with shared map pings and chat
+- **Seasons** -- Four rotating seasons with visual and gameplay variety
 
 ## Installation
 
-### With r2modman / Thunderstore Mod Manager
+**Client:** Install via [r2modman](https://thunderstore.io/c/valheim/p/ebkr/r2modman/) or the Thunderstore App -- search for `FimbulwinterLite` by `ibfleming`.
 
-1. Open **r2modman** and select **Valheim**
-2. Search for **Fimbulwinter** in the online mods tab
-3. Click **Install with dependencies**
-4. Click **Start modded** to launch
-
-## Server Setup
-
-This modpack is designed for dedicated server multiplayer. The server needs all gameplay mods but NOT the client-only visual/UI mods.
-
-**Client-only mods** (server does not need):
-- HD Seasonality textures, HUDCompass, CameraTweaks, BetterUI
-- GammaOfNightLights, Scenic, ChangelogEditor, QuickConnect
-
-All other mods should be installed on both client and server.
-
-> Note: In the future, I will be curating an easy server installation.
-
-## Version History
-
-See [CHANGELOG.md](https://github.com/ibfleming/fimbulwinter/blob/main/CHANGELOG.md) for full version history.
+**Server:** Install all mods except client-only UI/visual mods. A Pelican/Pterodactyl server egg is provided in the [GitHub repo](https://github.com/ibfleming/fimbulwinter-lite) (`server/valheim-fimbulwinter-lite-egg.yaml`) that automates the full dedicated server install: SteamCMD, BepInEx, all server-side mods, and modpack configs.
 
 ## Links
 
-- **Source:** [GitHub](https://github.com/ibfleming/fimbulwinter)
-- **Thunderstore:** [Fimbulwinter](https://thunderstore.io/c/valheim/p/ibfleming/Fimbulwinter/)
+- **GitHub:** [github.com/ibfleming/fimbulwinter-lite](https://github.com/ibfleming/fimbulwinter-lite)
+- **Issues & suggestions:** [GitHub Issues](https://github.com/ibfleming/fimbulwinter-lite/issues)
+- **Changelog:** [CHANGELOG.md](https://github.com/ibfleming/fimbulwinter-lite/blob/main/CHANGELOG.md)
