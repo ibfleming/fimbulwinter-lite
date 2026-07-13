@@ -59,7 +59,7 @@ jobs:
 
       - name: Install Thunderstore CLI
         run: |
-          TCLI_VERSION="0.2.4"
+          TCLI_VERSION="0.2.4"  # 0.2.5 is a tag only -- no release binaries published
           curl -fsSL "https://github.com/thunderstore-io/thunderstore-cli/releases/download/${TCLI_VERSION}/tcli-${TCLI_VERSION}-linux-x64.tar.gz" -o tcli.tar.gz
           tar xzf tcli.tar.gz
           find . -maxdepth 2 -name "tcli" -type f -exec mv {} . \;

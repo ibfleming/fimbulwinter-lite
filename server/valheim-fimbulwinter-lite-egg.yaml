@@ -19,7 +19,7 @@ docker_images:
   "ghcr.io/parkervcp/games:valheim": "ghcr.io/parkervcp/games:valheim"
 file_denylist: {}
 startup_commands:
-  Default: 'export DOORSTOP_ENABLED=1; export DOORSTOP_TARGET_ASSEMBLY=./BepInEx/core/BepInEx.Preloader.dll; export LD_LIBRARY_PATH="./doorstop_libs:./linux64:$LD_LIBRARY_PATH"; export LD_PRELOAD="libdoorstop_x64.so:$LD_PRELOAD"; export SteamAppId=892970; mkdir -p /home/container/saves; ./valheim_server.x86_64 -nographics -batchmode -name "{{SERVER_NAME}}" -port {{SERVER_PORT}} -world "{{WORLD}}" -password "{{PASSWORD}}" -public {{PUBLIC_SERVER}} -savedir /home/container/saves -saveinterval {{BACKUP_INTERVAL}} -backups {{BACKUP_COUNT}} -backupshort {{BACKUP_SHORTTIME}} -backuplong {{BACKUP_LONGTIME}} $( [ "{{ENABLE_CROSSPLAY}}" = "1" ] && echo "-crossplay" ) {{WORLD_MODIFIERS}} > >(sed -uE "{{CONSOLE_FILTER}}")'
+  Default: 'if [ "{{AUTO_UPDATE_MODS}}" = "1" ]; then curl -fsSL --max-time 30 "https://raw.githubusercontent.com/{{SCRIPT_REPO}}/{{SCRIPT_REF}}/scripts/server-autoupdate.sh" | bash || bash /home/container/.fimbulwinter/scripts/server-autoupdate.sh || echo "[WARN] Mod auto-update failed - continuing with existing mods"; fi; export DOORSTOP_ENABLED=1; export DOORSTOP_TARGET_ASSEMBLY=./BepInEx/core/BepInEx.Preloader.dll; export LD_LIBRARY_PATH="./doorstop_libs:./linux64:$LD_LIBRARY_PATH"; export LD_PRELOAD="libdoorstop_x64.so:$LD_PRELOAD"; export SteamAppId=892970; mkdir -p /home/container/saves; ./valheim_server.x86_64 -nographics -batchmode -name "{{SERVER_NAME}}" -port {{SERVER_PORT}} -world "{{WORLD}}" -password "{{PASSWORD}}" -public {{PUBLIC_SERVER}} -savedir /home/container/saves -saveinterval {{BACKUP_INTERVAL}} -backups {{BACKUP_COUNT}} -backupshort {{BACKUP_SHORTTIME}} -backuplong {{BACKUP_LONGTIME}} $( [ "{{ENABLE_CROSSPLAY}}" = "1" ] && echo "-crossplay" ) {{WORLD_MODIFIERS}} > >(sed -uE "{{CONSOLE_FILTER}}")'
 config:
   files: {}
   startup:
@@ -31,302 +31,36 @@ scripts:
     script: |-
       #!/bin/bash
       # ═══════════════════════════════════════════════════════════════
-      # Fimbulwinter Lite — Valheim Dedicated Server Install Script
+      # Fimbulwinter Lite — Thin Install Bootstrap
       #
-      # Installs:
-      #   1. Valheim dedicated server via SteamCMD
-      #   2. BepInEx mod framework (latest from Thunderstore)
-      #   3. Fimbulwinter Lite modpack + all dependencies
-      #   4. Modpack configuration files
+      # All provisioning logic lives in the modpack repo so it can be
+      # version-controlled, tested, and updated with a git push — this
+      # egg never needs re-importing for logic changes. It fetches
+      # scripts/server-install.sh (+ install-mods.sh) from GitHub at
+      # SCRIPT_REPO@SCRIPT_REF and executes it.
       #
-      # Server Files: /mnt/server
-      # Install Image: ghcr.io/parkervcp/installers:debian
-      # Runtime Image: ghcr.io/parkervcp/games:valheim
+      # Scripts are cached in /mnt/server/.fimbulwinter/scripts so the
+      # runtime auto-updater has an offline fallback.
       # ═══════════════════════════════════════════════════════════════
       set -euo pipefail
 
-      # ── Configuration ─────────────────────────────────────────────
-      SERVER_DIR="/mnt/server"
-      BEPINEX_DIR="${SERVER_DIR}/BepInEx"
-      PLUGINS_DIR="${BEPINEX_DIR}/plugins"
-      CONFIG_DIR="${BEPINEX_DIR}/config"
-      # Use the server volume for staging, NOT /tmp — Wings mounts /tmp as a
-      # small tmpfs (default 100MB) which can't hold large mods like Therzie (200MB+)
-      STAGING_DIR="${SERVER_DIR}/.fimbulwinter_staging"
-
-      MODPACK_NAMESPACE="ibfleming"
-      MODPACK_NAME="FimbulwinterLite"
-      THUNDERSTORE_API="https://thunderstore.io/api/experimental/package"
-
-      # Client-only mods — skip these on dedicated server
-      CLIENT_ONLY_MODS=(
-          "shudnal-ConfigurationManager"
-          "shudnal-MyLittleUI"
-          "MSchmoecker-VNEI"
-          "Neobotics-HUDCompass"
-          "Azumatt-AzuHoverStats"
-          "ComfyMods-Gizmo"
-          "Searica-Extra_Snap_Points_Made_Easy"
-          "Goldenrevolver-Quick_Stack_Store_Sort_Trash_Restock"
-          "Advize-PlantEasily"
-          "k942-MassFarming"
-          "bdew-QuickConnect"
-          "VentureValheim-Venture_Logout_Tweaks"
-      )
-
-      # ── Helpers ───────────────────────────────────────────────────
-      log()   { echo -e "[INFO] $*"; }
-      warn()  { echo -e "[WARN] $*" >&2; }
-      fatal() { echo -e "[FATAL] $*" >&2; exit 1; }
-
-      is_client_only() {
-          local dep_fullname="$1"
-          for mod in "${CLIENT_ONLY_MODS[@]}"; do
-              [[ "$dep_fullname" == "$mod" ]] && return 0
-          done
-          return 1
-      }
-
-      parse_dependency() {
-          local dep="$1"
-          DEP_VERSION="${dep##*-}"
-          DEP_FULLNAME="${dep%-*}"
-          DEP_NAMESPACE="${DEP_FULLNAME%%-*}"
-          DEP_NAME="${DEP_FULLNAME#*-}"
-      }
-
-      # Install an extracted mod into BepInEx directories.
-      # config/ → BepInEx/config/, patchers/ → BepInEx/patchers/,
-      # everything else → plugins/<ModName>/ (preserving asset-relative paths).
-      install_mod_files() {
-          local contents_dir="$1"
-          local mod_name="$2"
-          local dest="${PLUGINS_DIR}/${mod_name}"
-
-          # Collect non-metadata entries; unwrap if sole top-level directory
-          local entries=()
-          for item in "${contents_dir}"/*; do
-              [ -e "$item" ] || continue
-              case "$(basename "$item")" in
-                  icon.png|manifest.json|README.md|CHANGELOG.md|LICENSE|LICENSE.md) continue ;;
-              esac
-              entries+=("$item")
-          done
-          if [ "${#entries[@]}" -eq 1 ] && [ -d "${entries[0]}" ]; then
-              log "  → unwrapped: $(basename "${entries[0]}")"
-              entries=("${entries[0]}"/*)
-          fi
-
-          # Route each entry to its BepInEx destination
-          mkdir -p "$dest"
-          local has_patchers=false
-          for item in "${entries[@]}"; do
-              [ -e "$item" ] || continue
-              local name
-              name=$(basename "$item")
-              case "${name,,}" in
-                  config)   mkdir -p "${CONFIG_DIR}" && cp -r "$item/"* "${CONFIG_DIR}/" ;;
-                  patchers) mkdir -p "${BEPINEX_DIR}/patchers" && cp -r "$item/"* "${BEPINEX_DIR}/patchers/" && has_patchers=true ;;
-                  *)        cp -r "$item" "$dest/" ;;
-              esac
-          done
-
-          # Verify DLLs — catch packaging issues that cause server incompatibility
-          local dll_count
-          dll_count=$(find "$dest" -name "*.dll" 2>/dev/null | wc -l)
-          if [ "$dll_count" -eq 0 ] && [ "$has_patchers" = false ]; then
-              warn "  No DLLs installed for ${mod_name} — check zip packaging"
-          fi
-      }
-
-      # ── System Dependencies ────────────────────────────────────────
-      log "Installing system dependencies..."
       apt -y update
-      apt -y --no-install-recommends --no-install-suggests install curl wget unzip jq
+      apt -y --no-install-recommends --no-install-suggests install curl ca-certificates
 
-      # ── Steam User Setup ───────────────────────────────────────────
-      if [ -z "${STEAM_USER:-}" ]; then
-          log "Steam user not set — using anonymous login."
-          STEAM_USER="anonymous"
-          STEAM_PASS=""
-          STEAM_AUTH=""
-      else
-          log "Steam user set to ${STEAM_USER}"
-      fi
+      SCRIPT_REPO="${SCRIPT_REPO:-ibfleming/fimbulwinter-lite}"
+      SCRIPT_REF="${SCRIPT_REF:-main}"
+      RAW_BASE="https://raw.githubusercontent.com/${SCRIPT_REPO}/${SCRIPT_REF}/scripts"
+      SCRIPT_CACHE="/mnt/server/.fimbulwinter/scripts"
 
-      # ── SteamCMD ───────────────────────────────────────────────────
-      log "Installing SteamCMD..."
-      mkdir -p "${SERVER_DIR}/steamcmd"
-      curl -sSL -o /tmp/steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
-      tar -xzf /tmp/steamcmd.tar.gz -C "${SERVER_DIR}/steamcmd"
-      rm -f /tmp/steamcmd.tar.gz
-
-      chown -R root:root /mnt
-      export HOME="${SERVER_DIR}"
-
-      # Let SteamCMD self-update before the real install — a freshly extracted
-      # SteamCMD will update and restart, losing command-line arguments.
-      log "Updating SteamCMD..."
-      "${SERVER_DIR}/steamcmd/steamcmd.sh" +quit || true
-
-      # ── Valheim Dedicated Server ───────────────────────────────────
-      SRCDS_APPID="${SRCDS_APPID:-896660}"
-      log "Installing Valheim dedicated server (AppID: ${SRCDS_APPID})..."
-      "${SERVER_DIR}/steamcmd/steamcmd.sh" \
-          +force_install_dir "${SERVER_DIR}" \
-          +login "${STEAM_USER}" "${STEAM_PASS:-}" "${STEAM_AUTH:-}" \
-          +app_info_update 1 \
-          +app_update "${SRCDS_APPID}" ${EXTRA_FLAGS:-} \
-          +quit
-
-      # ── Steam Runtime Libraries ───────────────────────────────────
-      log "Setting up Steam runtime libraries..."
-      mkdir -p "${SERVER_DIR}/.steam/sdk32" "${SERVER_DIR}/.steam/sdk64"
-      cp -v "${SERVER_DIR}/steamcmd/linux32/steamclient.so" "${SERVER_DIR}/.steam/sdk32/steamclient.so"
-      cp -v "${SERVER_DIR}/steamcmd/linux64/steamclient.so" "${SERVER_DIR}/.steam/sdk64/steamclient.so"
-
-      # ═══════════════════════════════════════════════════════════════
-      # BepInEx + Fimbulwinter Installation
-      # ═══════════════════════════════════════════════════════════════
-      log "======================================================="
-      log "Installing BepInEx and Fimbulwinter Lite modpack..."
-      log "======================================================="
-
-      rm -rf "${STAGING_DIR}"
-      mkdir -p "${STAGING_DIR}"
-
-      # ── BepInEx ────────────────────────────────────────────────────
-      log "Fetching latest BepInEx version from Thunderstore..."
-      bepinex_response=$(curl -sfSL -H "accept: application/json" \
-          "${THUNDERSTORE_API}/denikson/BepInExPack_Valheim/") \
-          || fatal "Could not retrieve BepInEx release info from Thunderstore API"
-
-      bepinex_url=$(jq -r '.latest.download_url' <<< "$bepinex_response")
-      bepinex_version=$(jq -r '.latest.version_number' <<< "$bepinex_response")
-
-      log "Installing BepInEx v${bepinex_version}..."
-      wget -q -O "${STAGING_DIR}/bepinex.zip" "$bepinex_url"
-      unzip -qo "${STAGING_DIR}/bepinex.zip" -d "${STAGING_DIR}/bepinex"
-      cp -r "${STAGING_DIR}/bepinex/BepInExPack_Valheim/"* "${SERVER_DIR}/"
-
-      # ── Fimbulwinter Lite Modpack ───────────────────────────────────────
-      log "Fetching Fimbulwinter Lite modpack info..."
-      modpack_response=$(curl -sfSL -H "accept: application/json" \
-          "${THUNDERSTORE_API}/${MODPACK_NAMESPACE}/${MODPACK_NAME}/") \
-          || fatal "Could not retrieve Fimbulwinter Lite package info from Thunderstore API"
-
-      modpack_url=$(jq -r '.latest.download_url' <<< "$modpack_response")
-      modpack_version=$(jq -r '.latest.version_number' <<< "$modpack_response")
-
-      log "Downloading Fimbulwinter Lite v${modpack_version}..."
-      wget -q -O "${STAGING_DIR}/modpack.zip" "$modpack_url"
-      unzip -qo "${STAGING_DIR}/modpack.zip" -d "${STAGING_DIR}/modpack"
-
-      # ── Dependency Installation ────────────────────────────────────
-      log "Resolving modpack dependencies..."
-      modpack_dependencies=$(jq -r '.latest.dependencies[]' <<< "$modpack_response")
-
-      rm -rf "${PLUGINS_DIR:?}/"*
-      mkdir -p "${PLUGINS_DIR}"
-
-      dep_count=0
-      skip_count=0
-      fail_count=0
-      total=$(echo "$modpack_dependencies" | wc -l)
-
-      for dep in $modpack_dependencies; do
-          parse_dependency "$dep"
-
-          if [[ "$DEP_FULLNAME" == "denikson-BepInExPack_Valheim" ]]; then
-              total=$((total - 1))
-              continue
-          fi
-
-          if is_client_only "$DEP_FULLNAME"; then
-              log "[SKIP] ${DEP_FULLNAME} (client-only)"
-              skip_count=$((skip_count + 1))
-              continue
-          fi
-
-          progress="[$((dep_count + skip_count + fail_count + 1))/${total}]"
-          log "${progress} ${DEP_FULLNAME} v${DEP_VERSION}"
-
-          download_url="https://thunderstore.io/package/download/${DEP_NAMESPACE}/${DEP_NAME}/${DEP_VERSION}/"
-          dep_staging="${STAGING_DIR}/deps/${DEP_FULLNAME}"
-          mkdir -p "${dep_staging}"
-
-          # Download with retries — browser UA avoids CDN bot detection on datacenter IPs
-          downloaded=false
-          for attempt in 1 2 3; do
-              http_code=$(curl -sL -o "${dep_staging}/mod.zip" -w "%{http_code}" \
-                  --connect-timeout 10 --max-time 300 \
-                  -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/131.0.0.0" \
-                  "$download_url")
-
-              if [ "$http_code" = "200" ] && [ -s "${dep_staging}/mod.zip" ]; then
-                  downloaded=true
-                  break
-              fi
-
-              if [ "$attempt" -lt 3 ]; then
-                  warn "  HTTP ${http_code} on attempt ${attempt} for ${DEP_FULLNAME} — retrying in 3s..."
-                  sleep 3
-              fi
-          done
-
-          if [ "$downloaded" = false ]; then
-              warn "  Failed to download ${DEP_FULLNAME} v${DEP_VERSION} after 3 attempts (HTTP ${http_code}) — skipping"
-              fail_count=$((fail_count + 1))
-              continue
-          fi
-
-          unzip_exit=0
-          unzip -qo "${dep_staging}/mod.zip" -d "${dep_staging}/contents" || unzip_exit=$?
-          if [ "$unzip_exit" -ge 2 ]; then
-              warn "  Failed to extract ${DEP_FULLNAME} — skipping"
-              fail_count=$((fail_count + 1))
-              continue
-          fi
-
-          install_mod_files "${dep_staging}/contents" "$DEP_FULLNAME"
-          dep_count=$((dep_count + 1))
+      echo "[INFO] Bootstrapping install from ${SCRIPT_REPO}@${SCRIPT_REF}"
+      mkdir -p "${SCRIPT_CACHE}"
+      for script in server-install.sh install-mods.sh server-autoupdate.sh; do
+          curl -fsSL --retry 3 -o "${SCRIPT_CACHE}/${script}" "${RAW_BASE}/${script}" \
+              || { echo "[FATAL] Could not fetch ${script} from ${RAW_BASE}" >&2; exit 1; }
       done
+      chmod +x "${SCRIPT_CACHE}"/*.sh
 
-      # ── Modpack Configs (applied last to override mod defaults) ────
-      if [ -d "${STAGING_DIR}/modpack/config" ]; then
-          log "Installing Fimbulwinter Lite configuration files..."
-          mkdir -p "${CONFIG_DIR}"
-          cp -r "${STAGING_DIR}/modpack/config/"* "${CONFIG_DIR}/"
-      fi
-
-      # ── Fix Permissions ────────────────────────────────────────────
-      # Install container runs as root, but runtime container runs as non-root.
-      # Ensure all server files are world-readable so the runtime user can access them.
-      log "Fixing file permissions for runtime container..."
-      find "${SERVER_DIR}" -type d -exec chmod 755 {} +
-      find "${SERVER_DIR}" -type f -exec chmod 644 {} +
-      chmod +x "${SERVER_DIR}/valheim_server.x86_64"
-      chmod +x "${SERVER_DIR}/steamcmd/steamcmd.sh"
-
-      # ── Cleanup ────────────────────────────────────────────────────
-      log "Cleaning up..."
-      rm -rf "${STAGING_DIR}"
-      rm -f "${SERVER_DIR}/icon.png" \
-            "${SERVER_DIR}/manifest.json" \
-            "${SERVER_DIR}/README.md" \
-            "${SERVER_DIR}/CHANGELOG.md"
-
-      # ═══════════════════════════════════════════════════════════════
-      log "======================================================="
-      log "  Installation complete!"
-      log "  FimbulwinterLite v${modpack_version}"
-      log "  BepInEx       v${bepinex_version}"
-      log "  Mods installed:      ${dep_count}"
-      log "  Skipped (client):    ${skip_count}"
-      if [ "$fail_count" -gt 0 ]; then
-          warn "  Failed downloads:    ${fail_count}"
-      fi
-      log "======================================================="
+      exec bash "${SCRIPT_CACHE}/server-install.sh"
     container: "ghcr.io/parkervcp/installers:debian"
     entrypoint: bash
 variables:
@@ -493,3 +227,34 @@ variables:
     rules:
       - required
       - numeric
+  - sort: 17
+    name: "Auto Update Mods"
+    description: "Re-sync mods and configs from the latest PUBLISHED Fimbulwinter Lite modpack on every server start. Fails soft: if the update cannot run, the server boots with existing mods."
+    env_variable: AUTO_UPDATE_MODS
+    default_value: 0
+    user_viewable: true
+    user_editable: true
+    rules:
+      - boolean
+  - sort: 18
+    name: "[System] Script Repo"
+    description: "GitHub owner/repo that hosts the install scripts (scripts/*.sh)."
+    env_variable: SCRIPT_REPO
+    default_value: ibfleming/fimbulwinter-lite
+    user_viewable: true
+    user_editable: false
+    rules:
+      - required
+      - string
+      - "max:100"
+  - sort: 19
+    name: "[System] Script Ref"
+    description: "Git ref (branch or tag) the install scripts are fetched from. Default 'main' = always latest; pin a tag like v1.0.0 for frozen installs."
+    env_variable: SCRIPT_REF
+    default_value: main
+    user_viewable: true
+    user_editable: true
+    rules:
+      - required
+      - string
+      - "max:60"
