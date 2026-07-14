@@ -25,9 +25,36 @@ RAW_BASE="https://raw.githubusercontent.com/${SCRIPT_REPO}/${SCRIPT_REF}/scripts
 log()  { echo -e "[MOD-UPDATE] $*"; }
 skip() { echo -e "[MOD-UPDATE] $* — skipping mod update, booting with existing mods." >&2; exit 0; }
 
-for tool in curl jq unzip; do
-    command -v "$tool" >/dev/null 2>&1 || skip "Required tool '$tool' not available in runtime image"
-done
+command -v curl >/dev/null 2>&1 || skip "curl not available in runtime image (cannot bootstrap anything without it)"
+
+# The runtime image (ghcr.io/parkervcp/games:valheim) lacks jq (and possibly
+# unzip), and the container user cannot apt-install. Bootstrap static binaries
+# into the persistent server volume instead — one-time download, reused on
+# every subsequent boot via PATH.
+BIN_DIR="${SERVER_DIR}/.fimbulwinter/bin"
+export PATH="${BIN_DIR}:${PATH}"
+
+if ! command -v jq >/dev/null 2>&1; then
+    log "jq not found — bootstrapping static binary into ${BIN_DIR}..."
+    mkdir -p "${BIN_DIR}"
+    curl -fsSL --max-time 60 -o "${BIN_DIR}/jq" \
+        "https://github.com/jqlang/jq/releases/latest/download/jq-linux-amd64" \
+        && chmod +x "${BIN_DIR}/jq" || skip "Could not bootstrap jq"
+    "${BIN_DIR}/jq" --version >/dev/null 2>&1 || { rm -f "${BIN_DIR}/jq"; skip "Bootstrapped jq does not run"; }
+    log "jq $("${BIN_DIR}/jq" --version) ready."
+fi
+
+if ! command -v unzip >/dev/null 2>&1; then
+    log "unzip not found — bootstrapping static busybox into ${BIN_DIR}..."
+    mkdir -p "${BIN_DIR}"
+    curl -fsSL --max-time 60 -o "${BIN_DIR}/busybox" \
+        "https://busybox.net/downloads/binaries/1.35.0-x86_64-linux-musl/busybox" \
+        && chmod +x "${BIN_DIR}/busybox" || skip "Could not bootstrap busybox (for unzip)"
+    [ "$("${BIN_DIR}/busybox" echo ok 2>/dev/null)" = "ok" ] || { rm -f "${BIN_DIR}/busybox"; skip "Bootstrapped busybox does not run"; }
+    printf '#!/bin/sh\nexec "%s" unzip "$@"\n' "${BIN_DIR}/busybox" > "${BIN_DIR}/unzip"
+    chmod +x "${BIN_DIR}/unzip"
+    log "busybox unzip ready."
+fi
 
 installed="unknown"
 [ -f "$MARKER" ] && installed=$(cat "$MARKER")

@@ -75,6 +75,38 @@ Fimbulwinter Lite is a curated, lightweight modpack of **43 mods** focused on qu
 - **Groups** -- Party system with shared map pings and chat
 - **Seasons** -- Four rotating seasons with visual and gameplay variety
 
+## Keyboard Shortcuts
+
+All mod keybinds have been audited against Valheim's default bindings — nothing shadows a vanilla control. Modifier-based binds only act in their context (build mode, planting, menus) and don't interfere with the base action.
+
+| Key | Mod | Action | Context |
+|-----|-----|--------|---------|
+| `Alt + Z / X / C` | AzuExtendedPlayerInventory | Use quick slot 1 / 2 / 3 | Anywhere |
+| `I` | AdventureBackpacks | Open equipped backpack | Anywhere |
+| `L` | AdventureBackpacks | Toggle Wisplight effect | Anywhere |
+| `Alt + H` | VNEI | Open item/recipe browser | Anywhere |
+| `R` | VNEI | View recipe of hovered item | Menus only (vanilla sheath unaffected) |
+| `Left/Right Arrow` | VNEI | Recipe history back / forward | VNEI window |
+| `Ctrl + Z` | Recycle N Reclaim | Undo last recycle | Inventory |
+| `Delete` | Quick Stack Store | Trash hovered item | Inventory |
+| `Shift` (hold) | AzuCraftyBoxes | Craft max / fill all | Crafting menu |
+| `Shift` (hold) | Gizmo | Rotate build piece on X axis | Build mode |
+| `Alt` (hold) | Gizmo | Rotate build piece on Z axis | Build mode |
+| `G` | Gizmo | Reset piece rotation | Build mode (moved off `V` = vanilla voice chat) |
+| `P` | Gizmo | Copy rotation from targeted piece | Build mode |
+| `Shift` (hold) | MassFarming | Mass plant / mass pick | Cultivator / interact |
+| `F8` | PlantEasily | Toggle grid planting | Cultivator |
+| `F10` | PlantEasily | Toggle grid snapping | Cultivator |
+| `F6` | PlantEasily | Toggle auto-replant | Anywhere |
+| `RCtrl + Arrows` | PlantEasily | Resize planting grid | Cultivator |
+| `Shift` (hold) | PlantEasily | Harvest whole grid | Interact |
+| `Alt + click` | Groups | Ping map for your group | Map |
+| `F3` | ConfigurationManager | Open in-game mod settings | Anywhere |
+
+**Admin-only** (require server admin): `F9` toggles creative/nocost mode (Server devcommands), `Ctrl + Right-click` on the map teleports.
+
+Rebind anything in-game: press `F3` → find the mod → change the key (stored in that mod's config file).
+
 ## Installation
 
 **Client:** Install via [r2modman](https://thunderstore.io/c/valheim/p/ebkr/r2modman/) or the Thunderstore App -- search for `FimbulwinterLite` by `ibfleming`.
