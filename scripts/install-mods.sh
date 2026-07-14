@@ -9,13 +9,24 @@
 #   - server-autoupdate.sh (runtime container, boot-time re-sync)
 #   - deploy.sh --full     (dev machine, staging a local-state payload)
 #
+# Update model (desired-state reconciliation):
+#   The installed state is recorded in .fimbulwinter/manifest. On update,
+#   the desired dependency set is reconciled against the manifest AND the
+#   actual plugin directories on disk — only added/updated/missing mods
+#   are downloaded, removed mods are deleted. All downloads are staged
+#   BEFORE the live server is mutated (transactional apply); any download
+#   failure aborts with the server untouched. No manifest (or --full)
+#   falls back to a full sync. Configs are always re-overlaid wholesale.
+#
 # Usage:
-#   install-mods.sh --server-dir DIR [--source thunderstore|local] [--repo-dir DIR]
+#   install-mods.sh --server-dir DIR [--source thunderstore|local]
+#                   [--repo-dir DIR] [--full]
 #
 #   --server-dir DIR   Target server root (e.g. /mnt/server, /home/container)
 #   --source           thunderstore (default): latest published modpack
 #                      local: resolve from --repo-dir's thunderstore.toml + config/
 #   --repo-dir DIR     Repo checkout for --source local
+#   --full             Force full sync (ignore manifest / delta path)
 #
 # Requires: bash, curl, jq, unzip
 # ═══════════════════════════════════════════════════════════════
@@ -51,11 +62,13 @@ fatal() { echo -e "[FATAL] $*" >&2; exit 1; }
 SERVER_DIR=""
 SOURCE="thunderstore"
 REPO_DIR=""
+FORCE_FULL=false
 while [ $# -gt 0 ]; do
     case "$1" in
         --server-dir) SERVER_DIR="$2"; shift 2 ;;
         --source)     SOURCE="$2"; shift 2 ;;
         --repo-dir)   REPO_DIR="$2"; shift 2 ;;
+        --full)       FORCE_FULL=true; shift ;;
         *) fatal "Unknown argument: $1" ;;
     esac
 done
@@ -72,6 +85,8 @@ BEPINEX_DIR="${SERVER_DIR}/BepInEx"
 PLUGINS_DIR="${BEPINEX_DIR}/plugins"
 CONFIG_DIR="${BEPINEX_DIR}/config"
 MARKER_DIR="${SERVER_DIR}/.fimbulwinter"
+MANIFEST="${MARKER_DIR}/manifest"
+PATCHER_LISTS="${MARKER_DIR}/patchers"
 # Stage on the server volume, NOT /tmp — Wings mounts /tmp as a small tmpfs.
 STAGING_DIR="${SERVER_DIR}/.fimbulwinter_staging"
 
@@ -116,6 +131,7 @@ download_package() {
 # Install an extracted mod into BepInEx directories.
 # config/ → BepInEx/config/, patchers/ → BepInEx/patchers/,
 # everything else → plugins/<ModName>/ (preserving asset-relative paths).
+# Patcher files are recorded per-mod so delta removals can clean them up.
 install_mod_files() {
     local contents_dir="$1"
     local mod_name="$2"
@@ -143,6 +159,7 @@ install_mod_files() {
     fi
 
     mkdir -p "$dest"
+    rm -f "${PATCHER_LISTS}/${mod_name}.list"
     local has_patchers=false
     for item in "${entries[@]}"; do
         [ -e "$item" ] || continue
@@ -150,7 +167,12 @@ install_mod_files() {
         name=$(basename "$item")
         case "${name,,}" in
             config)   mkdir -p "${CONFIG_DIR}" && cp -r "$item/"* "${CONFIG_DIR}/" ;;
-            patchers) mkdir -p "${BEPINEX_DIR}/patchers" && cp -r "$item/"* "${BEPINEX_DIR}/patchers/" && has_patchers=true ;;
+            patchers)
+                mkdir -p "${BEPINEX_DIR}/patchers" "${PATCHER_LISTS}"
+                cp -r "$item/"* "${BEPINEX_DIR}/patchers/"
+                (cd "$item" && find . -type f | sed 's|^\./||') >> "${PATCHER_LISTS}/${mod_name}.list"
+                has_patchers=true
+                ;;
             *)        cp -r "$item" "$dest/" ;;
         esac
     done
@@ -159,6 +181,18 @@ install_mod_files() {
     dll_count=$(find "$dest" -name "*.dll" 2>/dev/null | wc -l)
     if [ "$dll_count" -eq 0 ] && [ "$has_patchers" = false ]; then
         warn "  No DLLs installed for ${mod_name} — check zip packaging"
+    fi
+}
+
+# Remove an installed mod: its plugins dir and any tracked patcher files.
+remove_mod() {
+    local mod_name="$1"
+    rm -rf "${PLUGINS_DIR:?}/${mod_name}"
+    if [ -f "${PATCHER_LISTS}/${mod_name}.list" ]; then
+        while IFS= read -r f; do
+            [ -n "$f" ] && rm -f "${BEPINEX_DIR}/patchers/${f}"
+        done < "${PATCHER_LISTS}/${mod_name}.list"
+        rm -f "${PATCHER_LISTS}/${mod_name}.list"
     fi
 }
 
@@ -195,80 +229,127 @@ fi
 
 [ -n "$dependencies" ] || fatal "No dependencies resolved"
 
-# ── Install BepInEx + mods ─────────────────────────────────────
-rm -rf "${PLUGINS_DIR:?}/"*
-mkdir -p "${PLUGINS_DIR}"
-
-dep_count=0
-skip_count=0
-fail_count=0
-bepinex_version=""
-total=$(echo "$dependencies" | wc -l)
-
+# ── Plan: reconcile desired state vs installed state ──────────
+# Desired server-side set (dep strings incl. BepInEx; client-only excluded).
+desired=()
 for dep in $dependencies; do
     parse_dependency "$dep"
-
-    if [[ "$DEP_FULLNAME" == "denikson-BepInExPack_Valheim" ]]; then
-        log "Installing BepInEx v${DEP_VERSION}..."
-        download_package "$DEP_NAMESPACE" "$DEP_NAME" "$DEP_VERSION" "${STAGING_DIR}/bepinex.zip" \
-            || fatal "Could not download BepInEx"
-        unzip -qo "${STAGING_DIR}/bepinex.zip" -d "${STAGING_DIR}/bepinex"
-        cp -r "${STAGING_DIR}/bepinex/BepInExPack_Valheim/"* "${SERVER_DIR}/"
-        bepinex_version="$DEP_VERSION"
-        total=$((total - 1))
-        continue
-    fi
-
-    if is_client_only "$DEP_FULLNAME"; then
-        log "[SKIP] ${DEP_FULLNAME} (client-only)"
-        skip_count=$((skip_count + 1))
-        continue
-    fi
-
-    progress="[$((dep_count + skip_count + fail_count + 1))/${total}]"
-    log "${progress} ${DEP_FULLNAME} v${DEP_VERSION}"
-
-    dep_staging="${STAGING_DIR}/deps/${DEP_FULLNAME}"
-    mkdir -p "${dep_staging}"
-
-    if ! download_package "$DEP_NAMESPACE" "$DEP_NAME" "$DEP_VERSION" "${dep_staging}/mod.zip"; then
-        warn "  Failed to download ${DEP_FULLNAME} v${DEP_VERSION} after 3 attempts — skipping"
-        fail_count=$((fail_count + 1))
-        continue
-    fi
-
-    unzip_exit=0
-    unzip -qo "${dep_staging}/mod.zip" -d "${dep_staging}/contents" || unzip_exit=$?
-    if [ "$unzip_exit" -ge 2 ]; then
-        warn "  Failed to extract ${DEP_FULLNAME} — skipping"
-        fail_count=$((fail_count + 1))
-        continue
-    fi
-
-    install_mod_files "${dep_staging}/contents" "$DEP_FULLNAME"
-    dep_count=$((dep_count + 1))
-    rm -rf "${dep_staging}"
+    is_client_only "$DEP_FULLNAME" || desired+=("$dep")
 done
 
-# ── Configs (applied last to override mod defaults) ────────────
+mode="full"
+if [ "$FORCE_FULL" = false ] && [ -f "$MANIFEST" ] && [ -s "$MANIFEST" ]; then
+    mode="delta"
+fi
+
+to_install=()   # dep strings to download + (re)install
+to_remove=()    # mod fullnames to delete
+unchanged=0
+
+if [ "$mode" = "delta" ]; then
+    # Installed state = manifest, verified against the actual disk.
+    declare -A desired_by_name=()
+    for dep in "${desired[@]}"; do
+        parse_dependency "$dep"
+        desired_by_name["$DEP_FULLNAME"]="$dep"
+    done
+    declare -A installed_by_name=()
+    while IFS= read -r dep; do
+        [ -n "$dep" ] || continue
+        parse_dependency "$dep"
+        installed_by_name["$DEP_FULLNAME"]="$dep"
+    done < "$MANIFEST"
+
+    # Removals: installed but no longer desired.
+    for name in "${!installed_by_name[@]}"; do
+        [ "$name" = "denikson-BepInExPack_Valheim" ] && continue
+        if [ -z "${desired_by_name[$name]:-}" ]; then
+            to_remove+=("$name")
+        fi
+    done
+    # Installs: new, version-changed, or manifest says installed but disk disagrees.
+    for name in "${!desired_by_name[@]}"; do
+        dep="${desired_by_name[$name]}"
+        if [ "$name" = "denikson-BepInExPack_Valheim" ]; then
+            if [ "${installed_by_name[$name]:-}" != "$dep" ] || [ ! -d "${BEPINEX_DIR}/core" ]; then
+                to_install+=("$dep")
+            else
+                unchanged=$((unchanged + 1))
+            fi
+            continue
+        fi
+        if [ "${installed_by_name[$name]:-}" = "$dep" ] && [ -d "${PLUGINS_DIR}/${name}" ]; then
+            unchanged=$((unchanged + 1))
+        else
+            to_install+=("$dep")
+        fi
+    done
+    log "Delta plan: ${#to_install[@]} to install/update, ${#to_remove[@]} to remove, ${unchanged} unchanged."
+else
+    to_install=("${desired[@]}")
+    log "Full sync: installing all ${#to_install[@]} server-side packages."
+fi
+
+if [ "$mode" = "delta" ] && [ "${#to_install[@]}" -eq 0 ] && [ "${#to_remove[@]}" -eq 0 ]; then
+    log "Nothing to do — applying configs only."
+fi
+
+# ── Phase 1: stage ALL downloads before touching the server ───
+# A failure here aborts with the live server completely untouched.
+for dep in ${to_install[@]+"${to_install[@]}"}; do
+    parse_dependency "$dep"
+    dep_staging="${STAGING_DIR}/deps/${DEP_FULLNAME}"
+    mkdir -p "${dep_staging}"
+    log "[FETCH] ${DEP_FULLNAME} v${DEP_VERSION}"
+    download_package "$DEP_NAMESPACE" "$DEP_NAME" "$DEP_VERSION" "${dep_staging}/mod.zip" \
+        || fatal "Download failed for ${DEP_FULLNAME} v${DEP_VERSION} — server left untouched"
+    unzip -qo "${dep_staging}/mod.zip" -d "${dep_staging}/contents" \
+        || fatal "Extract failed for ${DEP_FULLNAME} — server left untouched"
+done
+
+# ── Phase 2: apply (mutations start here) ──────────────────────
+mkdir -p "${PLUGINS_DIR}" "${MARKER_DIR}" "${PATCHER_LISTS}"
+
+if [ "$mode" = "full" ]; then
+    log "Clearing plugins for full sync..."
+    rm -rf "${PLUGINS_DIR:?}/"*
+    rm -rf "${PATCHER_LISTS:?}"; mkdir -p "${PATCHER_LISTS}"
+fi
+
+for name in ${to_remove[@]+"${to_remove[@]}"}; do
+    log "[REMOVE] ${name}"
+    remove_mod "$name"
+done
+
+installed_count=0
+for dep in ${to_install[@]+"${to_install[@]}"}; do
+    parse_dependency "$dep"
+    if [ "$DEP_FULLNAME" = "denikson-BepInExPack_Valheim" ]; then
+        log "[INSTALL] BepInEx v${DEP_VERSION}"
+        cp -r "${STAGING_DIR}/deps/${DEP_FULLNAME}/contents/BepInExPack_Valheim/"* "${SERVER_DIR}/"
+    else
+        log "[INSTALL] ${DEP_FULLNAME} v${DEP_VERSION}"
+        remove_mod "$DEP_FULLNAME"   # clear any stale copy before reinstalling
+        install_mod_files "${STAGING_DIR}/deps/${DEP_FULLNAME}/contents" "$DEP_FULLNAME"
+    fi
+    installed_count=$((installed_count + 1))
+done
+
+# ── Configs (always re-overlaid; applied last to override defaults) ──
 if [ -d "$config_source" ]; then
     log "Installing modpack configuration files..."
     mkdir -p "${CONFIG_DIR}"
     cp -r "${config_source}/"* "${CONFIG_DIR}/"
 fi
 
-# ── Version marker (read by server-autoupdate.sh) ──────────────
-mkdir -p "${MARKER_DIR}"
+# ── Record state (marker + manifest) ───────────────────────────
+printf '%s\n' "${desired[@]}" | sort > "$MANIFEST"
 echo "$modpack_version" > "${MARKER_DIR}/installed_version"
 
 log "======================================================="
-log "  Mod installation complete"
-log "  Modpack:          ${MODPACK_NAME} ${modpack_version} (source: ${SOURCE})"
-[ -n "$bepinex_version" ] && log "  BepInEx:          v${bepinex_version}"
-log "  Mods installed:   ${dep_count}"
-log "  Skipped (client): ${skip_count}"
-if [ "$fail_count" -gt 0 ]; then
-    warn "  Failed downloads: ${fail_count}"
-    exit 1
-fi
+log "  Mod sync complete (${mode})"
+log "  Modpack:            ${MODPACK_NAME} ${modpack_version} (source: ${SOURCE})"
+log "  Installed/updated:  ${installed_count}"
+log "  Removed:            ${#to_remove[@]}"
+[ "$mode" = "delta" ] && log "  Unchanged (kept):   ${unchanged}"
 log "======================================================="
