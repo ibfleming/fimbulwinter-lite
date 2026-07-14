@@ -6,7 +6,7 @@ repository = "https://thunderstore.io"
 
 [package]
 namespace = "ibfleming"
-name = "Fimbulwinter Lite"
+name = "Fimbulwinter_Lite"
 description = "A lightweight Vanilla+ Valheim modpack: streamlined QoL, UI polish, and multiplayer fixes that preserve vanilla progression and spirit."
 versionNumber = "1.0.1"
 websiteUrl = "https://github.com/ibfleming/fimbulwinter-lite"
