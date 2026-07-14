@@ -5,6 +5,13 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-07-14
+
+### Added
+- ComfyMods-ComfyAutoRepair 1.0.0 -- interacting with a crafting station
+  auto-repairs all items that station can repair (client-side, vanilla rules
+  preserved: station level and proximity still required)
+
 ## [1.0.0] - 2026-07-13
 
 Initial release of **Fimbulwinter Lite** -- a complete Vanilla+ refactor of the original

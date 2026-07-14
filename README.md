@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **43 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **44 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
@@ -22,7 +22,7 @@ Fimbulwinter Lite is a curated, lightweight modpack of **43 mods** focused on qu
 - **ConfigurationManager** (shudnal) -- In-game config editing (F1)
 - **ConditionalConfigSync** -- Server-enforced config ownership and sync policies
 
-### Inventory & Crafting (8 mods)
+### Inventory & Crafting (9 mods)
 - **AzuExtendedPlayerInventory** -- Dedicated equipment and quick slots
 - **AzuCraftyBoxes** -- Craft using materials from nearby containers
 - **AzuAutoStore** -- Auto-deposit items into nearby containers
@@ -31,6 +31,7 @@ Fimbulwinter Lite is a curated, lightweight modpack of **43 mods** focused on qu
 - **Recycle N Reclaim** -- Recycle items back into materials
 - **Quick Stack Store Sort Trash Restock** -- One-key chest stacking, sorting, and trash
 - **MultiUserChest** -- Multiple players can use one chest simultaneously
+- **ComfyAutoRepair** -- Opening a crafting station repairs everything it can repair
 
 ### UI & HUD (4 mods)
 - **MyLittleUI** -- Lightweight UI upgrades: timers, stats, chest contents, weather

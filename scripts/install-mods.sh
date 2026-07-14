@@ -34,6 +34,7 @@ CLIENT_ONLY_MODS=(
     "Neobotics-HUDCompass"
     "Azumatt-AzuHoverStats"
     "ComfyMods-Gizmo"
+    "ComfyMods-ComfyAutoRepair"
     "Searica-Extra_Snap_Points_Made_Easy"
     "Goldenrevolver-Quick_Stack_Store_Sort_Trash_Restock"
     "Advize-PlantEasily"
