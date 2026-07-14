@@ -22,7 +22,7 @@
 set -euo pipefail
 
 MODPACK_NAMESPACE="${MODPACK_NAMESPACE:-ibfleming}"
-MODPACK_NAME="${MODPACK_NAME:-FimbulwinterLite}"
+MODPACK_NAME="${MODPACK_NAME:-Fimbulwinter_Lite}"
 THUNDERSTORE_API="https://thunderstore.io/api/experimental/package"
 
 # Client-only mods — never installed on a dedicated server.
