@@ -128,9 +128,17 @@ install_mod_files() {
         esac
         entries+=("$item")
     done
+    # Unwrap a sole top-level wrapper directory — but never config/ or
+    # patchers/: those names drive routing below, and unwrapping them would
+    # dump patcher DLLs into plugins/ (e.g. ShutUp ships as patchers/ShutUp.dll).
     if [ "${#entries[@]}" -eq 1 ] && [ -d "${entries[0]}" ]; then
-        log "  → unwrapped: $(basename "${entries[0]}")"
-        entries=("${entries[0]}"/*)
+        case "$(basename "${entries[0]}" | tr '[:upper:]' '[:lower:]')" in
+            config|patchers) ;;
+            *)
+                log "  → unwrapped: $(basename "${entries[0]}")"
+                entries=("${entries[0]}"/*)
+                ;;
+        esac
     fi
 
     mkdir -p "$dest"
