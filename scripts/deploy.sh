@@ -111,6 +111,23 @@ delete_remote() {
     api POST "/files/delete" "{\"root\":\"${remote_dir}\",\"files\":${files_json}}" >/dev/null || true
 }
 
+# ServerCharacters generates a random 'Server key' on the server at startup.
+# The repo copy keeps that field intentionally EMPTY (never commit a real key),
+# but pushing an empty key rotates it on the next boot — invalidating every
+# client's cached profile signature (Bad PKCS7 padding on their next join).
+# Preserve the live key by injecting it into the staged payload.
+inject_remote_server_key() {
+    local staged_cfg="$1/org.bepinex.plugins.servercharacters.cfg"
+    [ -f "$staged_cfg" ] || return 0
+    local remote_key
+    remote_key=$(api GET "/files/contents?file=%2FBepInEx%2Fconfig%2Forg.bepinex.plugins.servercharacters.cfg" 2>/dev/null \
+        | grep -m1 '^Server key = .' | sed 's/^Server key = //' | tr -d '\r') || true
+    if [ -n "${remote_key:-}" ]; then
+        sed -i "s|^Server key = *$|Server key = ${remote_key}|" "$staged_cfg"
+        log "Preserved live ServerCharacters key in payload."
+    fi
+}
+
 # ── Preflight ──────────────────────────────────────────────────
 server_name=$(api GET "" | jq -r '.attributes.name') || fatal "Cannot reach panel/server — check PANEL_URL, key, SERVER_ID"
 log "Target server: ${server_name} (${SERVER_ID}) @ ${PANEL_URL}"
@@ -123,8 +140,12 @@ case "$MODE" in
 configs)
     confirm "Push local config/ (overwrites server configs)?"
     payload="/tmp/fimbulwinter-configs-${STAMP}.zip"
-    log "Zipping local config/ ..."
-    (cd "${REPO_DIR}" && zip -qr "$payload" config)
+    log "Staging local config/ ..."
+    stagec=$(mktemp -d)
+    trap 'rm -rf "$stagec"' EXIT
+    cp -r "${REPO_DIR}/config" "${stagec}/config"
+    inject_remote_server_key "${stagec}/config"
+    (cd "$stagec" && zip -qr "$payload" config)
     $RESTART && power stop offline
 
     log "Uploading $(du -h "$payload" | cut -f1) config payload..."
@@ -145,6 +166,8 @@ full)
     log "Staging local-state payload (this downloads all server-side mods from Thunderstore)..."
     bash "${REPO_DIR}/scripts/install-mods.sh" \
         --server-dir "$staging" --source local --repo-dir "$REPO_DIR"
+
+    inject_remote_server_key "${staging}/BepInEx/config"
 
     payload="/tmp/fimbulwinter-full-${STAMP}.zip"
     log "Zipping payload..."
