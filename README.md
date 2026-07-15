@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **44 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **49 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
@@ -22,7 +22,7 @@ Fimbulwinter Lite is a curated, lightweight modpack of **44 mods** focused on qu
 - **ConfigurationManager** (shudnal) -- In-game config editing (F1)
 - **ConditionalConfigSync** -- Server-enforced config ownership and sync policies
 
-### Inventory & Crafting (9 mods)
+### Inventory & Crafting (10 mods)
 - **AzuExtendedPlayerInventory** -- Dedicated equipment and quick slots
 - **AzuCraftyBoxes** -- Craft using materials from nearby containers
 - **AzuAutoStore** -- Auto-deposit items into nearby containers
@@ -32,6 +32,7 @@ Fimbulwinter Lite is a curated, lightweight modpack of **44 mods** focused on qu
 - **Quick Stack Store Sort Trash Restock** -- One-key chest stacking, sorting, and trash
 - **MultiUserChest** -- Multiple players can use one chest simultaneously
 - **ComfyAutoRepair** -- Opening a crafting station repairs everything it can repair
+- **AutomaticFuel** -- Smelters, kilns, windmills and spinning wheels feed from nearby chests
 
 ### UI & HUD (4 mods)
 - **MyLittleUI** -- Lightweight UI upgrades: timers, stats, chest contents, weather
@@ -39,21 +40,25 @@ Fimbulwinter Lite is a curated, lightweight modpack of **44 mods** focused on qu
 - **HUDCompass** -- Compass bar with map pins
 - **AzuHoverStats** -- Detailed hover tooltips
 
-### Building (4 mods)
+### Building (6 mods)
 - **Gizmo** -- Precise build-piece rotation on all axes
 - **Extra Snap Points Made Easy** -- More snap points on every piece
 - **AzuAreaRepair** -- Repair all nearby build pieces with one hammer hit
 - **MissingPieces** -- Vanilla-styled build pieces that should have existed
+- **AdvancedTerrainModifiers** -- Precision terraforming with square/circle modes and undo
+- **Structure Tweaks** -- Buildings no longer take weather damage
 
 ### Farming (3 mods)
 - **PlantEverything** -- Plant every gatherable resource and tree
 - **PlantEasily** -- Grid-aligned planting and mass harvesting
 - **MassFarming** -- Bulk plant and pick with a modifier key
 
-### Travel & World QoL (3 mods)
+### Travel & World QoL (5 mods)
 - **TeleportEverything** -- Portal everything, with a 10% ore transport tax
 - **SpeedyPaths** -- Move faster on paths, roads, and cleared ground
 - **WieldEquipmentWhileSwimming** -- Keep gear in hand while swimming
+- **TargetPortal** -- Step into a portal, pick any other portal on the map
+- **StumpsAreOneHp** -- Tree stumps fall in a single hit
 
 ### Fixes & Performance (5 mods)
 - **AzuMiscPatches** -- Collection of small vanilla fixes and tweaks
