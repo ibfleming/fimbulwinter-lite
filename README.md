@@ -46,7 +46,7 @@ Fimbulwinter Lite is a curated, lightweight modpack of **49 mods** focused on qu
 - **AzuAreaRepair** -- Repair all nearby build pieces with one hammer hit
 - **MissingPieces** -- Vanilla-styled build pieces that should have existed
 - **AdvancedTerrainModifiers** -- Precision terraforming with square/circle modes and undo
-- **Structure Tweaks** -- Buildings no longer take weather damage
+- **NoRainDamage** -- Buildings no longer take weather damage
 
 ### Farming (3 mods)
 - **PlantEverything** -- Plant every gatherable resource and tree
@@ -108,6 +108,11 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | `Shift` (hold) | PlantEasily | Harvest whole grid | Interact |
 | `Alt + click` | Groups | Ping map for your group | Map |
 | `F3` | ConfigurationManager | Open in-game mod settings | Anywhere |
+| `F7` | AutomaticFuel | Toggle auto-fueling on/off | Anywhere |
+| `Alt + scroll` | AdvancedTerrainModifiers | Adjust tool radius | Hoe/cultivator/shovel |
+| `Ctrl + scroll` | AdvancedTerrainModifiers | Adjust tool hardness | Hoe/cultivator/shovel |
+| `Shift` (hold) + use portal | TargetPortal | Use vanilla tag UI instead | At portal |
+| `P` | TargetPortal | Toggle portal icons | Map open |
 
 **Admin-only** (require server admin): `F9` toggles creative/nocost mode (Server devcommands), `Ctrl + Right-click` on the map teleports.
 

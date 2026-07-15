@@ -8,14 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2026-07-14
 
 ### Added
-- JereKuusela-Structure_Tweaks 1.36.0 -- buildings no longer take weather
-  damage (only the weather toggle enabled; all other options vanilla)
+- JoelOliMclean-NoRainDamage 1.2.4 -- buildings no longer take weather/rain
+  damage (Structure_Tweaks was evaluated first but has no global weather
+  toggle -- its wear system is per-object/visual)
 - Smoothbrain-TargetPortal 1.2.3 -- step into any portal and pick your
   destination on the map; no more tag pairing (TeleportEverything's 10%
   ore tax still applies to what you carry)
 - TastyChickenLegs-AutomaticFuel 1.4.8 -- smelters, kilns, windmills and
-  spinning wheels auto-feed from nearby chests (torch/campfire fueling and
-  ground pickup disabled by config)
+  spinning wheels auto-feed from nearby chests (torch/campfire/brazier fueling
+  and ground pickup disabled; chest range 5m; toggle key F7)
 - Searica-AdvancedTerrainModifiers 1.4.1 -- precision terraforming with
   square/circle modes and undo/redo
 - coemt-StumpsAreOneHp 0.0.1 -- tree stumps fall in a single hit
