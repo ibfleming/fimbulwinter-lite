@@ -69,11 +69,16 @@ jobs:
       - name: Build Package
         run: ./tcli build --config-path thunderstore.toml
 
+      - name: Build r2modman Profile (.r2z)
+        run: bash scripts/export-profile.sh "build/Fimbulwinter_Lite-v${{ steps.version.outputs.version }}-profile.r2z"
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: thunderstore-package
-          path: build/*.zip
+          path: |
+            build/*.zip
+            build/*.r2z
           retention-days: 14
 
       - name: Publish to Thunderstore
@@ -104,7 +109,9 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.zip
+          files: |
+            dist/*.zip
+            dist/*.r2z
           body_path: CHANGELOG.md
           name: Fimbulwinter Lite v${{ needs.build-and-publish.outputs.version }}
           generate_release_notes: true

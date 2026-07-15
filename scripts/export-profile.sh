@@ -26,8 +26,8 @@ version = re.search(r'versionNumber = "([^"]+)"', toml).group(1)
 deps = re.findall(r'^([A-Za-z0-9_]+-[A-Za-z0-9_]+) = "([^"]+)"$',
                   toml.split("[package.dependencies]", 1)[1].split("\n[", 1)[0], re.M)
 if not out:
-    os.makedirs(os.path.join(repo, "dist"), exist_ok=True)
     out = os.path.join(repo, "dist", f"Fimbulwinter_Lite-v{version}-profile.r2z")
+os.makedirs(os.path.dirname(os.path.abspath(out)) or ".", exist_ok=True)
 
 lines = [f"profileName: Fimbulwinter-Lite-v{version}", "mods:"]
 for full, ver in deps:
