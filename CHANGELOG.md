@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   square/circle modes and undo/redo
 - coemt-StumpsAreOneHp 0.0.1 -- tree stumps fall in a single hit
 
+### Changed
+- shudnal-ConfigurationManager updated from 1.1.13 to 1.1.14
+- shudnal-ConditionalConfigSync updated from 1.0.1 to 1.0.2
+- shudnal-Seasons updated from 1.8.0 to 1.8.1 (requires ConditionalConfigSync 1.0.2)
+
 ## [1.0.1] - 2026-07-14
 
 ### Added
