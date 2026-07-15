@@ -112,6 +112,8 @@ Rebind anything in-game: press `F3` → find the mod → change the key (stored 
 
 **Client:** Install via [r2modman](https://thunderstore.io/c/valheim/p/ebkr/r2modman/) or the Thunderstore App -- search for `Fimbulwinter Lite` by `ibfleming`.
 
+**Alternative (profile import):** Each [GitHub release](https://github.com/ibfleming/fimbulwinter-lite/releases) ships a ready-made `.r2z` profile with all mods at pinned versions plus the tuned configs. In r2modman: Profiles -> Import / Update -> From file.
+
 **Server:** Install all mods except client-only UI/visual mods. A Pelican/Pterodactyl server egg is provided in the [GitHub repo](https://github.com/ibfleming/fimbulwinter-lite) (`server/valheim-fimbulwinter-lite-egg.yaml`) that automates the full dedicated server install: SteamCMD, BepInEx, all server-side mods, and modpack configs.
 
 ## Links
