@@ -27,9 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   AdvancedTerrainModifiers scroll controls
 - Extra Snap Points Made Easy keybinds rebound to remove collisions:
   Manual+ snap mode Alt -> B (Alt is held for Gizmo z-rotation and terrain-tool
-  radius scrolling), grid snap F3 -> F11 (F3 opens the config manager),
-  snap-point cycling Q/E -> [ / ] (Q/E are vanilla autorun/interact);
-  snap notifications moved from center-screen to top-left
+  radius scrolling), grid snap F3 -> F11 (F3 opens the config manager);
+  snap notifications moved from center-screen to top-left (snap-point cycling
+  stays on Q/E -- active only inside manual snap modes)
 - shudnal-ConfigurationManager updated from 1.1.13 to 1.1.14
 - shudnal-ConditionalConfigSync updated from 1.0.1 to 1.0.2
 - shudnal-Seasons updated from 1.8.0 to 1.8.1 (requires ConditionalConfigSync 1.0.2)

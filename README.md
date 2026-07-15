@@ -102,7 +102,7 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | `P` | Gizmo | Copy rotation from targeted piece | Build mode |
 | `B` | Extra Snap Points | Toggle Manual+ snap mode | Build mode (moved off `Alt` -- collided with Gizmo/terrain tools) |
 | `CapsLock` | Extra Snap Points | Toggle manual closest-snap mode | Build mode |
-| `[` / `]` | Extra Snap Points | Cycle snap point on placing / targeted piece | Manual snap modes (moved off `Q`/`E` = vanilla autorun/interact) |
+| `Q` / `E` | Extra Snap Points | Cycle snap point on placing / targeted piece | Manual snap modes only (vanilla autorun/interact unaffected outside them) |
 | `F11` | Extra Snap Points | Toggle grid snapping | Build mode (moved off `F3` = config manager) |
 | `F4` | Extra Snap Points | Cycle grid snap precision | Grid snap mode |
 | `Shift` (hold) | MassFarming | Mass plant / mass pick | Cultivator / interact |
