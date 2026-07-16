@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Searica-AdvancedTerrainModifiers 1.4.1 -- precision terraforming with
   square/circle modes and undo/redo
 - coemt-StumpsAreOneHp 0.0.1 -- tree stumps fall in a single hit
+- Searica-ProjectileTweaks 1.6.0 -- cleaner archery feel: launch-point fix so
+  arrows go where the crosshair points, bow/crossbow zoom (hold right mouse
+  while drawing), draw cancel (E), ammo count icon; all projectile physics
+  multipliers kept at vanilla values
+- Revel-Headshots 1.0.2 -- most organic creatures gain a head weakspot that
+  rewards precise pierce-damage shots (arrows/bolts); frozen micro-mod,
+  carried over from the original Fimbulwinter pack
 
 ### Changed
 - Gizmo no longer applies to terrain-modifying tools (hoe/cultivator/shovel keep

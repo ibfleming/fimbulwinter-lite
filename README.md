@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **49 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **51 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
@@ -59,6 +59,10 @@ Fimbulwinter Lite is a curated, lightweight modpack of **49 mods** focused on qu
 - **WieldEquipmentWhileSwimming** -- Keep gear in hand while swimming
 - **TargetPortal** -- Step into a portal, pick any other portal on the map
 - **StumpsAreOneHp** -- Tree stumps fall in a single hit
+
+### Combat & Archery (2 mods)
+- **ProjectileTweaks** -- Cleaner archery feel: arrows launch from where you aim, bow/crossbow zoom, draw cancel, ammo counter -- projectile physics stay vanilla
+- **Headshots** -- Most organic creatures gain a head weakspot; precise shots with pierce damage are rewarded
 
 ### Fixes & Performance (5 mods)
 - **AzuMiscPatches** -- Collection of small vanilla fixes and tweaks
@@ -118,6 +122,8 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | `Ctrl + scroll` | AdvancedTerrainModifiers | Adjust tool hardness | Hoe/cultivator/shovel |
 | `Shift` (hold) + use portal | TargetPortal | Use vanilla tag UI instead | At portal |
 | `P` | TargetPortal | Toggle portal icons | Map open |
+| `Right Mouse` (hold) | ProjectileTweaks | Zoom while drawing bow/crossbow | Bow drawn |
+| `E` | ProjectileTweaks | Cancel bow draw | While drawing only (vanilla interact otherwise) |
 
 **Admin-only** (require server admin): `F9` toggles creative/nocost mode (Server devcommands), `Ctrl + Right-click` on the map teleports.
 
