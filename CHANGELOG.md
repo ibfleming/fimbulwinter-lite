@@ -5,7 +5,33 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-07-14
+## [1.1.1] - Unreleased
+
+### Added
+- Azumatt-SleepSkip 1.3.0 -- majority-rules night skipping: 2+ players in bed
+  starts a vote, everyone else gets a popup, strict majority (51%) passes;
+  AFK players abstain after 45s, players in combat auto-deny
+
+### Changed
+- Gizmo reset-ALL-rotations key enabled on T (disabled by default in the mod) --
+  Gizmo's rotation state persists across tool swaps by design, so leftover
+  X/Z rotations can surprise you; one press of T zeroes everything
+- shudnal-ConfigurationManager updated from 1.1.14 to 1.1.15 (its own settings
+  are now managed through ConditionalConfigSync; remains client-optional)
+- ProjectileTweaks ammo counter restyled: icon still hidden, text size 21,
+  centered, white, position (0, 0)
+
+### Fixed
+- Seasons `Control grass`, `Custom textures`, and the whole grass-tuning
+  section are now client-controlled instead of server-enforced -- the prior
+  blanket server-authoritative sync policy meant one server-side value forced
+  grass off (or on) for every player with no way to override locally, and in
+  testing a server-enforced `Control grass = false` was observed to clear
+  grass entirely rather than just revert to vanilla. Season timing, weather,
+  and stats remain server-authoritative so the world stays in sync; visual
+  grass/texture toggles are now each player's own choice.
+
+## [1.1.0] - 2026-07-15
 
 ### Added
 - JoelOliMclean-NoRainDamage 1.2.4 -- buildings no longer take weather/rain

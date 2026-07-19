@@ -59,6 +59,13 @@ fi
 installed="unknown"
 [ -f "$MARKER" ] && installed=$(cat "$MARKER")
 
+# A "local-*" marker means a dev-side deploy.sh full pushed unpublished
+# working-tree state. Auto-update must NOT revert it to the published pack;
+# the pin clears the next time a published version is deployed or reinstalled.
+case "$installed" in
+    local-*) skip "Local dev deploy pinned (${installed}) - skipping auto-update. Publish the pack or run deploy.sh reinstall to resume auto-updates." ;;
+esac
+
 latest=$(curl -sfSL --max-time 20 -H "accept: application/json" \
     "https://thunderstore.io/api/experimental/package/${MODPACK_NAMESPACE}/${MODPACK_NAME}/" \
     | jq -r '.latest.version_number' 2>/dev/null) || latest=""

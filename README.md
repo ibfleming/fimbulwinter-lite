@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **51 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **52 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
@@ -71,8 +71,9 @@ Fimbulwinter Lite is a curated, lightweight modpack of **51 mods** focused on qu
 - **NetworkTweaks** -- Improved network throughput
 - **TrueInstantLootDrop** -- Loot drops instantly on kill
 
-### Multiplayer & Server (6 mods)
+### Multiplayer & Server (7 mods)
 - **ServerCharacters** -- Server-side character saves (anti-dupe, anti-cheat)
+- **SleepSkip** -- Majority-rules night skipping: enough players in bed starts a vote, popup for the rest, AFK players count as abstaining
 - **Server devcommands** -- Better admin commands and permissions
 - **Upgrade World** -- Regenerate world locations after game updates
 - **QuickConnect** -- One-click server join
@@ -102,7 +103,8 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | `Shift` (hold) | AzuCraftyBoxes | Craft max / fill all | Crafting menu |
 | `Shift` (hold) | Gizmo | Rotate build piece on X axis | Build mode (hammer only -- terrain tools stay vanilla) |
 | `Alt` (hold) | Gizmo | Rotate build piece on Z axis | Build mode (hammer only -- terrain tools stay vanilla) |
-| `G` | Gizmo | Reset piece rotation | Build mode (moved off `V` = vanilla voice chat) |
+| `G` | Gizmo | Reset selected-axis rotation | Build mode (moved off `V` = vanilla voice chat) |
+| `T` | Gizmo | Reset ALL axis rotations | Build mode (disabled by default in the mod; enabled in this pack) |
 | `P` | Gizmo | Copy rotation from targeted piece | Build mode |
 | `B` | Extra Snap Points | Toggle Manual+ snap mode | Build mode (moved off `Alt` -- collided with Gizmo/terrain tools) |
 | `CapsLock` | Extra Snap Points | Toggle manual closest-snap mode | Build mode |
