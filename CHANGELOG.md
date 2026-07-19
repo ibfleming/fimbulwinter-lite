@@ -5,7 +5,38 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1] - Unreleased
+## [1.2.0] - Unreleased
+
+### Added
+- shudnal-LongshipUpgrades 1.0.17 -- removable mast (with hanging lantern,
+  rest tent, and Wisp torch mounts), hull HP + fire/Ashlands-ocean-protection
+  upgrades, 2-step storage expansion, cartography table map-data exchange
+  between players, and cosmetic head/sail/shield/tent style switching.
+  Requires the mod on server and every client (mod-specific RPCs; mismatched
+  peers are rejected on connect).
+  Tuned off the Vanilla+ line: `Turrets - Enable upgrades = false` (the
+  auto-firing ballista turret is a new combat mechanic vanilla doesn't have)
+  and `Item stand - Forsaken power enabled = false` (stops the trophy stand
+  from granting a second, simultaneously-usable Forsaken power alongside
+  your own -- preserves vanilla's one-power-at-a-time tradeoff; the trophy
+  still mounts as a cosmetic figurehead). `Only creator can upgrade ship`
+  and `Only creator can change trophy` set to false so any player can help
+  upgrade a shared longship, matching the pack's cooperative-building
+  philosophy (MultiUserChest, Groups).
+
+### Fixed
+- Server devcommands admin bind on F9 was silently broken -- half of it
+  (`/creative`) called a command that does not exist in Server devcommands
+  1.108.0 (verified against the shipped plugin binary), almost certainly a
+  stale leftover from the original 111-mod Fimbulwinter pack. The bundle now
+  toggles `debugmode` + `nocost` + `god` together on `O` (moved off `F9` --
+  in testing, F9 triggered a Steam Input controller-layout switch, a known
+  conflict category since F9-F12 are common defaults for Steam Input layout
+  hotkeys, NVIDIA overlay, and keyboard macro software); a new admin-only
+  bind on `K` toggles `fly` separately, since flight wasn't part of the old
+  bundle at all.
+
+## [1.1.1] - 2026-07-18
 
 ### Added
 - Azumatt-SleepSkip 1.3.0 -- majority-rules night skipping: 2+ players in bed

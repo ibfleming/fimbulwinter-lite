@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **52 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **53 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
@@ -53,12 +53,13 @@ Fimbulwinter Lite is a curated, lightweight modpack of **52 mods** focused on qu
 - **PlantEasily** -- Grid-aligned planting and mass harvesting
 - **MassFarming** -- Bulk plant and pick with a modifier key
 
-### Travel & World QoL (5 mods)
+### Travel & World QoL (6 mods)
 - **TeleportEverything** -- Portal everything, with a 10% ore transport tax
 - **SpeedyPaths** -- Move faster on paths, roads, and cleared ground
 - **WieldEquipmentWhileSwimming** -- Keep gear in hand while swimming
 - **TargetPortal** -- Step into a portal, pick any other portal on the map
 - **StumpsAreOneHp** -- Tree stumps fall in a single hit
+- **LongshipUpgrades** -- Removable mast with lantern/tent/Wisp torch, hull HP and Ashlands-ocean protection, bigger storage, cartography table map sharing, and cosmetic ship styling
 
 ### Combat & Archery (2 mods)
 - **ProjectileTweaks** -- Cleaner archery feel: arrows launch from where you aim, bow/crossbow zoom, draw cancel, ammo counter -- projectile physics stay vanilla
@@ -126,8 +127,9 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | `P` | TargetPortal | Toggle portal icons | Map open |
 | `Right Mouse` (hold) | ProjectileTweaks | Zoom while drawing bow/crossbow | Bow drawn |
 | `E` | ProjectileTweaks | Cancel bow draw | While drawing only (vanilla interact otherwise) |
-
-**Admin-only** (require server admin): `F9` toggles creative/nocost mode (Server devcommands), `Ctrl + Right-click` on the map teleports.
+| `O` | Server devcommands | Toggle debug mode + no-cost building + god mode | Admin only -- all three toggle together (moved off `F9`; F-keys risk collisions with Steam Input controller-layout hotkeys, NVIDIA overlay, and keyboard macro software) |
+| `K` | Server devcommands | Toggle fly mode | Admin only -- separate from the O bundle |
+| `Ctrl + Right-click` | Server devcommands | Teleport to map location | Admin only, map open |
 
 Rebind anything in-game: press `F3` → find the mod → change the key (stored in that mod's config file).
 

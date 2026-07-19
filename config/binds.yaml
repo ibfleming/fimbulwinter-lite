@@ -1,4 +1,8 @@
-- keys: f9
-  command: /creative
-- keys: f9
+- keys: o
+  command: debugmode
+- keys: o
   command: nocost
+- keys: o
+  command: god
+- keys: k
+  command: fly
