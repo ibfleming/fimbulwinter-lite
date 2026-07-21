@@ -5,6 +5,69 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - UNRELEASED
+
+### Added
+- Azumatt-ChangelogEditor 1.0.9 -- hides the main-menu changelog
+  (`Should Show Changelog = Off`)
+- Mexanik-ShieldBash 1.5.5 -- active shield bash attack. `BashKey` moved off
+  its default `F` (collides with vanilla Forsaken Power) to `Mouse2`
+
+### Changed
+- QuickConnect UI tuned: `ButtonFontSize`/`LabelFontSize` 0→16,
+  `WindowWidth` 250→384, `WindowHeight` 50→72, `WindowPosX`/`WindowPosY`
+  20→50 (`CustomConnectionError` and `CustomDelimiter` already matched
+  the desired defaults)
+- server_devcommands: `Automatic devcommands = false` (was `true`) --
+  devcommands mode no longer auto-enables for admins on join; must be
+  explicitly activated
+- MyLittleUI: `Show slots space taken = true`
+- AutomaticFuel, at user request to widen coverage and fix disabled
+  defaults from an earlier, forgotten tuning pass:
+  - `FireplaceRange`, `DropRange`, `SmelterOreRange`, `SmelterFuelRange`:
+    5 → 15 (the latter three restore the mod's own shipped default; all
+    four are now consistent)
+  - `RefuelStandingTorches`, `RefuelBraziers`, `RefuelHotTub`,
+    `RefuelWallTorches`, `RefuelFirePits`, `RefuelHearth`: false → true
+    (restores mod defaults -- every light/heat source now auto-refuels)
+  - `Use Dropped Items for Fuel`: false → true (restores mod default)
+  - `AllowStackSmelters`: false → true -- researched as the "best
+    configuration" ask for Smelters/Kilns: this removes the vanilla
+    smoke/smoke-blocked placement check so smelters/kilns can be built
+    tight together, a standard QoL choice for this category of pack.
+    `Turn Off Windmills/SpinningWheel/Kiln` were already `false` (meaning
+    NOT turned off -- already enabled, no change needed) and
+    `RestrictKilnOutput` stays `false` (unrestricted output is the more
+    permissive state already, consistent with "auto-refuel everything")
+- PlantEasily: `KeyboardModifierKey` (grid-resize modifier) moved from its
+  default `RightControl` to `LeftAlt` -- Right Control is frequently
+  missing or unreliable on laptop keyboards, which is almost certainly why
+  it "didn't work"; Left Alt is universally present and doesn't collide
+  with anything else in the pack
+- AzuCraftyBoxes: `Prevent Pulling Logic` moved from `Alt + O` to
+  `Alt + Slash` -- the bare `O` admin bind (`debugmode`+`nocost`+`god` in
+  binds.yaml) fires regardless of what modifier is also held, so any admin
+  using this ordinary client mod would accidentally toggle god mode/no-cost
+  building/debug mode on themselves. Found via a keybind audit prompted by
+  the same bug already caught and fixed in Fimbulwinter
+- AzuExtendedPlayerInventory: quick slot 5 moved from `Alt + B` to
+  `Alt + 3` -- collided with Extra Snap Points Made Easy's Manual+ snap
+  toggle (`B`), found in the same audit pass
+
+### Tooling
+- `scripts/deploy.sh full` now calls `disable_auto_update()` before staging,
+  which sets the egg's `AUTO_UPDATE_MODS` startup variable to `0` via the
+  Pelican Client API. Fixes the recurring edge case where testing a full
+  deploy on the server got reverted: the post-deploy restart's boot-time
+  `server-autoupdate.sh` would re-sync to the latest *published*
+  Thunderstore pack if `AUTO_UPDATE_MODS=1`, clobbering the unpublished
+  local state just pushed for testing. The existing `local-*`
+  manifest-marker skip (2026-07-18) was meant to prevent this but isn't
+  relied on anymore -- the variable is switched off outright now.
+  **Deploy.sh does not re-enable it automatically** -- flip
+  `AUTO_UPDATE_MODS` back to `1` yourself once testing is done and you're
+  ready to publish.
+
 ## [1.2.0] - 2026-07-19
 
 ### Added

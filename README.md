@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **53 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **55 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
@@ -34,11 +34,12 @@ Fimbulwinter Lite is a curated, lightweight modpack of **53 mods** focused on qu
 - **ComfyAutoRepair** -- Opening a crafting station repairs everything it can repair
 - **AutomaticFuel** -- Smelters, kilns, windmills and spinning wheels feed from nearby chests
 
-### UI & HUD (4 mods)
+### UI & HUD (5 mods)
 - **MyLittleUI** -- Lightweight UI upgrades: timers, stats, chest contents, weather
 - **VNEI** -- In-game item and recipe browser
 - **HUDCompass** -- Compass bar with map pins
 - **AzuHoverStats** -- Detailed hover tooltips
+- **ChangelogEditor** -- Hides the main-menu changelog
 
 ### Building (6 mods)
 - **Gizmo** -- Precise build-piece rotation on all axes
@@ -61,9 +62,10 @@ Fimbulwinter Lite is a curated, lightweight modpack of **53 mods** focused on qu
 - **StumpsAreOneHp** -- Tree stumps fall in a single hit
 - **LongshipUpgrades** -- Removable mast with lantern/tent/Wisp torch, hull HP and Ashlands-ocean protection, bigger storage, cartography table map sharing, and cosmetic ship styling
 
-### Combat & Archery (2 mods)
+### Combat & Archery (3 mods)
 - **ProjectileTweaks** -- Cleaner archery feel: arrows launch from where you aim, bow/crossbow zoom, draw cancel, ammo counter -- projectile physics stay vanilla
 - **Headshots** -- Most organic creatures gain a head weakspot; precise shots with pierce damage are rewarded
+- **ShieldBash** -- Active shield bash attack (Middle Mouse while blocking)
 
 ### Fixes & Performance (5 mods)
 - **AzuMiscPatches** -- Collection of small vanilla fixes and tweaks
@@ -94,6 +96,8 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | Key | Mod | Action | Context |
 |-----|-----|--------|---------|
 | `Alt + Z / X / C` | AzuExtendedPlayerInventory | Use quick slot 1 / 2 / 3 | Anywhere |
+| `Alt + 3` | AzuExtendedPlayerInventory | Use quick slot 5 | Anywhere (moved off default `Alt + B` -- collided with Extra Snap Points' Manual+ toggle) |
+| `Middle Mouse` | ShieldBash | Shield bash | While blocking |
 | `I` | AdventureBackpacks | Open equipped backpack | Anywhere |
 | `L` | AdventureBackpacks | Toggle Wisplight effect | Anywhere |
 | `Alt + H` | VNEI | Open item/recipe browser | Anywhere |
@@ -102,6 +106,7 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | `Ctrl + Z` | Recycle N Reclaim | Undo last recycle | Inventory |
 | `Delete` | Quick Stack Store | Trash hovered item | Inventory |
 | `Shift` (hold) | AzuCraftyBoxes | Craft max / fill all | Crafting menu |
+| `Alt + Slash` | AzuCraftyBoxes | Toggle personal pulling-prevention | Anywhere (moved off default `Alt + O` -- collided with the admin `O` bundle below) |
 | `Shift` (hold) | Gizmo | Rotate build piece on X axis | Build mode (hammer only -- terrain tools stay vanilla) |
 | `Alt` (hold) | Gizmo | Rotate build piece on Z axis | Build mode (hammer only -- terrain tools stay vanilla) |
 | `G` | Gizmo | Reset selected-axis rotation | Build mode (moved off `V` = vanilla voice chat) |
@@ -116,7 +121,7 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | `F8` | PlantEasily | Toggle grid planting | Cultivator |
 | `F10` | PlantEasily | Toggle grid snapping | Cultivator |
 | `F6` | PlantEasily | Toggle auto-replant | Anywhere |
-| `RCtrl + Arrows` | PlantEasily | Resize planting grid | Cultivator |
+| `Alt + Arrows` | PlantEasily | Resize planting grid | Cultivator (moved off default `RCtrl + Arrows` -- Right Control is missing or unreliable on many keyboards, especially laptops) |
 | `Shift` (hold) | PlantEasily | Harvest whole grid | Interact |
 | `Alt + click` | Groups | Ping map for your group | Map |
 | `F3` | ConfigurationManager | Open in-game mod settings | Anywhere |

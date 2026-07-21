@@ -52,6 +52,7 @@ CLIENT_ONLY_MODS=(
     "k942-MassFarming"
     "bdew-QuickConnect"
     "VentureValheim-Venture_Logout_Tweaks"
+    "Azumatt-ChangelogEditor"
 )
 
 log()   { echo -e "[INFO] $*"; }

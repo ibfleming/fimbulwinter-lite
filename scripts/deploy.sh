@@ -111,6 +111,25 @@ delete_remote() {
     api POST "/files/delete" "{\"root\":\"${remote_dir}\",\"files\":${files_json}}" >/dev/null || true
 }
 
+# Set a Pelican egg startup variable via the Client API.
+set_startup_variable() {
+    local key="$1" value="$2"
+    api PUT "/startup/variable" "{\"key\":\"${key}\",\"value\":\"${value}\"}" >/dev/null \
+        || fatal "Could not set startup variable ${key}"
+}
+
+# `full` deploys push uncommitted/unpublished local state to the server for
+# testing. If AUTO_UPDATE_MODS=1, the egg's boot-time server-autoupdate.sh
+# re-syncs to the latest PUBLISHED Thunderstore modpack on the restart below,
+# clobbering the very state we just deployed (a "local-*" manifest marker is
+# supposed to make it skip that, but don't rely on it -- disable the
+# auto-update outright so the restart can never touch this deploy).
+disable_auto_update() {
+    log "Disabling AUTO_UPDATE_MODS so the restart below can't revert this deploy..."
+    set_startup_variable "AUTO_UPDATE_MODS" "0"
+    log "AUTO_UPDATE_MODS is now 0 -- re-enable it yourself once you're done testing and ready to publish."
+}
+
 # ServerCharacters generates a random 'Server key' on the server at startup.
 # The repo copy keeps that field intentionally EMPTY (never commit a real key),
 # but pushing an empty key rotates it on the next boot — invalidating every
@@ -162,6 +181,8 @@ full)
     confirm "Stage mods from local thunderstore.toml and push FULL payload (replaces server plugins + configs)?"
     staging=$(mktemp -d)
     trap 'rm -rf "$staging"' EXIT
+
+    disable_auto_update
 
     log "Staging local-state payload (this downloads all server-side mods from Thunderstore)..."
     bash "${REPO_DIR}/scripts/install-mods.sh" \
