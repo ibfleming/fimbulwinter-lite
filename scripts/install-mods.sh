@@ -304,8 +304,20 @@ for dep in ${to_install[@]+"${to_install[@]}"}; do
     log "[FETCH] ${DEP_FULLNAME} v${DEP_VERSION}"
     download_package "$DEP_NAMESPACE" "$DEP_NAME" "$DEP_VERSION" "${dep_staging}/mod.zip" \
         || fatal "Download failed for ${DEP_FULLNAME} v${DEP_VERSION} — server left untouched"
-    unzip -qo "${dep_staging}/mod.zip" -d "${dep_staging}/contents" \
-        || fatal "Extract failed for ${DEP_FULLNAME} — server left untouched"
+    set +e
+    unzip -qo "${dep_staging}/mod.zip" -d "${dep_staging}/contents"
+    unzip_status=$?
+    set -e
+    # Exit status 1 from unzip means "warnings only" (e.g. a zip built on
+    # Windows with backslash path separators) -- extraction still succeeded.
+    # Only 2+ is a real failure.
+    if [ "$unzip_status" -gt 1 ]; then
+        fatal "Extract failed for ${DEP_FULLNAME} — server left untouched"
+    fi
+    # Some Windows-built zips store DOS read-only attributes on directories,
+    # which unzip maps to a non-writable/non-executable mode -- normalize so
+    # later copy/remove steps (and our own cleanup trap) can traverse it.
+    chmod -R u+rwX "${dep_staging}/contents"
 done
 
 # ── Phase 2: apply (mutations start here) ──────────────────────
