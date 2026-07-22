@@ -66,8 +66,8 @@ case "$installed" in
     local-*) skip "Local dev deploy pinned (${installed}) - skipping auto-update. Publish the pack or run deploy.sh reinstall to resume auto-updates." ;;
 esac
 
-latest=$(curl -sfSL --max-time 20 -H "accept: application/json" \
-    "https://thunderstore.io/api/experimental/package/${MODPACK_NAMESPACE}/${MODPACK_NAME}/" \
+latest=$(curl -sfSL --max-time 20 --retry 2 --retry-delay 2 -H "accept: application/json" \
+    "https://thunderstore.io/api/experimental/package/${MODPACK_NAMESPACE}/${MODPACK_NAME}/" 2>/dev/null \
     | jq -r '.latest.version_number' 2>/dev/null) || latest=""
 [ -n "$latest" ] && [ "$latest" != "null" ] || skip "Could not query Thunderstore for latest modpack version"
 

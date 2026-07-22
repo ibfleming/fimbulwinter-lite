@@ -79,11 +79,11 @@ power() {
     local signal="$1" target="$2"
     log "Power: ${signal}..."
     api POST "/power" "{\"signal\":\"${signal}\"}" >/dev/null || true
-    for _ in $(seq 1 60); do
+    for _ in $(seq 1 150); do
         [ "$(server_state)" = "$target" ] && { log "Server is ${target}."; return 0; }
         sleep 2
     done
-    fatal "Server did not reach state '${target}' within 120s"
+    fatal "Server did not reach state '${target}' within 5m"
 }
 
 # Upload a local file into a remote directory via the panel's signed-URL flow.
