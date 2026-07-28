@@ -37,7 +37,7 @@ export PATH="${BIN_DIR}:${PATH}"
 if ! command -v jq >/dev/null 2>&1; then
     log "jq not found — bootstrapping static binary into ${BIN_DIR}..."
     mkdir -p "${BIN_DIR}"
-    curl -fsSL --max-time 60 -o "${BIN_DIR}/jq" \
+    curl -fsSL --max-time 60 --retry 5 --retry-delay 3 --retry-all-errors -o "${BIN_DIR}/jq" \
         "https://github.com/jqlang/jq/releases/latest/download/jq-linux-amd64" \
         && chmod +x "${BIN_DIR}/jq" || skip "Could not bootstrap jq"
     "${BIN_DIR}/jq" --version >/dev/null 2>&1 || { rm -f "${BIN_DIR}/jq"; skip "Bootstrapped jq does not run"; }
@@ -47,7 +47,7 @@ fi
 if ! command -v unzip >/dev/null 2>&1; then
     log "unzip not found — bootstrapping static busybox into ${BIN_DIR}..."
     mkdir -p "${BIN_DIR}"
-    curl -fsSL --max-time 60 -o "${BIN_DIR}/busybox" \
+    curl -fsSL --max-time 60 --retry 5 --retry-delay 3 --retry-all-errors -o "${BIN_DIR}/busybox" \
         "https://busybox.net/downloads/binaries/1.35.0-x86_64-linux-musl/busybox" \
         && chmod +x "${BIN_DIR}/busybox" || skip "Could not bootstrap busybox (for unzip)"
     [ "$("${BIN_DIR}/busybox" echo ok 2>/dev/null)" = "ok" ] || { rm -f "${BIN_DIR}/busybox"; skip "Bootstrapped busybox does not run"; }
@@ -66,10 +66,16 @@ case "$installed" in
     local-*) skip "Local dev deploy pinned (${installed}) - skipping auto-update. Publish the pack or run deploy.sh reinstall to resume auto-updates." ;;
 esac
 
-latest=$(curl -sfSL --max-time 20 --retry 2 --retry-delay 2 -H "accept: application/json" \
-    "https://thunderstore.io/api/experimental/package/${MODPACK_NAMESPACE}/${MODPACK_NAME}/" 2>/dev/null \
+tsq_err="$(mktemp)"
+latest=$(curl -sfSL --max-time 20 --retry 5 --retry-delay 3 --retry-all-errors -H "accept: application/json" \
+    "https://thunderstore.io/api/experimental/package/${MODPACK_NAMESPACE}/${MODPACK_NAME}/" 2>"$tsq_err" \
     | jq -r '.latest.version_number' 2>/dev/null) || latest=""
-[ -n "$latest" ] && [ "$latest" != "null" ] || skip "Could not query Thunderstore for latest modpack version"
+if [ -z "$latest" ] || [ "$latest" = "null" ]; then
+    log "Thunderstore query failed: $(tail -1 "$tsq_err" 2>/dev/null)"
+    rm -f "$tsq_err"
+    skip "Could not query Thunderstore for latest modpack version"
+fi
+rm -f "$tsq_err"
 
 if [ "$installed" = "$latest" ]; then
     log "Modpack up to date (v${installed})."
@@ -81,7 +87,7 @@ log "Modpack update available: ${installed} -> ${latest}. Re-syncing mods and co
 # Prefer a fresh installer from GitHub (thin-egg philosophy); fall back to
 # the copy cached at install time if GitHub is unreachable.
 installer="${SERVER_DIR}/.fimbulwinter/install-mods.latest.sh"
-if ! curl -sfSL --max-time 20 -o "$installer" "${RAW_BASE}/install-mods.sh"; then
+if ! curl -sfSL --max-time 20 --retry 5 --retry-delay 3 --retry-all-errors -o "$installer" "${RAW_BASE}/install-mods.sh"; then
     if [ -f "$CACHED_INSTALLER" ]; then
         log "GitHub unreachable — using installer cached at install time."
         installer="$CACHED_INSTALLER"
