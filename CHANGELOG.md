@@ -5,6 +5,18 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - Unreleased
+
+### Added
+- Crystal-DigDeeper 1.1.7 -- raises the terrain dig/raise limit from vanilla's
+  8m to 40m of depth and 16m of height. Client-only by the mod's
+  own design -- it has no ConditionalConfigSync/ServerSync integration, so it
+  cannot be enforced by the server. Installed on every client via this pack's
+  shared config, which keeps everyone's value consistent through profile
+  distribution rather than live server sync; a player who hand-edits their
+  local config could desync terrain shape from others, same risk as with any
+  unsynced client-only mod.
+
 ## [1.3.1] - 2026-07-26
 
 ### Changed

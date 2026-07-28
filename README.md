@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **55 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **56 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
@@ -41,13 +41,14 @@ Fimbulwinter Lite is a curated, lightweight modpack of **55 mods** focused on qu
 - **AzuHoverStats** -- Detailed hover tooltips
 - **ChangelogEditor** -- Hides the main-menu changelog
 
-### Building (6 mods)
+### Building (7 mods)
 - **Gizmo** -- Precise build-piece rotation on all axes
 - **Extra Snap Points Made Easy** -- More snap points on every piece
 - **AzuAreaRepair** -- Repair all nearby build pieces with one hammer hit
 - **MissingPieces** -- Vanilla-styled build pieces that should have existed
 - **AdvancedTerrainModifiers** -- Precision terraforming with square/circle modes and undo
 - **NoRainDamage** -- Buildings no longer take weather damage
+- **DigDeeper** -- Dig 40m below the surface and raise terrain 16m, instead of vanilla's 8m (client-only; keep the shared config in sync manually if you ever change it)
 
 ### Farming (3 mods)
 - **PlantEverything** -- Plant every gatherable resource and tree

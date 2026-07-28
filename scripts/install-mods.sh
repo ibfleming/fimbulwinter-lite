@@ -53,6 +53,7 @@ CLIENT_ONLY_MODS=(
     "bdew-QuickConnect"
     "VentureValheim-Venture_Logout_Tweaks"
     "Azumatt-ChangelogEditor"
+    "Crystal-DigDeeper"
 )
 
 log()   { echo -e "[INFO] $*"; }
