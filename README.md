@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **56 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **57 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
@@ -23,11 +23,11 @@ Fimbulwinter Lite is a curated, lightweight modpack of **56 mods** focused on qu
 - **ConditionalConfigSync** -- Server-enforced config ownership and sync policies
 
 ### Inventory & Crafting (10 mods)
-- **AzuExtendedPlayerInventory** -- Dedicated equipment and quick slots
+- **AzuExtendedPlayerInventory** -- Dedicated equipment and quick slots, cosmetic vanity overrides, and saved equipment loadouts
 - **AzuCraftyBoxes** -- Craft using materials from nearby containers
 - **AzuAutoStore** -- Auto-deposit items into nearby containers
 - **AzuContainerSizes** -- Larger chest capacities
-- **AAA Crafting** -- Improved crafting UI with bulk crafting and upgrades
+- **AAA Crafting** -- Batch crafting with quantity input, item favoriting, and an enhanced recipe grid
 - **Recycle N Reclaim** -- Recycle items back into materials
 - **Quick Stack Store Sort Trash Restock** -- One-key chest stacking, sorting, and trash
 - **MultiUserChest** -- Multiple players can use one chest simultaneously
@@ -55,13 +55,14 @@ Fimbulwinter Lite is a curated, lightweight modpack of **56 mods** focused on qu
 - **PlantEasily** -- Grid-aligned planting and mass harvesting
 - **MassFarming** -- Bulk plant and pick with a modifier key
 
-### Travel & World QoL (6 mods)
+### Travel & World QoL (7 mods)
 - **TeleportEverything** -- Portal everything, with a 10% ore transport tax
 - **SpeedyPaths** -- Move faster on paths, roads, and cleared ground
 - **WieldEquipmentWhileSwimming** -- Keep gear in hand while swimming
 - **TargetPortal** -- Step into a portal, pick any other portal on the map
 - **StumpsAreOneHp** -- Tree stumps fall in a single hit
 - **LongshipUpgrades** -- Removable mast with lantern/tent/Wisp torch, hull HP and Ashlands-ocean protection, bigger storage, cartography table map sharing, and cosmetic ship styling
+- **Venture Floating Items** -- Every dropped item floats instead of sinking, including ore and metal bars
 
 ### Combat & Archery (3 mods)
 - **ProjectileTweaks** -- Cleaner archery feel: arrows launch from where you aim, bow/crossbow zoom, draw cancel, ammo counter -- projectile physics stay vanilla
@@ -98,6 +99,11 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 |-----|-----|--------|---------|
 | `Alt + Z / X / C` | AzuExtendedPlayerInventory | Use quick slot 1 / 2 / 3 | Anywhere |
 | `Alt + 3` | AzuExtendedPlayerInventory | Use quick slot 5 | Anywhere (moved off default `Alt + B` -- collided with Extra Snap Points' Manual+ toggle) |
+| `Shift` (hold) + scroll | AAA Crafting | Adjust craft amount by 5 | Hovering the amount input box, crafting menu open |
+| `Ctrl` (hold) + scroll | AAA Crafting | Jump to max craftable amount | Hovering the amount input box, crafting menu open |
+| `Ctrl` (hold) | AAA Crafting | Show minus instead of plus | Hovering a recipe icon, crafting menu open |
+| `Shift + PageUp` | AAA Crafting | Toggle the recipe tracker panel | Crafting menu open |
+| `F` | AAA Crafting | Toggle favorite on hovered item | Crafting menu open only (vanilla Forsaken Power unaffected outside it) |
 | `Middle Mouse` | ShieldBash | Shield bash | While blocking |
 | `I` | AdventureBackpacks | Open equipped backpack | Anywhere |
 | `L` | AdventureBackpacks | Toggle Wisplight effect | Anywhere |

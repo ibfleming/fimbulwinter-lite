@@ -5,6 +5,44 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - Unreleased
+
+### Added
+- VentureValheim-Venture_Floating_Items 0.3.3 -- `FloatEverything = true`, so
+  every dropped item floats instead of sinking, ore and metal bars included
+  (at user request; overrides this mod's own safer default of only floating
+  trophies/meat/hides/treasure/craftable-gear plus `SerpentScale`/
+  `BonemawSerpentTooth`). `SinkingItems = BronzeNails, IronNails` still
+  applies -- per the mod's own source, the sinking-list check runs before
+  the `FloatEverything` check, so those two items are the sole exception
+  and still sink. Uses Jotunn's built-in ConfigSync (all settings are
+  admin-only/server-controlled), so this is genuinely server-enforced
+  without needing a ConditionalConfigSync integration -- install on both
+  server and clients.
+
+### Fixed
+- AAA_Crafting: all four crafting-menu keybinds (`Incremental Modifier`,
+  `Max Craft Modifier`, `Show Minus Button`, `Toggle RecipeUI`) had been set
+  to `None` instead of their real defaults, silently breaking Shift+scroll
+  (increment craft amount by 5) and Ctrl+scroll (jump to max craftable) over
+  the amount input box -- the actual cause of "shift-craft only crafts one."
+  Restored to `LeftShift`, `LeftControl`, `LeftControl`, and
+  `LeftShift + PageUp` respectively; all four only fire while the crafting
+  menu is open, same context-scoped pattern already used elsewhere in this
+  pack.
+
+### Changed
+- AAA_Crafting: `Vanilla-Like` off (was on) and `Grid Size` set to Medium --
+  unlocks the mod's newer enhanced recipe grid instead of the classic vanilla
+  view. `Favorting System` on (was off) with its `F` keybind restored
+  (crafting-menu-only context, doesn't touch Forsaken Power).
+- AzuExtendedPlayerInventory bumped 2.4.1 -> 2.4.2 (stacking fix with
+  backpacks, tombstone patch). `Use Legacy Layout` off (was on) -- the pack
+  had been opted into the pre-2.0 layout the whole time despite shipping the
+  post-2.0 mod version. `Show Vanity Button` and `Show Loadout Button` both
+  on (were off) -- pure cosmetic/equipment-set QoL from the 2.0 overhaul,
+  zero balance impact.
+
 ## [1.4.0] - 2026-07-26
 
 ### Added
