@@ -134,7 +134,7 @@ Player: # This is to exclude backpacks from randomly storing items into them.
     - All
 
 piece_chest:
-  range: 10 # This is the range that the container will store items. This overrides the global range set in the config.
+  range: 20 # This is the range that the container will store items. This overrides the global range set in the config.
   exclude: # Exclude these items from being able to be stored into the container
     #- Food # Exclude all in group
     - PickaxeBronze # Allow prefab names as well, in this case we will use something that isn't a food
@@ -146,7 +146,7 @@ piece_chest:
 # They were also easy ways for me to show you how to use the groups without actually excluding something you might want to always pull by default.
 
 piece_chest_wood:
-  range: 10
+  range: 20
   exclude:
     - Swords # Exclude all in group
     - Tier 2 Items # Exclude all in group
@@ -160,12 +160,12 @@ piece_chest_wood:
     - ArmorBronzeLegs
 
 piece_chest_private:
-  range: 10
+  range: 20
   exclude:
     - All # Exclude everything
 
 piece_chest_blackmetal:
-  range: 10
+  range: 20
   exclude:
     - Swords # Exclude all in group
     - Tier 2 Items # Exclude all in group

@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **57 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **58 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 ## Design Principles
 
@@ -69,12 +69,13 @@ Fimbulwinter Lite is a curated, lightweight modpack of **57 mods** focused on qu
 - **Headshots** -- Most organic creatures gain a head weakspot; precise shots with pierce damage are rewarded
 - **ShieldBash** -- Active shield bash attack (Middle Mouse while blocking)
 
-### Fixes & Performance (5 mods)
+### Fixes & Performance (6 mods)
 - **AzuMiscPatches** -- Collection of small vanilla fixes and tweaks
 - **LocalizationCache** -- Dramatically faster load times
 - **TimeoutLimit** -- Fixes join timeouts on modded servers
 - **NetworkTweaks** -- Improved network throughput
 - **TrueInstantLootDrop** -- Loot drops instantly on kill
+- **NullReferenceFix** -- Cleans up recurring NullReferenceException log-spam bugs (vanilla object cleanup, AzuCraftyBoxes stale containers, EnemyHud mod conflicts)
 
 ### Multiplayer & Server (7 mods)
 - **ServerCharacters** -- Server-side character saves (anti-dupe, anti-cheat)
@@ -104,7 +105,7 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | `Ctrl` (hold) | AAA Crafting | Show minus instead of plus | Hovering a recipe icon, crafting menu open |
 | `Shift + PageUp` | AAA Crafting | Toggle the recipe tracker panel | Crafting menu open |
 | `F` | AAA Crafting | Toggle favorite on hovered item | Crafting menu open only (vanilla Forsaken Power unaffected outside it) |
-| `Middle Mouse` | ShieldBash | Shield bash | While blocking |
+| `Mouse Side Button` | ShieldBash | Shield bash | While blocking (moved off `Mouse2`/Middle Mouse -- no conflicts found on the new `Mouse3`) |
 | `I` | AdventureBackpacks | Open equipped backpack | Anywhere |
 | `L` | AdventureBackpacks | Toggle Wisplight effect | Anywhere |
 | `Alt + H` | VNEI | Open item/recipe browser | Anywhere |

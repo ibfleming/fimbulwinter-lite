@@ -5,7 +5,54 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.1] - Unreleased
+## [1.4.2] - Unreleased
+
+### Added
+- korCaptain-NullReferenceFix 1.0.6 -- three independent Harmony patches that
+  clean up recurring `NullReferenceException` log-spam/crash bugs instead of
+  just catching and ignoring them: a vanilla `ZNetScene.RemoveObjects` engine
+  bug, a stale-container bug in AzuCraftyBoxes (already installed in this
+  pack -- confirmed via decompiled strings that the patch specifically
+  checks for AzuCraftyBoxes's plugin GUID and only activates if present), and
+  an `EnemyHud` mod-conflict bug (relevant if a player runs faction/HUD mods
+  like EpicMMOSystem alongside this pack). No config, no keybinds -- verified
+  by decompiling the DLL, zero `ConfigEntry`/`Bind` calls found. Install on
+  server and all clients per the mod's own guidance (local per-instance
+  state, not network-synced).
+  Investigated VitByr-VBNetTweaks as a possible companion/replacement for
+  NetworkTweaks per user request -- **not added**. Its own README lists
+  `Searica.Valheim.NetworkTweaks` (our installed NetworkTweaks's exact
+  plugin GUID) as a hard incompatibility, both patch the same vanilla ZDO
+  send path. Also carries Thunderstore's "AI Generated" content tag and has
+  1.5K downloads against NetworkTweaks's 26K/stable-since-2025 track record
+  -- not a trade worth making for network-critical code.
+
+### Changed
+- AzuCraftyBoxes bumped 1.8.14 -> 1.8.15 (fixes an issue when destroying a
+  fireplace; no config schema change). `Container Range` 20 -> 30 to
+  compensate for the AutomaticFuel change below.
+- AzuAutoStore: `Fallback Range` 15 -> 20. Also bumped the real functional
+  range -- confirmed via source/yaml review that the shipped
+  `Azumatt.AzuAutoStore.yml` pins every vanilla chest tier
+  (`piece_chest`, `piece_chest_wood`, `piece_chest_private`,
+  `piece_chest_blackmetal`) to an explicit per-container `range: 10` that
+  overrides the config's fallback value entirely, so the config-only change
+  would have been silently inert. All four bumped to `range: 20`.
+- AutomaticFuel: disabled auto-refuel for everything in the `[Fireplace]`
+  section -- `RefuelStandingTorches`, `RefuelWallTorches`, `RefuelFirePits`,
+  `RefuelBraziers`, `RefuelHearth`, `RefuelHotTub` all off (were on). At
+  user request: base-interior torches/hearth/hot tub were silently draining
+  wood and resin from nearby chests. Confirmed via source that each toggle
+  gates its structure type independently and fully short-circuits before
+  any fuel-pulling logic runs, so this has zero effect on the separate
+  `[Smelters]` section -- auto-smelting ore/coal and kiln/blast furnace
+  behavior is untouched, exactly as wanted. The wider AzuCraftyBoxes/
+  AzuAutoStore ranges above compensate for the loss of auto-refuel.
+- ShieldBash `BashKey` Mouse2 -> Mouse3 (a side mouse button, not the
+  scroll-wheel click) at user request. No conflicts: grepped every shipped
+  config for `Mouse3` and found zero existing binds anywhere in the pack.
+
+## [1.4.1] - 2026-08-02
 
 ### Added
 - VentureValheim-Venture_Floating_Items 0.3.3 -- `FloatEverything = true`, so
