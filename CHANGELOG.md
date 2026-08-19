@@ -5,6 +5,34 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.3] - 2026-08-19
+
+### Changed
+- korCaptain-NullReferenceFix 1.0.6 -> 1.0.17 -- picks up several more
+  Harmony cleanup patches added since 1.0.6: a `ZSFX` engine gap where
+  sound-effect instances without a `ZNetView` were never destroyed after
+  finishing, which leaked a permanent per-frame cost in `MonoUpdaters.Update()`
+  and could eventually freeze the game (most visible with sound-heavy
+  skill/weapon mods); a fix for a recurring TextMeshPro "LiberationSans SDF
+  Font Asset was not found" warning from unfonted TMP text objects; and a
+  set of non-Latin-script TMP font fallback registrations (Arabic, Korean,
+  Japanese, etc.) that don't affect this pack's English-only content. No
+  config, no keybinds -- same config-less DLL as before.
+- Azumatt-AzuExtendedPlayerInventory 2.4.2 -> 2.4.4 -- stats-panel display
+  accuracy pass (Skill Raise Speed, Speed Modifier, Jump Height, Run
+  Stamina, resistances, and other HUD numbers were computed or labeled
+  incorrectly; actual gameplay values were never affected, only what was
+  shown) plus an equip-animation flicker fix and an AdventureBackpacks
+  stacking fix. No config or balance change.
+- Azumatt-Recycle_N_Reclaim 1.4.0 -> 1.4.1 -- fixes armor recycling
+  silently returning only 75% of materials when a bad `Armor: 0.75`
+  override shipped active in 1.4.0's default template, and fixes an
+  omitted `groups:` YAML section breaking the reclaim list instead of
+  defaulting to empty. **Verified our shipped**
+  **`Azumatt.Recycle_N_Reclaim_ExcludeLists.yml` has neither issue** (no
+  `recycleRates:` section, `groups:` present and populated) -- update
+  applies cleanly with no manual config fix needed.
+
 ## [1.4.2] - 2026-08-03
 
 ### Added
