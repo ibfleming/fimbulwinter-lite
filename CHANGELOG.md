@@ -5,6 +5,34 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.4] - 2026-09-08
+
+### Changed
+- Azumatt-AzuExtendedPlayerInventory bumped 2.4.4 -> 2.4.8:
+  - 2.4.5: EpicLoot API update (not used by this pack) and a fix for a
+    localization-init race that could throw a NullReferenceException blamed
+    on other mods.
+  - 2.4.6: adds AzuEPI's own item/slot favoriting system (new
+    `[10 - Favoriting]` config section -- modifier key, border colors,
+    tooltip text). **Confirmed inert in this pack**: read the mod's source
+    (`FavoritingMode.IsExternalFavoritingModLoaded()`) and it auto-disables
+    itself whenever AzuAutoStore or Quick Stack Store is installed, both of
+    which we already run -- favoriting stays owned by AzuAutoStore exactly
+    as before, this section's `LeftAlt` modifier key never actually
+    activates, so it needed no keybind-conflict audit despite reusing Alt.
+  - 2.4.7: player-preview idle animation polish, cosmetic only.
+  - 2.4.8: adds `One Utility Item At A Time` (new key in
+    `[4 - Special Equipment Slots]`, default Off) -- restores vanilla
+    one-utility-item exclusivity if enabled. Left at the shipped default
+    (Off) to keep this pack's whole point of dedicated utility slots intact.
+  - No balance-affecting change; stats-panel numbers only, confirmed by
+    upstream changelog.
+- JereKuusela-Server_devcommands bumped 1.108.0 -> 1.109.0 -- console
+  history/force-enable fixes, an admin permission-check timing fix, and
+  dropping the Steamworks dependency (helps non-Steam hosts). No new config
+  keys; `server_devcommands.cfg`/`binds.yaml`/`permissions.yaml` schema
+  unchanged, verified against the changelog.
+
 ## [1.4.3] - 2026-08-19
 
 ### Changed
