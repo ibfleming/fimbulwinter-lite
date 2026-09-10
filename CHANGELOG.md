@@ -48,6 +48,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   bisection trail and rationale). Release candidate only; hold the actual publish
   until ServerCharacters/Headshots are back in.
 
+### Changed (2026-09-11 — dependency bumps, still 2.0.0-rc)
+- **shudnal-ConfigurationManager 1.1.16 → 1.1.17** and **shudnal-ConditionalConfigSync
+  1.0.4 → 1.0.5** — both explicit Valheim 1.0.7 compat patches; ConfigurationManager's
+  own changelog says it now requires ConditionalConfigSync 1.0.5+, so bumped together.
+  CCS 1.0.5 is caching/diagnostics work on its connection-error-reporting path (the
+  same `FejdStartup`-adjacent code area this pack's whole 1.0 investigation lived in,
+  see the Removed section above) — purely additive (snapshot caching, verbose/trace
+  diagnostics), no schema break, but given the history here this pairing deserves an
+  actual client-boot test before it's trusted blindly, not just a version-number bump.
+- **shudnal-LongshipUpgrades 1.0.17 → 1.0.18** — also explicitly "updated for the
+  Valheim 1.0.7 release" and also now requires ConditionalConfigSync 1.0.5+ (same
+  pairing as above); rest of the entry is ship map-data/trophy-attachment fixes, no
+  config changes. Note for later: 1.0.17 already turned on `ModRequired = true` for
+  this mod (client and server must both have it, matching ServerCharacters' own
+  behavior) — unchanged by this bump, already true in what we're running today.
+- **MSchmoecker-VNEI 0.17.5 → 0.17.6** — "Updated for Valheim 1.0", no config change.
+- **shudnal-MyLittleUI 1.2.15 → 1.2.16** — "adaptation to game release version 1.0.7",
+  no config change.
+- **JoelOliMclean-NoRainDamage 1.2.4 → 1.3.0** — Thunderstore lists 1.0-release
+  support; no changelog text published beyond that (single-file micro-mod).
+- **JereKuusela-Server_devcommands 1.109.0 → 1.110.0** and **JereKuusela-Upgrade_World
+  1.80.0 → 1.81.0** — both "fixes for the new game update", no new
+  commands/config/permissions in either.
+- **VentureValheim-Venture_Floating_Items 0.3.3 → 1.0.0** — major-version bump, but
+  the changelog is just "Release for game version 1.0.7"; no config/behavior change
+  from 0.3.3, the 1.0.0 label itself just marks 1.0-compat, not a breaking rewrite.
+- **TastyChickenLegs-AutomaticFuel 1.4.8 → 1.5.1** and **korCaptain-NullReferenceFix
+  1.0.17 → 1.0.20** — no changelog text published for the intervening versions;
+  NullReferenceFix's last documented entry (1.0.18) was itself a Deep North
+  compat-verification pass ("every reflection target this mod relies on remained
+  unchanged"). Taken on trust from the version bump alone; watch these two specifically
+  if anything regresses.
+- `make updates` now reports all 56 mods up to date.
+
 ## [1.4.4] - 2026-09-09
 
 ### Changed
