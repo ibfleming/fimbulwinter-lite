@@ -80,7 +80,12 @@ get_latest_version() {
     local name="${full_name#*-}"
 
     local response
-    response=$(curl -sfS --max-time 10 "${THUNDERSTORE_API}/${namespace}/${name}/" 2>/dev/null) || return 1
+    local attempt
+    for attempt in 1 2 3; do
+        response=$(curl -sfS --max-time 15 "${THUNDERSTORE_API}/${namespace}/${name}/" 2>/dev/null) && break
+        sleep 1.5
+    done
+    [[ -z "${response:-}" ]] && return 1
 
     echo "$response" | jq -r '.latest.version_number // empty' 2>/dev/null
 }
@@ -139,6 +144,8 @@ main() {
             echo -e "${YELLOW}AHEAD $pinned_version (latest: $latest_version)${NC}"
             up_to_date=$((up_to_date + 1))
         fi
+
+        sleep 0.2
 
     done < <(parse_dependencies "$TOML_FILE")
 

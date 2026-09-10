@@ -5,9 +5,82 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.4] - 2026-09-08
+## [2.0.0] - UNRELEASED — release candidate, local testing only, DO NOT PUBLISH
+
+> **This version is a release candidate (internally "2.0.0-rc").** It exists for
+> local testing/playing on our own server only. Do not tag, push to `main`, or
+> publish to Thunderstore. The official 2.0.0 release is planned once
+> Smoothbrain-ServerCharacters and Revel-Headshots ship Valheim-1.0-compatible
+> updates and can be re-added — see "Removed" below and docs/TASKS.md.
+
+### Removed
+- **Smoothbrain-ServerCharacters and Revel-Headshots temporarily removed** — both
+  independently break the client main menu under Valheim 1.0.0 "Deep North" (extensive
+  live bisection across the full 58-mod pack traced the freeze to
+  `SteamworksMatchmaking.Tick`/`MultiBackendMatchmaking.Update` calling a
+  `Character.Message` overload that no longer exists post-1.0; these two mods'
+  presence — for reasons not yet root-caused in their own code, since many other
+  individually-flagged mods turned out innocent once retested in different
+  combinations — reliably triggers it). Confirmed via direct dedicated-server test
+  (deploy.sh full, all 58 mods incl. both) that the **server itself boots perfectly
+  clean with both enabled** — this is purely a client main-menu issue. But
+  ServerCharacters hardcodes `ModRequired = true` in its own source (verified against
+  github.com/blaxxun-boop/ServerCharacters) — client and server mod lists must match
+  exactly or connections are rejected outright, config-adjustable or not. Headshots
+  uses the same ServerSync sync library and is being treated the same way out of
+  caution. Net effect: no client can currently load this pack's main menu at all with
+  either mod enabled, so both come out of client and server alike until their authors
+  ship 1.0-compatible updates.
+- **Server-side character-save migration required** — ServerCharacters stored each
+  player's character as a plain vanilla `.fch` file server-side
+  (`/saves/characters_local/` on the dedicated server, standard Steam64-ID-keyed
+  filenames, zero proprietary format). Nothing was lost: all 6 players' current
+  `.fch` files were downloaded and backed up locally
+  (`.server-key-backups/characters-<timestamp>/`, gitignored) before the mod was
+  disabled server-side. Each player needs their own `.fch` file copied into their
+  local `%userprofile%\AppData\LocalLow\IronGate\Valheim\characters_local\` (Windows)
+  to resume their exact character with no progress loss — characters become normal
+  local saves until ServerCharacters is re-enabled. Also backed up the live
+  `org.bepinex.plugins.servercharacters.cfg` (with its real server key) independently
+  of deploy.sh's own key-preservation step, same gitignored directory.
+- Bumped to 2.0.0-rc (removing mods, not just a dependency/config change, plus this
+  is the first version built against Valheim 1.0.0 — see docs/TASKS.md for the full
+  bisection trail and rationale). Release candidate only; hold the actual publish
+  until ServerCharacters/Headshots are back in.
+
+## [1.4.4] - 2026-09-09
 
 ### Changed
+- Valheim 1.0.0 ("Deep North") released 2026-09-09. Bumped the three mods with
+  a same-day compatibility-relevant update; the rest of the pack's 58 mods had
+  no new version available as of this check and are unverified against 1.0,
+  not confirmed-working (Thunderstore's API has no compatibility field) --
+  see docs/TASKS.md.
+  - ValheimModding-Jotunn bumped 2.29.2 -> 2.30.0 -- upstream changelog:
+    "Updated the majority of systems for Valheim 1.0.7", plus a PreBuild
+    task case-sensitivity fix. Known limitation stated by upstream: piece
+    categories aren't updated yet (Valheim overhauled that system
+    completely) -- custom pieces from Jotunn-dependent mods in this pack
+    (VNEI, MissingPieces, AdventureBackpacks) will still appear in the
+    build menu but without a category until a follow-up Jotunn release.
+    Cosmetic only; watch for it in the next playtest, don't mistake it for
+    a broken install.
+  - denikson-BepInExPack_Valheim bumped 5.4.2333 -> 5.4.2350 -- checked
+    upstream changelog: this is NOT a Valheim-1.0 compatibility patch, it's
+    routine BepInEx-engine maintenance (Unity 6 log-listener consolidation,
+    a plugin-metadata parser fix for semver pre-release tags like
+    `1.1.0-beta.2` that previously got rejected at startup, a chainloader
+    crash fix on builds with stripped log callbacks, a macOS console-driver
+    crash guard). No config, no gameplay change. Safe/inert either way, but
+    don't read this bump as evidence the pack is 1.0-ready -- that's on
+    Jotunn and each individual mod.
+  - Crystal-DigDeeper bumped 1.1.7 -> 1.2.0 -- Thunderstore-tagged
+    "Deep North Update" by the author (one of only a handful of mods in
+    this pack carrying that tag so far); no changelog text published.
+    Client-only, no ConditionalConfigSync/ServerSync integration (see
+    docs/PROJECT.md), so this can't be verified server-side -- confirm
+    `dev.crystal.digdeeper.cfg` (MaximumDepth=40, MaximumHeight=16) survives
+    the next game-run regen unchanged, per this mod's existing practice.
 - Azumatt-AzuExtendedPlayerInventory bumped 2.4.4 -> 2.4.8:
   - 2.4.5: EpicLoot API update (not used by this pack) and a fix for a
     localization-init race that could throw a NullReferenceException blamed

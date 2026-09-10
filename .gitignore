@@ -34,3 +34,6 @@ manifest.json
 
 # Deploy credentials (deploy.sh)
 .env
+
+# Local backups of the live ServerCharacters key (contains a real secret)
+.server-key-backups/
