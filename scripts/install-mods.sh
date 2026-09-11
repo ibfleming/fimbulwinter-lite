@@ -213,7 +213,7 @@ else
     log "Resolving dependencies from ${REPO_DIR}/thunderstore.toml (local working state)..."
     dependencies=$(sed -n '/^\[package.dependencies\]/,/^\[/p' "${REPO_DIR}/thunderstore.toml" \
         | grep -E '^[A-Za-z0-9_]+-[A-Za-z0-9_]+ = "' \
-        | sed -E 's/^([A-Za-z0-9_]+-[A-Za-z0-9_]+) = "([^"]+)"/\1-\2/')
+        | sed -E 's/^([A-Za-z0-9_]+-[A-Za-z0-9_]+) = "([^"]+)".*$/\1-\2/')
     config_source="${REPO_DIR}/config"
 fi
 

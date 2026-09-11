@@ -47,6 +47,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TeleportEverything dropped entirely in favour of the vanilla
   `-modifier portals casual` world modifier - same capability, zero mods.
 
+### Evaluated and rejected
+- **Swmarly-SwmarlyValheimQOL 1.0.5 -- not added.** Deployed alongside
+  ServersideQoL and boot-tested live: the two load together cleanly (14 plugins,
+  0 NullReference, 0 MissingMethod, no Harmony conflict warnings, server reached
+  "Opened Steam server"), so there is no *load-time* incompatibility. It was
+  rejected on two other grounds.
+  First, it duplicates four behaviours this pack already has -- floating items
+  (`ServersideQoL_LetItFloat`), sleep-skip voting (`_JustSleep`), no-rain-damage
+  (JoelOliMclean-NoRainDamage, both patching `WearNTear`) and eternal fires
+  (`_AutoProcess`, both touching `Fireplace`). Duplicate implementations of one
+  behaviour do not error, they double-apply, and that only surfaces in gameplay
+  where a boot test cannot see it.
+  Second, it carries Thunderstore's "AI Generated" tag with 1,692 downloads and
+  a two-day-old release, against ServersideQoL's 38,783 and a months-long
+  history, and registers 47 Harmony patch classes. This is the same test the
+  v1.4.2 entry applied when rejecting VitByr-VBNetTweaks.
+  Worth revisiting if it matures: it is the only 1.0-ready package found that
+  covers MultiUserChest, ComfyAutoRepair, WieldEquipmentWhileSwimming and
+  SpeedyPaths, none of which have a 1.0 build.
+
 ### Not tested
 - Selection came from Thunderstore metadata (publish dates, dependency graphs,
   deprecation flags), not from running the game. During the 1.0 investigation

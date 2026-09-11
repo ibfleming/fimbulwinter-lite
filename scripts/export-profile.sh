@@ -23,7 +23,7 @@ import os, re, sys, zipfile
 repo, out = sys.argv[1], sys.argv[2]
 toml = open(os.path.join(repo, "thunderstore.toml")).read()
 version = re.search(r'versionNumber = "([^"]+)"', toml).group(1)
-deps = re.findall(r'^([A-Za-z0-9_]+-[A-Za-z0-9_]+) = "([^"]+)"$',
+deps = re.findall(r'^([A-Za-z0-9_]+-[A-Za-z0-9_]+) = "([^"]+)"\s*(?:#.*)?$',
                   toml.split("[package.dependencies]", 1)[1].split("\n[", 1)[0], re.M)
 # Server-side-only packages: installed on the dedicated server, NEVER shipped
 # to clients. Players run near-vanilla; these do their work server-side.
