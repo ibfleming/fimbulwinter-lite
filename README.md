@@ -46,6 +46,40 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 ServersideQoL is server-authoritative and works with **unmodded and console clients**, so none of the
 above costs a player anything to install.
 
+## Keyboard Shortcuts
+
+Audited 2026-09-11 against the mods' freshly generated configs. MyLittleUI, CraftFromChests,
+NoRainDamage and NullReferenceFix declare **no** keybinds at all, so the entire bind surface is below.
+
+| Key | Mod | Action | Context |
+|-----|-----|--------|---------|
+| `Alt + Z / X / C / V` | ExtraSlots | Quick slots 1-4 | Anywhere |
+| `Alt + U` | ExtraSlots | Quick slot 5 | Anywhere (moved off `Alt + Q`, see below) |
+| `Alt + Y` | ExtraSlots | Quick slot 6 | Anywhere (moved off `Alt + R`, see below) |
+| `Alt + 1 / 2 / 3` | ExtraSlots | Ammo slots 1-3 | Anywhere |
+| `Alt + Q / E / R` | ExtraSlots | Food slots 1-3 | Anywhere |
+| `Alt` (hold) | ExtraSlots | Drag item between equipment slots | Inventory open |
+| `F6` | ExtraSlots | Connect-panel rebind | Anywhere (moved off `F2`, see below) |
+| `J` | HUDCompass | Toggle the compass bar | Anywhere (moved off `Alt + C`, see below) |
+| `Delete` | RecyclePlus | Discard / recycle hovered item | Inventory |
+
+**Resolved conflicts (2026-09-11 audit):**
+
+- **ExtraSlots shipped two duplicate binds against itself.** `Quickslot 5` and `Food 1` were both
+  `Alt + Q`; `Quickslot 6` and `Food 3` were both `Alt + R`. The quickslots were moved to `Alt + U` /
+  `Alt + Y` rather than the food slots, because `Alt + Q/E/R` keeps the food row a coherent set and
+  `Alt + Z/X/C` preserves the muscle memory from the old pack's AzuExtendedPlayerInventory binds.
+- **HUDCompass `Alt + C` collided with ExtraSlots `Quickslot 3`.** The compass moved to bare `J` --
+  a documented free key -- since quickslot Z/X/C matches the old pack.
+- **ExtraSlots `Rebind Connect Panel` was on `F2`**, which Valheim 1.0 uses to display the active
+  world modifiers. Moved to `F6` (free now that AutomaticFuel is gone).
+- All remaining ExtraSlots binds are `Alt`-modified, so none shadow a bare vanilla key. `Delete` and
+  `J` are unclaimed in vanilla. Free keys remaining for future mods: `U`(bare), `Y`(bare), `F4`, `F7`,
+  `F8`, `F10`, `F11`.
+
+Also tuned: CraftFromChests `SearchRadius` 40 -> 30, matching the old pack's AzuCraftyBoxes container
+range rather than the mod's more generous default.
+
 ## Old pack -> new pack
 
 | Dropped (no 1.0 build) | Replaced by |
