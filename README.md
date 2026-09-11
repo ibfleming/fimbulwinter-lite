@@ -1,115 +1,110 @@
-# Fimbulwinter Vanilla - Valheim 1.0.0 + BepInEx (no mods)
+# Fimbulwinter Minimal - server-side-first QoL for Valheim 1.0
 
-**Branch: `vanilla`. Temporary, local-only bootstrap. Never pushed to `main`, never tagged, never published to Thunderstore.**
+**Branch: `lite-minimal`. Temporary, local-only. Never pushed to `main`, never tagged, never published.**
 
-Valheim 1.0.0 "Deep North" (2026-09-09) broke a large share of the modding ecosystem. Rather than
-wait for every mod to catch up, this branch strips the pack down to the one thing that has already
-shipped a 1.0-compatible build: **BepInEx itself**. The loader is installed and ready, the plugin
-folder is empty, and mods get layered back on one at a time as their authors ship 1.0 updates.
+A ground-up rebuild of the pack for Valheim 1.0 "Deep North", built on two rules:
 
-| | |
+1. **Zero Azumatt mods.** None of the nine in the old pack have shipped a 1.0 build.
+2. **If the server can do it, the server does it.** Players install as little as possible.
+
+**17 packages, down from 58.** Every package verified against the Thunderstore API as published
+on/after 2026-09-09 (Valheim 1.0.0) - except the two pure serialization libraries, which contain no
+game code. **No Jotunn anywhere in the dependency graph.**
+
+## The split
+
+Only 10 packages reach players. The other 7 live on the dedicated server and are excluded from the
+client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`).
+
+### Client (10) - `make profile`
+
+| Package | Version | Role |
+|---|---|---|
+| denikson-BepInExPack_Valheim | 5.4.2350 | loader |
+| ValheimModding-YamlDotNet | 16.3.1 | library |
+| shudnal-ConditionalConfigSync | 1.0.5 | server-enforced config |
+| **shudnal-MyLittleUI** | 1.2.18 | tooltips, production timers, chest preview, multicraft, weather |
+| **shudnal-ExtraSlots** | 1.2.3 | equipment + quick slots |
+| **Toxo-CraftFromChests** | 0.4.0 | craft/build/fuel from nearby chests |
+| **TastyChickenLegs-RecyclePlus** | 1.3.2 | recycle + trash |
+| **Neobotics-HUDCompass** | 1.2.0 | compass bar |
+| **JoelOliMclean-NoRainDamage** | 1.3.0 | no weather decay on builds |
+| **korCaptain-NullReferenceFix** | 1.0.20 | stability |
+
+### Server only (7) - players install none of these
+
+| Module | Version | Replaces |
+|---|---|---|
+| ArgusMagnus-ServersideQoL | 2.0.6 | (suite core) |
+| `_AutoStore` | 2.0.0 | AzuAutoStore |
+| `_ContainerSizes` | 2.0.1 | AzuContainerSizes |
+| `_AutoProcess` | 2.0.0 | AutomaticFuel |
+| `_LetItFloat` | 2.0.4 | Venture Floating Items |
+| `_JustSleep` | 2.0.0 | SleepSkip |
+| `_MultiplayerTweaks` | 2.0.0 | NetworkTweaks + TimeoutLimit |
+
+ServersideQoL is server-authoritative and works with **unmodded and console clients**, so none of the
+above costs a player anything to install.
+
+## Old pack -> new pack
+
+| Dropped (no 1.0 build) | Replaced by |
 |---|---|
-| Mods | 0 |
-| Loader | BepInExPack_Valheim 5.4.2350 |
-| Target game version | Valheim 1.0.0 or newer (the 1.0 "Deep North" line) |
-| Client profile | `Fimbulwinter-Vanilla-v1.0.0` (via `make profile`) |
-| Server egg | `server/valheim-fimbulwinter-lite-egg.yaml` |
+| AzuAutoStore | `ServersideQoL_AutoStore` (server) |
+| AzuContainerSizes | `ServersideQoL_ContainerSizes` (server) |
+| AzuCraftyBoxes | Toxo-CraftFromChests |
+| AzuExtendedPlayerInventory | shudnal-ExtraSlots |
+| AzuHoverStats | MyLittleUI (tooltips) |
+| AAA_Crafting | MyLittleUI (multicraft) |
+| Recycle_N_Reclaim | TastyChickenLegs-RecyclePlus |
+| Quick Stack Store Sort Trash | RecyclePlus (trash) + `_AutoStore` (stacking) |
+| AzuAreaRepair, AzuMiscPatches | nothing - dropped |
+| MultiUserChest | nothing - only an unofficial rebuild exists |
+| SleepSkip | `ServersideQoL_JustSleep` (server) |
+| AutomaticFuel | `ServersideQoL_AutoProcess` (server) |
+| Venture Floating Items | `ServersideQoL_LetItFloat` (server) |
+| NetworkTweaks, TimeoutLimit | `ServersideQoL_MultiplayerTweaks` (server) |
+| TeleportEverything | vanilla `-modifier portals casual` - no mod needed |
 
-## Client setup
+## What you lose, honestly
+
+Building goes back to vanilla: **Gizmo, ExtraSnapPointsMadeEasy, AzuAreaRepair, AdvancedTerrainModifiers,
+MissingPieces** are all gone (only MissingPieces has a 1.0 build, and it writes custom prefabs into the
+world, so removing it later leaves holes in builds).
+
+Also dropped: ProjectileTweaks, ShieldBash, SmartSkills, Seasons, TargetPortal, SpeedyPaths,
+StumpsAreOneHp, LocalizationCache, AdventureBackpacks, Groups, VNEI, ConfigurationManager,
+PlantEverything/PlantEasily/MassFarming.
+
+## Verified 1.0-ready, available as one-line adds
+
+Left out to keep the count down, but all confirmed updated:
+
+```
+Advize-PlantEverything      = "1.21.1"   # plant every resource
+Advize-PlantEasily          = "2.2.0"    # grid planting
+Crystal-DigDeeper           = "1.3.0"    # deeper digging
+shudnal-ConfigurationManager = "1.1.18"  # in-game config editor (+ JsonDotNET)
+MSchmoecker-VNEI            = "0.17.6"   # item browser (pulls in Jotunn)
+ArgusMagnus-ServersideQoL_ContainerSigns = "2.0.4"   # chest labels
+ArgusMagnus-ServersideQoL_PortalProgression = "2.0.0" # ores by boss progress
+```
+
+`_PortalProgression` is worth a look: progressively more ores through portals as bosses fall. Closer to
+this pack's original "no teleport-cheese" rule than the blunt `portals casual` modifier - but pick one,
+since `portals casual` sets the `teleportall` global key and makes the mod moot.
+
+## Deploying
 
 ```bash
-make profile          # -> dist/Fimbulwinter_Vanilla-v1.0.0-profile.r2z
+make profile                 # client -> dist/Fimbulwinter_Minimal-v3.0.0-profile.r2z
+bash scripts/deploy.sh full  # server (.env SERVER_ID must point at the right instance)
 ```
 
-Import it in r2modman: **Profiles -> Import / Update -> From file**. It installs BepInEx and the one
-shipped config file, and lands as a profile named `Fimbulwinter-Vanilla-v1.0.0` so it never collides
-with the modded profiles.
+## NOT YET TESTED
 
-**No BepInEx console window.** `config/BepInEx.cfg` ships with `[Logging.Console] Enabled = false`,
-`PreventClose = false` and `ForceBepInExTTYDriver = false`. Under Valheim 1.0's Unity 6 engine the
-forced TTY console renders as a non-closable overlay that steals all mouse and keyboard input, so all
-three stay off here. Disk logging (`BepInEx/LogOutput.log`) is untouched and remains how to debug.
-
-## Server setup
-
-Import `server/valheim-fimbulwinter-lite-egg.yaml` into the Pelican panel as a **new egg** (it carries
-its own UUID, so it sits alongside the modded Fimbulwinter Lite egg rather than replacing it), then
-create or reinstall a server on it.
-
-The egg is **fully self-contained** - unlike the modded egg it fetches no scripts from GitHub, because
-this branch is local-only and a remote bootstrap would 404. It installs Valheim via SteamCMD, drops in
-BepInEx, and purges `BepInEx/plugins` + `BepInEx/patchers` so the result is guaranteed mod-free even
-when reinstalling over a previously modded server.
-
-### World modifiers
-
-Every Valheim world modifier is its own panel field. Leave a field **empty** to get the vanilla
-default for that dial.
-
-| Panel field | Variable | Accepted values |
-|---|---|---|
-| World Preset | `PRESET` | `normal` `casual` `easy` `hard` `hardcore` `immersive` `hammer` |
-| Modifier: Combat | `MODIFIER_COMBAT` | `veryeasy` `easy` `normal` `hard` `veryhard` |
-| Modifier: Death Penalty | `MODIFIER_DEATHPENALTY` | `casual` `veryeasy` `easy` `normal` `hard` `hardcore` |
-| Modifier: Resources | `MODIFIER_RESOURCES` | `muchless` `less` `normal` `more` `muchmore` `most` |
-| Modifier: Raids | `MODIFIER_RAIDS` | `none` `muchless` `less` `normal` `more` `muchmore` |
-| Modifier: Portals | `MODIFIER_PORTALS` | `casual` `normal` `hard` (no boss portals) `veryhard` (no portals) |
-| Key: No Build Cost | `KEY_NOBUILDCOST` | 0 / 1 |
-| Key: Player Events | `KEY_PLAYEREVENTS` | 0 / 1 |
-| Key: Passive Mobs | `KEY_PASSIVEMOBS` | 0 / 1 |
-| Key: No Map | `KEY_NOMAP` | 0 / 1 |
-| Extra Setkeys | `EXTRA_SETKEYS` | space-separated, for keys Iron Gate adds later |
-
-**Argument order is handled for you.** A `-preset` placed *after* `-modifier` flags silently
-overwrites them, so the startup command always emits `-preset` first, then the five modifiers, then
-the setkeys, then `-instanceid`/`-crossplay`, and finally `EXTRA_ARGS` (which can therefore override
-anything). The assembled line is echoed to the panel console on every boot as `[STARTUP] World args:`.
-
-### Other server variables
-
-| Variable | Default | Notes |
-|---|---|---|
-| `BEPINEX_ENABLED` | 1 | Set 0 to run 100% pure vanilla without reinstalling - doorstop simply is not injected |
-| `BEPINEX_VERSION` | `latest` | Resolved from Thunderstore at install time, or pin e.g. `5.4.2350` |
-| `PURGE_PLUGINS` | 1 | Wipe plugins/patchers on install so a reinstall over a modded server is truly clean |
-| `ADMIN_STEAMIDS` | empty | Space-separated Steam64 IDs written to `adminlist.txt` each boot (overwrites it) |
-| `SAVE_DIR` | `/home/container/saves` | Matches the existing server, so the current world is found as-is |
-| `INSTANCE_ID` | empty | `-instanceid`, for telling multiple servers on one host apart |
-| `EXTRA_ARGS` | empty | Raw passthrough, appended last |
-| `SAVE_INTERVAL` / `BACKUP_COUNT` / `BACKUP_SHORTTIME` / `BACKUP_LONGTIME` | 1800 / 4 / 7200 / 43200 | `-saveinterval` / `-backups` / `-backupshort` / `-backuplong` |
-
-### Changing modifiers on a live world
-
-Set `ADMIN_STEAMIDS` so you get the F5 console with `devcommands` enabled:
-
-```
-setworldmodifier <name> <value>     e.g. setworldmodifier portals casual
-setkey <key> / removekey <key>      e.g. setkey nomap
-```
-
-Press **F2** in game at any time to see which modifiers are actually active on the server.
-
-## When mods come back
-
-Nothing here is load-bearing for the modded pack - `main` and `2.0.0-rc` still hold the real thing.
-When authors ship 1.0-compatible builds, the first things to add back are the pure libraries, which
-carry no gameplay behaviour of their own:
-
-| Library | Version | 1.0 status |
-|---|---|---|
-| `ValheimModding-Jotunn` | 2.30.0 | updated 2026-09-09 (adds a client/server version check - expect join-time mismatch popups if only one side has it) |
-| `ValheimModding-JsonDotNET` | 13.0.4 | inert until a consumer needs it |
-| `ValheimModding-YamlDotNet` | 16.3.1 | inert until a consumer needs it |
-| `shudnal-ConditionalConfigSync` | 1.0.5 | updated 2026-09-10 |
-| `shudnal-ConfigurationManager` | 1.1.18 | updated 2026-09-11, needs the two DotNET libraries |
-
-They are deliberately **not** shipped here: with zero consumers they add zero value and only widen the
-surface area of a baseline whose whole purpose is to be provably clean. Add them in the same commit as
-the first mod that actually needs them.
-
-## Ground rules for this branch
-
-- Do not merge into `main`, do not tag, do not publish to Thunderstore.
-- The egg has **no `update_url`** on purpose - pointing it at `main` would let the panel silently
-  "update" this vanilla egg into the modded one.
-- `versionNumber = "1.0.0"` tracks the targeted Valheim release line, not a pack release number. SteamCMD always installs whatever is current on the stable branch.
+Nothing here has been booted. Selection was made from Thunderstore metadata - publish dates,
+dependency graphs, deprecation flags - not from running the game. That is *not* sufficient on its own:
+during the 1.0 investigation both ComfyMods-Gizmo and Smoothbrain-Groups loaded perfectly cleanly and
+still broke the main menu and the Settings screen respectively, with no trace in their own stack traces.
+Boot-test with the enable-list + Settings-click harness before putting this in front of anyone.

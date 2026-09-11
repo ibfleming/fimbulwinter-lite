@@ -1,12 +1,19 @@
 # ═══════════════════════════════════════════════════════════════
-# Fimbulwinter Vanilla — BepInEx-only bootstrap (branch: vanilla)
+# Fimbulwinter Minimal — server-side-first QoL for Valheim 1.0
 #
-# TEMPORARY / LOCAL ONLY. This is NOT a published modpack release.
-# It exists so we can play Valheim 1.0.0 together on the dedicated
-# server with a loader present but zero gameplay mods, and then add
-# mods back incrementally as they ship 1.0-compatible updates.
+# TEMPORARY / LOCAL ONLY. Branch: lite-minimal. Do not tag, do not
+# push to main, do not publish to Thunderstore.
 #
-# Do not tag, do not push to main, do not publish to Thunderstore.
+# A ground-up rebuild of the pack around two rules:
+#   1. Zero Azumatt mods (none have shipped a Valheim 1.0 build).
+#   2. If the server can do it, the server does it -- so players
+#      install as little as possible and console/vanilla clients
+#      are never locked out.
+#
+# 17 packages, down from 58. Every one verified against the
+# Thunderstore API as updated on/after 2026-09-09 (Valheim 1.0.0),
+# except the two pure serialization libs which have no game-code
+# surface. No Jotunn anywhere in the dependency graph.
 # ═══════════════════════════════════════════════════════════════
 
 [config]
@@ -18,12 +25,36 @@ repository = "https://thunderstore.io"
 [package]
 namespace = "ibfleming"
 name = "Fimbulwinter_Lite"
-description = "Vanilla + BepInEx bootstrap for Valheim 1.0.0. No gameplay mods -- just the loader, so mods can be layered back on as they update."
-versionNumber = "1.0.0"
+description = "Minimal server-side-first QoL for Valheim 1.0. 17 packages, no Azumatt mods, no Jotunn -- most of the QoL runs on the server so clients stay near-vanilla."
+versionNumber = "3.0.0"
 websiteUrl = "https://github.com/ibfleming/fimbulwinter-lite"
 
 [package.dependencies]
+
+# ── Loader + shared libraries (both sides) ─────────────────────
 denikson-BepInExPack_Valheim = "5.4.2350"
+ValheimModding-YamlDotNet = "16.3.1"
+shudnal-ConditionalConfigSync = "1.0.5"
+
+# ── Client UI / QoL ───────────────────────────────────────────
+shudnal-MyLittleUI = "1.2.18"
+shudnal-ExtraSlots = "1.2.3"
+Toxo-CraftFromChests = "0.4.0"
+TastyChickenLegs-RecyclePlus = "1.3.2"
+Neobotics-HUDCompass = "1.2.0"
+JoelOliMclean-NoRainDamage = "1.3.0"
+korCaptain-NullReferenceFix = "1.0.20"
+
+# ── Server-side only (NEVER shipped in the client profile) ─────
+# Clients install none of these. See SERVER_ONLY_MODS in
+# scripts/export-profile.sh.
+ArgusMagnus-ServersideQoL = "2.0.6"
+ArgusMagnus-ServersideQoL_AutoStore = "2.0.0"
+ArgusMagnus-ServersideQoL_ContainerSizes = "2.0.1"
+ArgusMagnus-ServersideQoL_AutoProcess = "2.0.0"
+ArgusMagnus-ServersideQoL_LetItFloat = "2.0.4"
+ArgusMagnus-ServersideQoL_JustSleep = "2.0.0"
+ArgusMagnus-ServersideQoL_MultiplayerTweaks = "2.0.0"
 
 [publish]
 communities = ["valheim"]

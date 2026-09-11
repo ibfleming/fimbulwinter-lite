@@ -5,6 +5,55 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - UNRELEASED - branch `lite-minimal`, local only, DO NOT PUBLISH
+
+> Not a release. A ground-up rebuild for Valheim 1.0 with zero Azumatt mods and
+> most QoL moved server-side. 17 packages, down from 58.
+
+### Removed
+- **All nine Azumatt mods.** None have shipped a Valheim 1.0 build (newest is
+  AzuExtendedPlayerInventory, 2026-08-31, pre-1.0): AzuAutoStore, AzuCraftyBoxes,
+  AzuContainerSizes, AzuExtendedPlayerInventory, AzuHoverStats, AzuAreaRepair,
+  AzuMiscPatches, AAA_Crafting, Recycle_N_Reclaim.
+- **Jotunn, and everything that needed it** (VNEI, MissingPieces,
+  AdventureBackpacks). The new dependency graph has no Jotunn at all.
+- Building mods (Gizmo, ExtraSnapPointsMadeEasy, AdvancedTerrainModifiers),
+  combat (ProjectileTweaks, ShieldBash), Seasons, SmartSkills, TargetPortal,
+  SpeedyPaths, StumpsAreOneHp, LocalizationCache, Groups, MultiUserChest,
+  Quick Stack Store, ComfyAutoRepair, ConfigurationManager, farming mods.
+
+### Added
+- **ArgusMagnus ServersideQoL 2.0.x, seven modules, server-side only** - core,
+  `_AutoStore`, `_ContainerSizes`, `_AutoProcess`, `_LetItFloat`, `_JustSleep`,
+  `_MultiplayerTweaks`. Server-authoritative and compatible with unmodded and
+  console clients, so they cost players nothing to install. Between them they
+  replace AzuAutoStore, AzuContainerSizes, AutomaticFuel, Venture Floating
+  Items, SleepSkip, NetworkTweaks and TimeoutLimit.
+- **shudnal-ExtraSlots 1.2.3** replaces AzuExtendedPlayerInventory (equipment +
+  quick slots). Fits the existing shudnal/ConditionalConfigSync stack.
+- **Toxo-CraftFromChests 0.4.0** replaces AzuCraftyBoxes.
+- **TastyChickenLegs-RecyclePlus 1.3.2** replaces Recycle_N_Reclaim and Quick
+  Stack Store's trash function.
+- MyLittleUI now also covers AzuHoverStats (tooltips) and AAA_Crafting
+  (multicraft), so both came out with no functional loss.
+
+### Changed
+- **`scripts/export-profile.sh` learned `SERVER_ONLY_MODS`** - server-side
+  packages are excluded from the generated client profile, so `make profile`
+  emits 10 packages while the toml carries 17. Profile is now named
+  `Fimbulwinter-Minimal-v<version>`.
+- **`CLIENT_ONLY_MODS` in `scripts/install-mods.sh`** trimmed to the three
+  genuinely client-only mods: MyLittleUI, HUDCompass, RecyclePlus.
+- TeleportEverything dropped entirely in favour of the vanilla
+  `-modifier portals casual` world modifier - same capability, zero mods.
+
+### Not tested
+- Selection came from Thunderstore metadata (publish dates, dependency graphs,
+  deprecation flags), not from running the game. During the 1.0 investigation
+  both Gizmo and Groups loaded cleanly and still broke the main menu and
+  Settings screen, so metadata alone is not sufficient - boot-test before use.
+
+
 ## [vanilla] - UNRELEASED - branch `vanilla`, local only, DO NOT PUBLISH
 
 > Not a release. This branch is a deliberate teardown of the pack to a
