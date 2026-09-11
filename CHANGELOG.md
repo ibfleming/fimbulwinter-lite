@@ -13,6 +13,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > Smoothbrain-ServerCharacters and Revel-Headshots ship Valheim-1.0-compatible
 > updates and can be re-added — see "Removed" below and docs/TASKS.md.
 
+### Fixed (2026-09-10, later still) — the actual client-menu-freeze root cause
+- **Found and fixed the real culprit: ComfyMods-Gizmo.** The earlier conclusion in
+  this same file (removing ServerCharacters + Headshots fixes the client menu) was
+  correct about those two needing to come out, but incomplete and partly based on
+  compromised tests — some inline test scripts had a zsh-vs-bash word-splitting bug
+  that silently left several mods disabled during "confirmed working" runs (load
+  count was 38-47, not the claimed 56), so those results didn't actually validate a
+  complete mod set. Redid the whole bisection properly this time: bash-only scripts
+  (no inline zsh loops), `WriteUnityLog = true` verified live on every single run
+  (its absence earlier also produced false "hangs" — those Unity-log lines,
+  including the success marker itself, silently stop reaching the log file without
+  it), and every result's mod-load count checked against the enable-list size before
+  trusting SUCCESS or FROZEN. Ground truth re-established: 4-mod core boots clean
+  (loadcount exact match), full pack freezes (loadcount exact match,
+  `SteamworksMatchmaking.Tick`/`MultiBackendMatchmaking.Update` exception storm,
+  reproducible). Binary search from there, testing both halves at every split (not
+  just the one that failed) this time, converged cleanly on ComfyMods-Gizmo alone —
+  confirmed in isolation against the minimal core, reconfirmed by retesting the
+  identical config, and confirmed the other direction: full pack minus only Gizmo
+  boots clean, twice in a row, ~50-100 seconds, zero exceptions.
+- **ComfyMods-Gizmo permanently removed.** Client-only mod (build-piece rotation on
+  all axes) — the dedicated server was never running it, so this needed zero
+  server-side change. `G`/`T`/`P`/`Shift`/`Alt`(hold, build mode) are free keys
+  again; removed from the Keyboard Shortcuts table.
+- Pack is now 54 mods, client and server mod lists match exactly, both confirmed
+  booting clean. This is the actual working 2.0.0-rc — see docs/TASKS.md.
+
 ### Removed
 - **Smoothbrain-ServerCharacters and Revel-Headshots temporarily removed** — both
   independently break the client main menu under Valheim 1.0.0 "Deep North" (extensive
