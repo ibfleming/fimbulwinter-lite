@@ -101,10 +101,22 @@ make profile                 # client -> dist/Fimbulwinter_Minimal-v3.0.0-profil
 bash scripts/deploy.sh full  # server (.env SERVER_ID must point at the right instance)
 ```
 
-## NOT YET TESTED
+## Test results (2026-09-11)
 
-Nothing here has been booted. Selection was made from Thunderstore metadata - publish dates,
-dependency graphs, deprecation flags - not from running the game. That is *not* sufficient on its own:
-during the 1.0 investigation both ComfyMods-Gizmo and Smoothbrain-Groups loaded perfectly cleanly and
-still broke the main menu and the Settings screen respectively, with no trace in their own stack traces.
-Boot-test with the enable-list + Settings-click harness before putting this in front of anyone.
+Both sides booted and verified live.
+
+**Server** (14 packages - the 17 minus the 3 client-only): 13/13 plugins loaded, 0 NullReference,
+0 MissingMethod, world reached `Opened Steam server` / `Game server connected`. ServersideQoL reports
+`Enabled: True`. The only `[Error]` lines are vanilla headless-graphics noise (video decode shaders,
+intro cinematic) - expected under `-nographics -batchmode`, present on a stock server too.
+
+**Client** (10 packages): 9/9 plugins loaded, 0 NullReference, 0 MissingMethod, 0 errors, main menu
+reached, and the **Settings menu opens clean** - the exact failure that Smoothbrain-Groups caused.
+
+**One real bug found and fixed by testing:** the egg allowed `normal` as a `-modifier` value. The game
+rejects it (`Could not parse 'deathpenalty' with a value of 'normal' as a world modifier`) - for
+modifiers, normal is expressed by *omission*. Removed from the validation rules for all five
+modifiers; `-preset normal` remains valid and is unaffected.
+
+Note: RecyclePlus reports its internal version as 1.3.1 while the Thunderstore package is 1.3.2 - the
+author did not bump the assembly string. Cosmetic.

@@ -255,7 +255,8 @@ variables:
     name: "Modifier: Combat"
     description: |-
       Enemy damage, health pool and starred-variant spawn chance.
-      Leave EMPTY for normal. Values: veryeasy, easy, normal, hard, veryhard
+      Leave EMPTY for normal -- the game REJECTS an explicit "normal" value
+    ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: veryeasy, easy, hard, veryhard (omit = normal)
     env_variable: MODIFIER_COMBAT
     default_value: ""
     user_viewable: true
@@ -263,12 +264,13 @@ variables:
     rules:
       - nullable
       - string
-      - "in:,veryeasy,easy,normal,hard,veryhard"
+      - "in:,veryeasy,easy,hard,veryhard"
   - sort: 9
     name: "Modifier: Death Penalty"
     description: |-
       Skill loss on death and what happens to your items (tombstone / kept / destroyed).
-      Leave EMPTY for normal. Values: casual, veryeasy, easy, normal, hard, hardcore
+      Leave EMPTY for normal -- the game REJECTS an explicit "normal" value
+    ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: casual, veryeasy, easy, hard, hardcore (omit = normal)
     env_variable: MODIFIER_DEATHPENALTY
     default_value: ""
     user_viewable: true
@@ -276,13 +278,14 @@ variables:
     rules:
       - nullable
       - string
-      - "in:,casual,veryeasy,easy,normal,hard,hardcore"
+      - "in:,casual,veryeasy,easy,hard,hardcore"
   - sort: 10
     name: "Modifier: Resources"
     description: |-
       Drop-quantity multiplier for harvesting, mining and enemy drops (0.5x up to 3x).
       Boss trophies and fish are unaffected.
-      Leave EMPTY for normal. Values: muchless, less, normal, more, muchmore, most
+      Leave EMPTY for normal -- the game REJECTS an explicit "normal" value
+    ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: muchless, less, more, muchmore, most (omit = normal)
     env_variable: MODIFIER_RESOURCES
     default_value: ""
     user_viewable: true
@@ -290,12 +293,13 @@ variables:
     rules:
       - nullable
       - string
-      - "in:,muchless,less,normal,more,muchmore,most"
+      - "in:,muchless,less,more,muchmore,most"
   - sort: 11
     name: "Modifier: Raids"
     description: |-
       How often base raids trigger, or none to disable raids entirely.
-      Leave EMPTY for normal. Values: none, muchless, less, normal, more, muchmore
+      Leave EMPTY for normal -- the game REJECTS an explicit "normal" value
+    ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: none, muchless, less, more, muchmore (omit = normal)
     env_variable: MODIFIER_RAIDS
     default_value: ""
     user_viewable: true
@@ -303,15 +307,14 @@ variables:
     rules:
       - nullable
       - string
-      - "in:,none,muchless,less,normal,more,muchmore"
+      - "in:,none,muchless,less,more,muchmore"
   - sort: 12
     name: "Modifier: Portals"
     description: |-
       Portal restrictions.
       Leave EMPTY for normal (ores cannot be teleported).
         casual   - ores and metals CAN go through portals
-        normal   - vanilla behaviour
-        hard     - no portals near an active boss
+              hard     - no portals near an active boss
         veryhard - portals disabled entirely
     env_variable: MODIFIER_PORTALS
     default_value: ""
@@ -320,7 +323,7 @@ variables:
     rules:
       - nullable
       - string
-      - "in:,casual,normal,hard,veryhard"
+      - "in:,casual,hard,veryhard"
   - sort: 13
     name: "Key: No Build Cost"
     description: "-setkey nobuildcost. Building and crafting cost zero materials (recipes must still be discovered)."
