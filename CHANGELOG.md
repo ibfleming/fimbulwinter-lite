@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > Smoothbrain-ServerCharacters and Revel-Headshots ship Valheim-1.0-compatible
 > updates and can be re-added — see "Removed" below and docs/TASKS.md.
 
+### Fixed (2026-09-11) — console window locks out all input under Valheim 1.0
+- **Disabled the BepInEx debug console** (`[Logging.Console] Enabled`/`PreventClose`
+  false, was true). These have been this pack's committed defaults since one of its
+  earliest commits, long before the 1.0 investigation -- not new debug cruft. Under
+  Valheim 1.0's Unity 6 engine upgrade (see BepInExPack 5.4.2350's own "Unity 6
+  log-listener consolidation" changelog entry earlier in this file), the forced TTY
+  console driver (`ForceBepInExTTYDriver = true`, left on) now renders as a
+  non-closable overlay across the game window that steals all mouse/keyboard input --
+  the game isn't frozen, it's just unreachable. Found live: a freshly-exported
+  `make profile` build reproduced it immediately since it pulls this exact config.
+  Disk logging (`LogOutput.log`) is untouched and remains the way to debug anything
+  going forward -- the console window was never required for that.
+
 ### Fixed (2026-09-10, later still) — the actual client-menu-freeze root cause
 - **Found and fixed the real culprit: ComfyMods-Gizmo.** The earlier conclusion in
   this same file (removing ServerCharacters + Headshots fixes the client menu) was
