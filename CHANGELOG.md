@@ -13,6 +13,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > Smoothbrain-ServerCharacters and Revel-Headshots ship Valheim-1.0-compatible
 > updates and can be re-added — see "Removed" below and docs/TASKS.md.
 
+### Fixed (2026-09-11, later still) — Settings menu crash root-caused to Smoothbrain-Groups
+- **Found and removed the real cause of a `NullReferenceException` in vanilla
+  `Valheim.SettingsGui.GameplaySettings.Initialize()`** that threw every time the
+  in-game Settings button was clicked. User personally caught this after the console-
+  lockout fix below and directly disproved my initial "100% vanilla bug" read (no
+  mod's Harmony patches target `GameplaySettings`/`Settings`/`InitializeTabs`
+  directly) by confirming vanilla Valheim does *not* crash here — so the corruption
+  had to be indirect. Live bisection on the `Fimbulwinter-Lite-v2.0.0` profile (the
+  exact profile the user plays on), enabling/disabling real mod folders and
+  automating the in-game Settings click via Win32 API calls, eventually isolated it
+  to **Smoothbrain-Groups alone** — reproduced twice with nothing else enabled but
+  this pack's 4-mod core baseline (Jotunn/JsonDotNET/YamlDotNet/ConditionalConfigSync).
+  Groups' own DLL references `LoadLocalizationLater`/`OnLocalizationComplete` hooks
+  into `FejdStartup` — consistent with it corrupting menu-scene state during the
+  main-menu's async localization load, which vanilla's Settings screen then trips
+  over with no trace of Groups anywhere in the resulting stack trace. Latest
+  published Groups is 1.2.10 (unchanged since 2026-02-04, pre-dates Valheim 1.0)
+  — no upstream fix exists yet. **Removed from the pack** (see "Removed" below)
+  until an updated build ships.
+
 ### Fixed (2026-09-11) — console window locks out all input under Valheim 1.0
 - **Disabled the BepInEx debug console** (`[Logging.Console] Enabled`/`PreventClose`
   false, was true). These have been this pack's committed defaults since one of its
@@ -50,7 +70,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   all axes) — the dedicated server was never running it, so this needed zero
   server-side change. `G`/`T`/`P`/`Shift`/`Alt`(hold, build mode) are free keys
   again; removed from the Keyboard Shortcuts table.
-- Pack is now 54 mods, client and server mod lists match exactly, both confirmed
+- **Smoothbrain-Groups permanently removed (2026-09-11).** Root-caused to a
+  `NullReferenceException` in vanilla `Valheim.SettingsGui.GameplaySettings.Initialize()`
+  that fired whenever the in-game Settings menu was opened — reproduced twice with
+  Groups as the sole non-core mod enabled. `Alt + click` (map ping for group)
+  removed from the Keyboard Shortcuts table. No server-side change needed. Latest
+  published build (1.2.10) is unchanged since 2026-02-04 and predates Valheim 1.0 —
+  will re-add once an updated build ships.
+- Pack is now 53 mods, client and server mod lists match exactly, both confirmed
   booting clean. This is the actual working 2.0.0-rc — see docs/TASKS.md.
 
 ### Removed

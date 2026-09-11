@@ -4,11 +4,12 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **54 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **53 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 > **Note (2026-09-10):** ServerCharacters and Headshots are temporarily pulled from
 > this pack — both break the main menu under Valheim 1.0.0 until their authors ship
-> a compatible update. See CHANGELOG.md for details.
+> a compatible update. **(2026-09-11)** Groups is also temporarily pulled — it
+> crashes the in-game Settings menu under Valheim 1.0.0. See CHANGELOG.md for details.
 
 ## Design Principles
 
@@ -86,10 +87,9 @@ Fimbulwinter Lite is a curated, lightweight modpack of **54 mods** focused on qu
 - **Venture Logout Tweaks** -- Safe logout handling
 - **ShutUp** -- Silences console log spam
 
-### Progression & Content (4 mods)
+### Progression & Content (3 mods)
 - **SmartSkills** -- 75% skill recovery after death; death matters but isn't crushing
 - **AdventureBackpacks** -- Progression-gated craftable backpacks
-- **Groups** -- Party system with shared map pings and chat
 - **Seasons** -- Four rotating seasons with visual and gameplay variety
 
 ## Keyboard Shortcuts
@@ -126,7 +126,6 @@ All mod keybinds have been audited against Valheim's default bindings — nothin
 | `F6` | PlantEasily | Toggle auto-replant | Anywhere |
 | `Alt + Arrows` | PlantEasily | Resize planting grid | Cultivator (moved off default `RCtrl + Arrows` -- Right Control is missing or unreliable on many keyboards, especially laptops) |
 | `Shift` (hold) | PlantEasily | Harvest whole grid | Interact |
-| `Alt + click` | Groups | Ping map for your group | Map |
 | `F3` | ConfigurationManager | Open in-game mod settings | Anywhere |
 | `F7` | AutomaticFuel | Toggle auto-fueling on/off | Anywhere |
 | `Alt + scroll` | AdvancedTerrainModifiers | Adjust tool radius | Hoe/cultivator/shovel |
