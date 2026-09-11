@@ -5,6 +5,72 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [vanilla] - UNRELEASED - branch `vanilla`, local only, DO NOT PUBLISH
+
+> Not a release. This branch is a deliberate teardown of the pack to a
+> BepInEx-only bootstrap for Valheim 1.0.0, so we can play together while the
+> mod ecosystem catches up to 1.0.0 "Deep North". Do not merge to `main`, do
+> not tag, do not publish. `main` (v1.4.4) and `2.0.0-rc` still hold the real
+> modpack.
+
+### Removed
+- **All 57 gameplay mods.** `thunderstore.toml` now carries exactly one
+  dependency: `denikson-BepInExPack_Valheim 5.4.2350`. The loader is present
+  and ready so mods can be layered back on individually as their authors ship
+  1.0-compatible builds; nothing else ships.
+- **All 57 mod config files.** `config/` is down to `BepInEx.cfg` alone.
+
+### Changed
+- **`config/BepInEx.cfg` ships with the console fully off** --
+  `[Logging.Console] Enabled = false`, `PreventClose = false` and
+  `ForceBepInExTTYDriver = false`. Under Valheim 1.0's Unity 6 engine that
+  forced TTY console renders as a non-closable overlay that swallows all mouse
+  and keyboard input. Disk logging is untouched.
+- **`scripts/export-profile.sh` names the profile `Fimbulwinter-Vanilla-v<version>`**
+  (output `dist/Fimbulwinter_Vanilla-v<version>-profile.r2z`) so a `make profile`
+  import cannot collide with the modded r2modman profiles.
+- **`versionNumber` is `1.0.0`** -- it tracks the targeted Valheim release line
+  (1.0 "Deep North"), not a pack release number. SteamCMD always installs
+  whatever is current on the stable branch, so this is a target, not a pin.
+
+### Added
+- **New self-contained Pelican egg** (`server/valheim-fimbulwinter-lite-egg.yaml`),
+  replacing the thin GitHub-bootstrap egg on this branch. It fetches no scripts
+  from the repo, because the `vanilla` branch is local-only and a remote
+  bootstrap would 404 and fail the install. It installs Valheim via SteamCMD and
+  BepInEx straight from Thunderstore, then purges `BepInEx/plugins` and
+  `BepInEx/patchers` (`PURGE_PLUGINS`, default on) so a reinstall over a
+  previously modded server is provably mod-free. Carries its own UUID so it
+  coexists with the modded egg, and deliberately has **no `update_url`** -- with
+  one pointing at `main`, the panel could silently "update" this egg into the
+  modded one.
+- **Every world modifier as its own panel field**, with the accepted values
+  enumerated in each variable's validation rules: `PRESET` (7 presets),
+  `MODIFIER_COMBAT`, `MODIFIER_DEATHPENALTY`, `MODIFIER_RESOURCES`,
+  `MODIFIER_RAIDS`, `MODIFIER_PORTALS`, the four `-setkey` toggles
+  (`KEY_NOBUILDCOST`, `KEY_PLAYEREVENTS`, `KEY_PASSIVEMOBS`, `KEY_NOMAP`) and
+  `EXTRA_SETKEYS` for keys Iron Gate adds later. An empty field omits the flag
+  entirely, which is the vanilla default for that dial.
+- **Correct modifier argument ordering, enforced by construction.** A `-preset`
+  emitted after `-modifier` flags silently overwrites them, so the startup
+  command always builds `-preset` first, then modifiers, then setkeys, then
+  `-instanceid`/`-crossplay`, with `EXTRA_ARGS` last so it can override
+  anything. The assembled arguments are echoed each boot as
+  `[STARTUP] World args:`. Verified by dry-running the startup command with all
+  fields empty, all fields set, and the loader disabled.
+- **`BEPINEX_ENABLED`** -- flip to 0 to run 100% pure vanilla without a
+  reinstall; doorstop simply is not injected and the loader stays on disk.
+- **`BEPINEX_VERSION`** -- `latest` (resolved from the Thunderstore API at
+  install time) or a pinned version.
+- **`ADMIN_STEAMIDS`** -- space-separated Steam64 IDs written to
+  `adminlist.txt` on every boot, so admins get the F5 console for
+  `setworldmodifier` / `setkey` / `removekey` on a live world (F2 shows what is
+  actually active).
+- **More server parameterization**: `INSTANCE_ID` (`-instanceid`), `SAVE_DIR`
+  (defaulted to the existing server's `/home/container/saves` so the current
+  world is found as-is), `SAVE_INTERVAL`, and `EXTRA_ARGS` raw passthrough.
+
+
 ## [1.4.4] - 2026-09-08
 
 ### Changed

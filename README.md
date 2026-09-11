@@ -1,161 +1,115 @@
-[![Build Status](https://github.com/ibfleming/fimbulwinter-lite/actions/workflows/publish.yml/badge.svg)](https://github.com/ibfleming/fimbulwinter-lite/actions/workflows/publish.yml)
+# Fimbulwinter Vanilla - Valheim 1.0.0 + BepInEx (no mods)
 
-# Fimbulwinter Lite - A Vanilla+ Valheim Modpack
+**Branch: `vanilla`. Temporary, local-only bootstrap. Never pushed to `main`, never tagged, never published to Thunderstore.**
 
-**Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
+Valheim 1.0.0 "Deep North" (2026-09-09) broke a large share of the modding ecosystem. Rather than
+wait for every mod to catch up, this branch strips the pack down to the one thing that has already
+shipped a 1.0-compatible build: **BepInEx itself**. The loader is installed and ready, the plugin
+folder is empty, and mods get layered back on one at a time as their authors ship 1.0 updates.
 
-Fimbulwinter Lite is a curated, lightweight modpack of **58 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+| | |
+|---|---|
+| Mods | 0 |
+| Loader | BepInExPack_Valheim 5.4.2350 |
+| Target game version | Valheim 1.0.0 or newer (the 1.0 "Deep North" line) |
+| Client profile | `Fimbulwinter-Vanilla-v1.0.0` (via `make profile`) |
+| Server egg | `server/valheim-fimbulwinter-lite-egg.yaml` |
 
-## Design Principles
+## Client setup
 
-- **Preserve the Spirit of Valheim** -- No teleport-cheese (ore transport carries a 10% tax), no game-breaking shortcuts. Progression still requires biome exploration and earned power.
-- **Vanilla+ Over Overhaul** -- Enhance what exists instead of replacing it. No new biomes, gear tiers, magic systems, or creature packs.
-- **Multiplayer-First** -- Every mod works on dedicated servers, with server-enforced config sync.
-- **Actively Maintained** -- Every mod verified current against Thunderstore; no deprecated or abandoned mods.
+```bash
+make profile          # -> dist/Fimbulwinter_Vanilla-v1.0.0-profile.r2z
+```
 
-## What's Included
+Import it in r2modman: **Profiles -> Import / Update -> From file**. It installs BepInEx and the one
+shipped config file, and lands as a profile named `Fimbulwinter-Vanilla-v1.0.0` so it never collides
+with the modded profiles.
 
-### Core & Frameworks (6 mods)
-- **BepInExPack_Valheim** -- Mod loader
-- **Jotunn** -- Modding framework
-- **JsonDotNET / YamlDotNet** -- Shared libraries
-- **ConfigurationManager** (shudnal) -- In-game config editing (F1)
-- **ConditionalConfigSync** -- Server-enforced config ownership and sync policies
+**No BepInEx console window.** `config/BepInEx.cfg` ships with `[Logging.Console] Enabled = false`,
+`PreventClose = false` and `ForceBepInExTTYDriver = false`. Under Valheim 1.0's Unity 6 engine the
+forced TTY console renders as a non-closable overlay that steals all mouse and keyboard input, so all
+three stay off here. Disk logging (`BepInEx/LogOutput.log`) is untouched and remains how to debug.
 
-### Inventory & Crafting (10 mods)
-- **AzuExtendedPlayerInventory** -- Dedicated equipment and quick slots, cosmetic vanity overrides, and saved equipment loadouts
-- **AzuCraftyBoxes** -- Craft using materials from nearby containers
-- **AzuAutoStore** -- Auto-deposit items into nearby containers
-- **AzuContainerSizes** -- Larger chest capacities
-- **AAA Crafting** -- Batch crafting with quantity input, item favoriting, and an enhanced recipe grid
-- **Recycle N Reclaim** -- Recycle items back into materials
-- **Quick Stack Store Sort Trash Restock** -- One-key chest stacking, sorting, and trash
-- **MultiUserChest** -- Multiple players can use one chest simultaneously
-- **ComfyAutoRepair** -- Opening a crafting station repairs everything it can repair
-- **AutomaticFuel** -- Smelters, kilns, windmills and spinning wheels feed from nearby chests
+## Server setup
 
-### UI & HUD (5 mods)
-- **MyLittleUI** -- Lightweight UI upgrades: timers, stats, chest contents, weather
-- **VNEI** -- In-game item and recipe browser
-- **HUDCompass** -- Compass bar with map pins
-- **AzuHoverStats** -- Detailed hover tooltips
-- **ChangelogEditor** -- Hides the main-menu changelog
+Import `server/valheim-fimbulwinter-lite-egg.yaml` into the Pelican panel as a **new egg** (it carries
+its own UUID, so it sits alongside the modded Fimbulwinter Lite egg rather than replacing it), then
+create or reinstall a server on it.
 
-### Building (7 mods)
-- **Gizmo** -- Precise build-piece rotation on all axes
-- **Extra Snap Points Made Easy** -- More snap points on every piece
-- **AzuAreaRepair** -- Repair all nearby build pieces with one hammer hit
-- **MissingPieces** -- Vanilla-styled build pieces that should have existed
-- **AdvancedTerrainModifiers** -- Precision terraforming with square/circle modes and undo
-- **NoRainDamage** -- Buildings no longer take weather damage
-- **DigDeeper** -- Dig 40m below the surface and raise terrain 16m, instead of vanilla's 8m (client-only; keep the shared config in sync manually if you ever change it)
+The egg is **fully self-contained** - unlike the modded egg it fetches no scripts from GitHub, because
+this branch is local-only and a remote bootstrap would 404. It installs Valheim via SteamCMD, drops in
+BepInEx, and purges `BepInEx/plugins` + `BepInEx/patchers` so the result is guaranteed mod-free even
+when reinstalling over a previously modded server.
 
-### Farming (3 mods)
-- **PlantEverything** -- Plant every gatherable resource and tree
-- **PlantEasily** -- Grid-aligned planting and mass harvesting
-- **MassFarming** -- Bulk plant and pick with a modifier key
+### World modifiers
 
-### Travel & World QoL (7 mods)
-- **TeleportEverything** -- Portal everything, with a 10% ore transport tax
-- **SpeedyPaths** -- Move faster on paths, roads, and cleared ground
-- **WieldEquipmentWhileSwimming** -- Keep gear in hand while swimming
-- **TargetPortal** -- Step into a portal, pick any other portal on the map
-- **StumpsAreOneHp** -- Tree stumps fall in a single hit
-- **LongshipUpgrades** -- Removable mast with lantern/tent/Wisp torch, hull HP and Ashlands-ocean protection, bigger storage, cartography table map sharing, and cosmetic ship styling
-- **Venture Floating Items** -- Every dropped item floats instead of sinking, including ore and metal bars
+Every Valheim world modifier is its own panel field. Leave a field **empty** to get the vanilla
+default for that dial.
 
-### Combat & Archery (3 mods)
-- **ProjectileTweaks** -- Cleaner archery feel: arrows launch from where you aim, bow/crossbow zoom, draw cancel, ammo counter -- projectile physics stay vanilla
-- **Headshots** -- Most organic creatures gain a head weakspot; precise shots with pierce damage are rewarded
-- **ShieldBash** -- Active shield bash attack (Middle Mouse while blocking)
+| Panel field | Variable | Accepted values |
+|---|---|---|
+| World Preset | `PRESET` | `normal` `casual` `easy` `hard` `hardcore` `immersive` `hammer` |
+| Modifier: Combat | `MODIFIER_COMBAT` | `veryeasy` `easy` `normal` `hard` `veryhard` |
+| Modifier: Death Penalty | `MODIFIER_DEATHPENALTY` | `casual` `veryeasy` `easy` `normal` `hard` `hardcore` |
+| Modifier: Resources | `MODIFIER_RESOURCES` | `muchless` `less` `normal` `more` `muchmore` `most` |
+| Modifier: Raids | `MODIFIER_RAIDS` | `none` `muchless` `less` `normal` `more` `muchmore` |
+| Modifier: Portals | `MODIFIER_PORTALS` | `casual` `normal` `hard` (no boss portals) `veryhard` (no portals) |
+| Key: No Build Cost | `KEY_NOBUILDCOST` | 0 / 1 |
+| Key: Player Events | `KEY_PLAYEREVENTS` | 0 / 1 |
+| Key: Passive Mobs | `KEY_PASSIVEMOBS` | 0 / 1 |
+| Key: No Map | `KEY_NOMAP` | 0 / 1 |
+| Extra Setkeys | `EXTRA_SETKEYS` | space-separated, for keys Iron Gate adds later |
 
-### Fixes & Performance (6 mods)
-- **AzuMiscPatches** -- Collection of small vanilla fixes and tweaks
-- **LocalizationCache** -- Dramatically faster load times
-- **TimeoutLimit** -- Fixes join timeouts on modded servers
-- **NetworkTweaks** -- Improved network throughput
-- **TrueInstantLootDrop** -- Loot drops instantly on kill
-- **NullReferenceFix** -- Cleans up recurring NullReferenceException log-spam bugs (vanilla object cleanup, AzuCraftyBoxes stale containers, EnemyHud mod conflicts)
+**Argument order is handled for you.** A `-preset` placed *after* `-modifier` flags silently
+overwrites them, so the startup command always emits `-preset` first, then the five modifiers, then
+the setkeys, then `-instanceid`/`-crossplay`, and finally `EXTRA_ARGS` (which can therefore override
+anything). The assembled line is echoed to the panel console on every boot as `[STARTUP] World args:`.
 
-### Multiplayer & Server (7 mods)
-- **ServerCharacters** -- Server-side character saves (anti-dupe, anti-cheat)
-- **SleepSkip** -- Majority-rules night skipping: enough players in bed starts a vote, popup for the rest, AFK players count as abstaining
-- **Server devcommands** -- Better admin commands and permissions
-- **Upgrade World** -- Regenerate world locations after game updates
-- **QuickConnect** -- One-click server join
-- **Venture Logout Tweaks** -- Safe logout handling
-- **ShutUp** -- Silences console log spam
+### Other server variables
 
-### Progression & Content (4 mods)
-- **SmartSkills** -- 75% skill recovery after death; death matters but isn't crushing
-- **AdventureBackpacks** -- Progression-gated craftable backpacks
-- **Groups** -- Party system with shared map pings and chat
-- **Seasons** -- Four rotating seasons with visual and gameplay variety
+| Variable | Default | Notes |
+|---|---|---|
+| `BEPINEX_ENABLED` | 1 | Set 0 to run 100% pure vanilla without reinstalling - doorstop simply is not injected |
+| `BEPINEX_VERSION` | `latest` | Resolved from Thunderstore at install time, or pin e.g. `5.4.2350` |
+| `PURGE_PLUGINS` | 1 | Wipe plugins/patchers on install so a reinstall over a modded server is truly clean |
+| `ADMIN_STEAMIDS` | empty | Space-separated Steam64 IDs written to `adminlist.txt` each boot (overwrites it) |
+| `SAVE_DIR` | `/home/container/saves` | Matches the existing server, so the current world is found as-is |
+| `INSTANCE_ID` | empty | `-instanceid`, for telling multiple servers on one host apart |
+| `EXTRA_ARGS` | empty | Raw passthrough, appended last |
+| `SAVE_INTERVAL` / `BACKUP_COUNT` / `BACKUP_SHORTTIME` / `BACKUP_LONGTIME` | 1800 / 4 / 7200 / 43200 | `-saveinterval` / `-backups` / `-backupshort` / `-backuplong` |
 
-## Keyboard Shortcuts
+### Changing modifiers on a live world
 
-All mod keybinds have been audited against Valheim's default bindings — nothing shadows a vanilla control. Modifier-based binds only act in their context (build mode, planting, menus) and don't interfere with the base action.
+Set `ADMIN_STEAMIDS` so you get the F5 console with `devcommands` enabled:
 
-| Key | Mod | Action | Context |
-|-----|-----|--------|---------|
-| `Alt + Z / X / C` | AzuExtendedPlayerInventory | Use quick slot 1 / 2 / 3 | Anywhere |
-| `Alt + 3` | AzuExtendedPlayerInventory | Use quick slot 5 | Anywhere (moved off default `Alt + B` -- collided with Extra Snap Points' Manual+ toggle) |
-| `Shift` (hold) + scroll | AAA Crafting | Adjust craft amount by 5 | Hovering the amount input box, crafting menu open |
-| `Ctrl` (hold) + scroll | AAA Crafting | Jump to max craftable amount | Hovering the amount input box, crafting menu open |
-| `Ctrl` (hold) | AAA Crafting | Show minus instead of plus | Hovering a recipe icon, crafting menu open |
-| `Shift + PageUp` | AAA Crafting | Toggle the recipe tracker panel | Crafting menu open |
-| `F` | AAA Crafting | Toggle favorite on hovered item | Crafting menu open only (vanilla Forsaken Power unaffected outside it) |
-| `Mouse Side Button` | ShieldBash | Shield bash | While blocking (moved off `Mouse2`/Middle Mouse -- no conflicts found on the new `Mouse3`) |
-| `I` | AdventureBackpacks | Open equipped backpack | Anywhere |
-| `L` | AdventureBackpacks | Toggle Wisplight effect | Anywhere |
-| `Alt + H` | VNEI | Open item/recipe browser | Anywhere |
-| `R` | VNEI | View recipe of hovered item | Menus only (vanilla sheath unaffected) |
-| `Left/Right Arrow` | VNEI | Recipe history back / forward | VNEI window |
-| `Ctrl + Z` | Recycle N Reclaim | Undo last recycle | Inventory |
-| `Delete` | Quick Stack Store | Trash hovered item | Inventory |
-| `Shift` (hold) | AzuCraftyBoxes | Craft max / fill all | Crafting menu |
-| `Alt + Slash` | AzuCraftyBoxes | Toggle personal pulling-prevention | Anywhere (moved off default `Alt + O` -- collided with the admin `O` bundle below) |
-| `Shift` (hold) | Gizmo | Rotate build piece on X axis | Build mode (hammer only -- terrain tools stay vanilla) |
-| `Alt` (hold) | Gizmo | Rotate build piece on Z axis | Build mode (hammer only -- terrain tools stay vanilla) |
-| `G` | Gizmo | Reset selected-axis rotation | Build mode (moved off `V` = vanilla voice chat) |
-| `T` | Gizmo | Reset ALL axis rotations | Build mode (disabled by default in the mod; enabled in this pack) |
-| `P` | Gizmo | Copy rotation from targeted piece | Build mode |
-| `B` | Extra Snap Points | Toggle Manual+ snap mode | Build mode (moved off `Alt` -- collided with Gizmo/terrain tools) |
-| `CapsLock` | Extra Snap Points | Toggle manual closest-snap mode | Build mode |
-| `Q` / `E` | Extra Snap Points | Cycle snap point on placing / targeted piece | Manual snap modes only (vanilla autorun/interact unaffected outside them) |
-| `F11` | Extra Snap Points | Toggle grid snapping | Build mode (moved off `F3` = config manager) |
-| `F4` | Extra Snap Points | Cycle grid snap precision | Grid snap mode |
-| `Shift` (hold) | MassFarming | Mass plant / mass pick | Cultivator / interact |
-| `F8` | PlantEasily | Toggle grid planting | Cultivator |
-| `F10` | PlantEasily | Toggle grid snapping | Cultivator |
-| `F6` | PlantEasily | Toggle auto-replant | Anywhere |
-| `Alt + Arrows` | PlantEasily | Resize planting grid | Cultivator (moved off default `RCtrl + Arrows` -- Right Control is missing or unreliable on many keyboards, especially laptops) |
-| `Shift` (hold) | PlantEasily | Harvest whole grid | Interact |
-| `Alt + click` | Groups | Ping map for your group | Map |
-| `F3` | ConfigurationManager | Open in-game mod settings | Anywhere |
-| `F7` | AutomaticFuel | Toggle auto-fueling on/off | Anywhere |
-| `Alt + scroll` | AdvancedTerrainModifiers | Adjust tool radius | Hoe/cultivator/shovel |
-| `Ctrl + scroll` | AdvancedTerrainModifiers | Adjust tool hardness | Hoe/cultivator/shovel |
-| `Shift` (hold) + use portal | TargetPortal | Use vanilla tag UI instead | At portal |
-| `P` | TargetPortal | Toggle portal icons | Map open |
-| `Right Mouse` (hold) | ProjectileTweaks | Zoom while drawing bow/crossbow | Bow drawn |
-| `E` | ProjectileTweaks | Cancel bow draw | While drawing only (vanilla interact otherwise) |
-| `O` | Server devcommands | Toggle debug mode + no-cost building + god mode | Admin only -- all three toggle together (moved off `F9`; F-keys risk collisions with Steam Input controller-layout hotkeys, NVIDIA overlay, and keyboard macro software) |
-| `K` | Server devcommands | Toggle fly mode | Admin only -- separate from the O bundle |
-| `Ctrl + Right-click` | Server devcommands | Teleport to map location | Admin only, map open |
+```
+setworldmodifier <name> <value>     e.g. setworldmodifier portals casual
+setkey <key> / removekey <key>      e.g. setkey nomap
+```
 
-Rebind anything in-game: press `F3` → find the mod → change the key (stored in that mod's config file).
+Press **F2** in game at any time to see which modifiers are actually active on the server.
 
-## Installation
+## When mods come back
 
-**Client:** Install via [r2modman](https://thunderstore.io/c/valheim/p/ebkr/r2modman/) or the Thunderstore App -- search for `Fimbulwinter Lite` by `ibfleming`.
+Nothing here is load-bearing for the modded pack - `main` and `2.0.0-rc` still hold the real thing.
+When authors ship 1.0-compatible builds, the first things to add back are the pure libraries, which
+carry no gameplay behaviour of their own:
 
-**Alternative (profile import):** Each [GitHub release](https://github.com/ibfleming/fimbulwinter-lite/releases) ships a ready-made `.r2z` profile with all mods at pinned versions plus the tuned configs. In r2modman: Profiles -> Import / Update -> From file.
+| Library | Version | 1.0 status |
+|---|---|---|
+| `ValheimModding-Jotunn` | 2.30.0 | updated 2026-09-09 (adds a client/server version check - expect join-time mismatch popups if only one side has it) |
+| `ValheimModding-JsonDotNET` | 13.0.4 | inert until a consumer needs it |
+| `ValheimModding-YamlDotNet` | 16.3.1 | inert until a consumer needs it |
+| `shudnal-ConditionalConfigSync` | 1.0.5 | updated 2026-09-10 |
+| `shudnal-ConfigurationManager` | 1.1.18 | updated 2026-09-11, needs the two DotNET libraries |
 
-**Server:** Install all mods except client-only UI/visual mods. A Pelican/Pterodactyl server egg is provided in the [GitHub repo](https://github.com/ibfleming/fimbulwinter-lite) (`server/valheim-fimbulwinter-lite-egg.yaml`) that automates the full dedicated server install: SteamCMD, BepInEx, all server-side mods, and modpack configs.
+They are deliberately **not** shipped here: with zero consumers they add zero value and only widen the
+surface area of a baseline whose whole purpose is to be provably clean. Add them in the same commit as
+the first mod that actually needs them.
 
-## Links
+## Ground rules for this branch
 
-- **GitHub:** [github.com/ibfleming/fimbulwinter-lite](https://github.com/ibfleming/fimbulwinter-lite)
-- **Issues & suggestions:** [GitHub Issues](https://github.com/ibfleming/fimbulwinter-lite/issues)
-- **Changelog:** [CHANGELOG.md](https://github.com/ibfleming/fimbulwinter-lite/blob/main/CHANGELOG.md)
+- Do not merge into `main`, do not tag, do not publish to Thunderstore.
+- The egg has **no `update_url`** on purpose - pointing it at `main` would let the panel silently
+  "update" this vanilla egg into the modded one.
+- `versionNumber = "1.0.0"` tracks the targeted Valheim release line, not a pack release number. SteamCMD always installs whatever is current on the stable branch.

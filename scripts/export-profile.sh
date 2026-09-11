@@ -8,7 +8,7 @@
 #   r2modman → Profiles → Import / Update → From file
 #
 # Usage: scripts/export-profile.sh [output.r2z]
-#   Default output: dist/Fimbulwinter_Lite-v<version>-profile.r2z
+#   Default output: dist/Fimbulwinter_Vanilla-v<version>-profile.r2z
 #
 # Requires: bash, python3
 # ═══════════════════════════════════════════════════════════════
@@ -26,10 +26,10 @@ version = re.search(r'versionNumber = "([^"]+)"', toml).group(1)
 deps = re.findall(r'^([A-Za-z0-9_]+-[A-Za-z0-9_]+) = "([^"]+)"$',
                   toml.split("[package.dependencies]", 1)[1].split("\n[", 1)[0], re.M)
 if not out:
-    out = os.path.join(repo, "dist", f"Fimbulwinter_Lite-v{version}-profile.r2z")
+    out = os.path.join(repo, "dist", f"Fimbulwinter_Vanilla-v{version}-profile.r2z")
 os.makedirs(os.path.dirname(os.path.abspath(out)) or ".", exist_ok=True)
 
-lines = [f"profileName: Fimbulwinter-Lite-v{version}", "mods:"]
+lines = [f"profileName: Fimbulwinter-Vanilla-v{version}", "mods:"]
 for full, ver in deps:
     major, minor, patch = ver.split(".")
     lines += [f"  - name: {full}",
