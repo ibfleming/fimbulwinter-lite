@@ -80,6 +80,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   compat-verification pass ("every reflection target this mod relies on remained
   unchanged"). Taken on trust from the version bump alone; watch these two specifically
   if anything regresses.
+- **2026-09-10 (later): 6 more compat bumps** — HUDCompass 1.1.9 → 1.2.0 ("Updated
+  for Valheim 1.0"), MyLittleUI 1.2.16 → 1.2.18 (controller repair fixes + perf),
+  Server_devcommands 1.110.0 → 1.111.0, Venture_Logout_Tweaks 0.6.0 → 1.0.0 ("Release
+  for game version 1.0.7"), LongshipUpgrades 1.0.18 → 1.0.19 (cosmetic "pink heads"
+  fix), DigDeeper 1.2.0 → 1.3.0. No config schema changes. `make updates` clean.
 - `make updates` now reports all 56 mods up to date.
 
 ## [1.4.4] - 2026-09-09
