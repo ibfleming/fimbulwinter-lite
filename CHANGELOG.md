@@ -87,6 +87,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fix), DigDeeper 1.2.0 → 1.3.0. No config schema changes. `make updates` clean.
 - `make updates` now reports all 56 mods up to date.
 
+### Removed (2026-09-10, later still)
+- **Azumatt-ChangelogEditor permanently removed** at user request — its only job was
+  hiding the main-menu changelog popup, not tied to the 1.0 investigation. 55 mods now.
+
 ## [1.4.4] - 2026-09-09
 
 ### Changed

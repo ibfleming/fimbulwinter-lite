@@ -4,7 +4,7 @@
 
 **Valheim, but smoother. No new content tiers, no overhauls -- just streamlined, polished vanilla.**
 
-Fimbulwinter Lite is a curated, lightweight modpack of **56 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
+Fimbulwinter Lite is a curated, lightweight modpack of **55 mods** focused on quality-of-life, UI polish, multiplayer fixes, and subtle enhancements. Vanilla progression, balance, difficulty, and the spirit of the game are untouched. Every mod is actively maintained and verified against the current Valheim version.
 
 > **Note (2026-09-10):** ServerCharacters and Headshots are temporarily pulled from
 > this pack — both break the main menu under Valheim 1.0.0 until their authors ship
@@ -38,12 +38,11 @@ Fimbulwinter Lite is a curated, lightweight modpack of **56 mods** focused on qu
 - **ComfyAutoRepair** -- Opening a crafting station repairs everything it can repair
 - **AutomaticFuel** -- Smelters, kilns, windmills and spinning wheels feed from nearby chests
 
-### UI & HUD (5 mods)
+### UI & HUD (4 mods)
 - **MyLittleUI** -- Lightweight UI upgrades: timers, stats, chest contents, weather
 - **VNEI** -- In-game item and recipe browser
 - **HUDCompass** -- Compass bar with map pins
 - **AzuHoverStats** -- Detailed hover tooltips
-- **ChangelogEditor** -- Hides the main-menu changelog
 
 ### Building (7 mods)
 - **Gizmo** -- Precise build-piece rotation on all axes
