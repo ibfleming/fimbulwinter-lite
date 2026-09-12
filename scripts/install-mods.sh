@@ -41,7 +41,6 @@ THUNDERSTORE_API="https://thunderstore.io/api/experimental/package"
 CLIENT_ONLY_MODS=(
     "shudnal-MyLittleUI"
     "Neobotics-HUDCompass"
-    "TastyChickenLegs-RecyclePlus"
 )
 
 log()   { echo -e "[INFO] $*"; }

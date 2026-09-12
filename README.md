@@ -7,16 +7,16 @@ A ground-up rebuild of the pack for Valheim 1.0 "Deep North", built on two rules
 1. **Zero Azumatt mods.** None of the nine in the old pack have shipped a 1.0 build.
 2. **If the server can do it, the server does it.** Players install as little as possible.
 
-**18 packages, down from 58.** Every package verified against the Thunderstore API as published
+**17 packages, down from 58.** Every package verified against the Thunderstore API as published
 on/after 2026-09-09 (Valheim 1.0.0) - except the two pure serialization libraries, which contain no
 game code. **No Jotunn anywhere in the dependency graph.**
 
 ## The split
 
-Only 11 packages reach players. The other 7 live on the dedicated server and are excluded from the
+Only 10 packages reach players. The other 7 live on the dedicated server and are excluded from the
 client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`).
 
-### Client (11) - `make profile`
+### Client (10) - `make profile`
 
 | Package | Version | Role |
 |---|---|---|
@@ -26,7 +26,6 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 | **shudnal-MyLittleUI** | 1.2.18 | tooltips, production timers, chest preview, multicraft, weather |
 | **shudnal-ExtraSlots** | 1.2.3 | equipment + quick slots |
 | **Toxo-CraftFromChests** | 0.4.0 | craft/build/fuel from nearby chests |
-| **TastyChickenLegs-RecyclePlus** | 1.3.2 | recycle + trash |
 | **Neobotics-HUDCompass** | 1.2.0 | compass bar |
 | **JoelOliMclean-NoRainDamage** | 1.3.0 | no weather decay on builds |
 | **korCaptain-NullReferenceFix** | 1.0.20 | stability |
@@ -98,6 +97,31 @@ single item type) is **not used anywhere** -- it is not a Vanilla+ behaviour.
 The three MultiplayerTweaks ownership options are the closest thing in this pack to the
 NetworkTweaks/TimeoutLimit role from the old one: they are desync fixes, not conveniences.
 
+## RecyclePlus removed (exploit)
+
+`TastyChickenLegs-RecyclePlus 1.3.2` was pulled after live testing. **Recycling a plain club returned a
+Wooden Battle Idol, 100% reproducibly** -- a club costs six wood, so it was an infinite generator for
+one of Valheim 1.0's rarest materials.
+
+Cause: 1.0 added the Forge of Potential, implemented in `assembly_valheim` as an `Upgrader
+(Refinement Forge)` station whose recipes consume idols. RecyclePlus resolves an item's materials via
+`GetRecipe` and is picking up the refinement recipe rather than the crafting recipe, so it hands back
+the idol. That means it is very unlikely to be clubs alone -- any refinable weapon, tool or staff is a
+candidate.
+
+No upstream fix: 1.3.2 is the latest published version. Removing it is the only safe option, since it
+directly breaks design principle 1 (no game-breaking shortcuts) and nothing in its config can gate it
+(`ReturnResources` only scales the return rate, there is no exclusion list).
+
+The pack now has **no recycle or trash function**. Candidates if you want one back -- each needs the
+club test run against it first, because they may share the same 1.0 recipe-resolution bug:
+
+```
+cjayride-<DiscardInventoryItem fork>   1.7.3   "Updated for Valheim 1.0"
+Ketanol-<RecyclePlus-based>            1.0.1   explicitly "Based on RecyclePlus" -- likely same bug
+MainStreetGaming-<recycler>            1.0.1
+```
+
 ## Keyboard Shortcuts
 
 Audited 2026-09-11 against the mods' freshly generated configs. MyLittleUI, CraftFromChests,
@@ -113,7 +137,6 @@ NoRainDamage and NullReferenceFix declare **no** keybinds at all, so the entire 
 | `Alt` (hold) | ExtraSlots | Drag item between equipment slots | Inventory open |
 | `F6` | ExtraSlots | Connect-panel rebind | Anywhere (moved off `F2`, see below) |
 | `J` | HUDCompass | Toggle the compass bar | Anywhere (moved off `Alt + C`, see below) |
-| `Delete` | RecyclePlus | Discard / recycle hovered item | Inventory |
 | `O` | Server devcommands | Admin bundle: `debugmode` + `nocost` + `god` | Admins only |
 | `K` | Server devcommands | Admin `fly` toggle | Admins only |
 
@@ -144,7 +167,7 @@ range rather than the mod's more generous default.
 | AzuExtendedPlayerInventory | shudnal-ExtraSlots |
 | AzuHoverStats | MyLittleUI (tooltips) |
 | AAA_Crafting | MyLittleUI (multicraft) |
-| Recycle_N_Reclaim | TastyChickenLegs-RecyclePlus |
+| Recycle_N_Reclaim | *nothing* - see "RecyclePlus removed" |
 | Quick Stack Store Sort Trash | RecyclePlus (trash) + `_AutoStore` (stacking) |
 | AzuAreaRepair, AzuMiscPatches | nothing - dropped |
 | MultiUserChest | nothing - only an unofficial rebuild exists |
