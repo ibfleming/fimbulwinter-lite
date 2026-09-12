@@ -103,7 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   whatever is current on the stable branch, so this is a target, not a pin.
 
 ### Added
-- **New self-contained Pelican egg** (`server/valheim-fimbulwinter-lite-egg.yaml`),
+- **New self-contained Pelican egg** (`server/fimbulwinter-lite-egg.yaml`),
   replacing the thin GitHub-bootstrap egg on this branch. It fetches no scripts
   from the repo, because the `vanilla` branch is local-only and a remote
   bootstrap would 404 and fail the install. It installs Valheim via SteamCMD and
