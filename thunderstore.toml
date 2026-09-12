@@ -48,7 +48,7 @@ korCaptain-NullReferenceFix = "1.0.20"
 # ── Server-side only (NEVER shipped in the client profile) ─────
 # Clients install none of these. See SERVER_ONLY_MODS in
 # scripts/export-profile.sh.
-ArgusMagnus-ServersideQoL = "2.0.6"
+ArgusMagnus-ServersideQoL = "2.0.7"
 ArgusMagnus-ServersideQoL_AutoStore = "2.0.0"
 ArgusMagnus-ServersideQoL_ContainerSizes = "2.0.1"
 ArgusMagnus-ServersideQoL_AutoProcess = "2.0.0"
