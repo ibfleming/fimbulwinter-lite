@@ -80,25 +80,6 @@ NoRainDamage and NullReferenceFix declare **no** keybinds at all, so the entire 
 Also tuned: CraftFromChests `SearchRadius` 40 -> 30, matching the old pack's AzuCraftyBoxes container
 range rather than the mod's more generous default.
 
-## ExtraSlots progression gating: disabled
-
-ExtraSlots gates its slots and inventory rows behind world progression by default. **All 33 gates are
-cleared in the shipped config**, so everything is available from the first minute:
-
-- All 6 quick slots (default: gated behind The Elder -> Seeker Queen)
-- All 4 extra utility slots (default: Bonemass / Yagluth / Queen, or Wishbone / Demister items)
-- Ammo, food, misc and equipment slots (default: gated on acquiring a matching item first)
-- 5 extra inventory rows plus regular rows 3-4 (default: gated behind boss drops *and* Forsaken powers)
-
-This is a deliberate, requested deviation from this pack's usual "progression must be earned" stance.
-It exists because the playthrough reuses established characters on a brand-new world: boss-defeat keys
-are **world** state, not character state, so veteran characters would otherwise spawn with every slot
-and extra row locked.
-
-These settings are all `[Synced with Server]`, so **the server's copy wins** - change them with
-`scripts/deploy.sh configs`, not by editing a client profile. To restore vanilla gating, reset the five
-`[Progression - *]` sections in `config/shudnal.ExtraSlots.cfg` to their documented defaults.
-
 ## Old pack -> new pack
 
 | Dropped (no 1.0 build) | Replaced by |
