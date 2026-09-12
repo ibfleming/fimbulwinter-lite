@@ -7,16 +7,16 @@ A ground-up rebuild of the pack for Valheim 1.0 "Deep North", built on two rules
 1. **Zero Azumatt mods.** None of the nine in the old pack have shipped a 1.0 build.
 2. **If the server can do it, the server does it.** Players install as little as possible.
 
-**17 packages, down from 58.** Every package verified against the Thunderstore API as published
+**18 packages, down from 58.** Every package verified against the Thunderstore API as published
 on/after 2026-09-09 (Valheim 1.0.0) - except the two pure serialization libraries, which contain no
 game code. **No Jotunn anywhere in the dependency graph.**
 
 ## The split
 
-Only 10 packages reach players. The other 7 live on the dedicated server and are excluded from the
+Only 11 packages reach players. The other 7 live on the dedicated server and are excluded from the
 client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`).
 
-### Client (10) - `make profile`
+### Client (11) - `make profile`
 
 | Package | Version | Role |
 |---|---|---|
@@ -30,6 +30,7 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 | **Neobotics-HUDCompass** | 1.2.0 | compass bar |
 | **JoelOliMclean-NoRainDamage** | 1.3.0 | no weather decay on builds |
 | **korCaptain-NullReferenceFix** | 1.0.20 | stability |
+| **JereKuusela-Server_devcommands** | 1.112.0 | admin console on a dedicated server (see below) |
 
 ### Server only (7) - players install none of these
 
@@ -45,6 +46,28 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 
 ServersideQoL is server-authoritative and works with **unmodded and console clients**, so none of the
 above costs a player anything to install.
+
+## Why Server_devcommands is required
+
+Vanilla gates every cheat command behind `Terminal.IsCheatsEnabled()`:
+
+```csharp
+if (!m_cheat) return false;
+if (ZNet.instance == null) return false;
+return ZNet.instance.IsServer();   // must BE the server
+```
+
+On a dedicated server a connected player is never the server, so `god`, `fly` and `debugmode` are
+rejected with "not valid in the current context" **no matter what adminlist.txt says** -- being an
+admin grants kick/ban, not client cheats. `devcommands` still reports "Dev commands: True" because it
+only flips a local flag, which makes the failure look like a permissions problem when it is not.
+
+Server_devcommands patches that gate (it references `IsCheatsEnabled`, `TryRunCommand`,
+`ConsoleCommand.IsValid`, `m_cheat` and `RemoteCommand`). It must be installed on **both** sides: the
+console it patches is client-side, while permissions are enforced server-side.
+
+`Automatic devcommands = false` is kept from the old pack -- admins run `devcommands` explicitly
+rather than having it enable on join.
 
 ## Keyboard Shortcuts
 
@@ -62,6 +85,8 @@ NoRainDamage and NullReferenceFix declare **no** keybinds at all, so the entire 
 | `F6` | ExtraSlots | Connect-panel rebind | Anywhere (moved off `F2`, see below) |
 | `J` | HUDCompass | Toggle the compass bar | Anywhere (moved off `Alt + C`, see below) |
 | `Delete` | RecyclePlus | Discard / recycle hovered item | Inventory |
+| `O` | Server devcommands | Admin bundle: `debugmode` + `nocost` + `god` | Admins only |
+| `K` | Server devcommands | Admin `fly` toggle | Admins only |
 
 **Resolved conflicts (2026-09-11 audit):**
 
