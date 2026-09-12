@@ -44,6 +44,8 @@ Neobotics-HUDCompass = "1.2.0"
 JoelOliMclean-NoRainDamage = "1.3.0"
 korCaptain-NullReferenceFix = "1.0.20"
 JereKuusela-Server_devcommands = "1.112.0"
+Crystal-DeathPenalty = "1.3.0"
+cjayride-RecycleItemsIntoParts = "1.7.3"
 
 # ── Server-side only (NEVER shipped in the client profile) ─────
 # Clients install none of these. See SERVER_ONLY_MODS in

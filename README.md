@@ -7,16 +7,16 @@ A ground-up rebuild of the pack for Valheim 1.0 "Deep North", built on two rules
 1. **Zero Azumatt mods.** None of the nine in the old pack have shipped a 1.0 build.
 2. **If the server can do it, the server does it.** Players install as little as possible.
 
-**17 packages, down from 58.** Every package verified against the Thunderstore API as published
+**19 packages, down from 58.** Every package verified against the Thunderstore API as published
 on/after 2026-09-09 (Valheim 1.0.0) - except the two pure serialization libraries, which contain no
 game code. **No Jotunn anywhere in the dependency graph.**
 
 ## The split
 
-Only 10 packages reach players. The other 7 live on the dedicated server and are excluded from the
+Only 12 packages reach players. The other 7 live on the dedicated server and are excluded from the
 client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`).
 
-### Client (10) - `make profile`
+### Client (12) - `make profile`
 
 | Package | Version | Role |
 |---|---|---|
@@ -30,6 +30,8 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 | **JoelOliMclean-NoRainDamage** | 1.3.0 | no weather decay on builds |
 | **korCaptain-NullReferenceFix** | 1.0.20 | stability |
 | **JereKuusela-Server_devcommands** | 1.112.0 | admin console on a dedicated server (see below) |
+| **Crystal-DeathPenalty** | 1.3.0 | tunes skill loss on death -- replaces SmartSkills |
+| **cjayride-RecycleItemsIntoParts** | 1.7.3 | recycle items into parts (drag + `Delete`) -- see caveat |
 
 ### Server only (7) - players install none of these
 
@@ -121,6 +123,26 @@ cjayride-<DiscardInventoryItem fork>   1.7.3   "Updated for Valheim 1.0"
 Ketanol-<RecyclePlus-based>            1.0.1   explicitly "Based on RecyclePlus" -- likely same bug
 MainStreetGaming-<recycler>            1.0.1
 ```
+
+## Caveat: cjayride-RecycleItemsIntoParts
+
+Added at user request to fill the recycle gap left by RecyclePlus. **Not yet cleared by the club
+test.** RecyclePlus was removed because recycling a plain club returned a Wooden Battle Idol 100% of
+the time -- Valheim 1.0's Forge of Potential (`Upgrader (Refinement Forge)`) registers recipes that
+consume idols, and a recycle mod resolving materials through `GetRecipe` can pick those up instead of
+the crafting recipe. Any recycle mod is a suspect until proven otherwise.
+
+Before trusting it: craft a plain club from wood, recycle it, and confirm you get **wood back and
+nothing else**. If an idol appears, remove it the same way RecyclePlus was removed.
+
+It also carries Thunderstore's "AI Generated" tag -- the same flag that got VitByr-VBNetTweaks
+rejected in v1.4.2.
+
+## Crystal-DeathPenalty tuning
+
+`SkillLossPercent` is the dial: 0 disables skill loss, 50 halves all skills, 100 wipes them. Vanilla
+is 5. The old pack's SmartSkills gave "75% skill recovery after death", which lands around **1-2**
+here. Server-enforced, so the server's copy wins -- change it with `scripts/deploy.sh configs`.
 
 ## Keyboard Shortcuts
 
