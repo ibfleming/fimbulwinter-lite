@@ -26,7 +26,7 @@ repository = "https://thunderstore.io"
 namespace = "ibfleming"
 name = "Fimbulwinter_Lite"
 description = "Minimal server-side-first QoL for Valheim 1.0. 17 packages, no Azumatt mods, no Jotunn -- most of the QoL runs on the server so clients stay near-vanilla."
-versionNumber = "3.0.0"
+versionNumber = "3.1.0"
 websiteUrl = "https://github.com/ibfleming/fimbulwinter-lite"
 
 [package.dependencies]
