@@ -69,6 +69,35 @@ console it patches is client-side, while permissions are enforced server-side.
 `Automatic devcommands = false` is kept from the old pack -- admins run `devcommands` explicitly
 rather than having it enable on join.
 
+## ServersideQoL tuning
+
+The modules ship largely inert -- AutoStore in particular had auto-pickup off, sorting off and its
+emote trigger disabled, so it did nothing at all. All seven are now configured. Values come from the
+old pack's own tuned configs wherever an equivalent existed, rather than invented numbers.
+
+| Module | Setting | Value | Why |
+|---|---|---|---|
+| AutoStore | `AutoPickup` | true | was off -- the headline feature |
+| AutoStore | `AutoPickupRange` | 20 | parity with old AzuAutoStore (mod default 64 is most of a base) |
+| AutoStore | `StackInventoryIntoContainersEmote` | -2 (any emote) | was -1/disabled; the mod recommends "any" as most reliable over crossplay |
+| AutoStore | `AutoSort` | true | |
+| AutoStore | `PickedUpMessageType` | TopLeftNear | feedback when something is auto-stored |
+| AutoProcess | `FeedFromContainersRange` | 15 | parity with old AutomaticFuel (mod default 4 is uselessly tight) |
+| AutoProcess | `CapacityMultiplier` / `TimePerProductMultiplier` | **1 / 1** | deliberately untouched -- no smelting speed or capacity cheats |
+| JustSleep | `RequiredPlayerPercentage` | 51 | old SleepSkip was majority-rules, not the mod's unanimous 100 |
+| MultiplayerTweaks | `AssignInteractablesToClosestPlayer` | true | prevents ore loss from networking issues |
+| MultiplayerTweaks | `AssignMobsToClosestPlayer` | true | fixes dodge/parry desync |
+| MultiplayerTweaks | `AssignShipsToCaptain` | true | fixes ship control desync |
+| MultiplayerTweaks | `ForcePlayerMapPin` | **false** | left vanilla -- a visibility change, not a fix |
+| ContainerSizes | wood `5x3`, reinforced `6x5`, blackmetal `8x6`, karve `4x2`, longship `6x4` | | exact parity with the old AzuContainerSizes values |
+
+Everything the old pack did not touch stays vanilla: personal chest, barrel, cart, wardrobe, grausten
+chest, Ashlands ship, pots and gifts. The `+` suffix (a container that expands forever while holding a
+single item type) is **not used anywhere** -- it is not a Vanilla+ behaviour.
+
+The three MultiplayerTweaks ownership options are the closest thing in this pack to the
+NetworkTweaks/TimeoutLimit role from the old one: they are desync fixes, not conveniences.
+
 ## Keyboard Shortcuts
 
 Audited 2026-09-11 against the mods' freshly generated configs. MyLittleUI, CraftFromChests,
