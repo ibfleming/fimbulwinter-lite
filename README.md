@@ -170,7 +170,6 @@ NoRainDamage and NullReferenceFix declare **no** keybinds at all, so the entire 
 | `Alt + 1 / 2 / 3` | ExtraSlots | Ammo slots 1-3 | Anywhere |
 | `Alt + Q / E / R` | ExtraSlots | Food slots 1-3 | Anywhere |
 | `Alt` (hold) | ExtraSlots | Drag item between equipment slots | Inventory open |
-| `F6` | ExtraSlots | Connect-panel rebind | Anywhere (moved off `F2`, see below) |
 | `J` | HUDCompass | Toggle the compass bar | Anywhere (moved off `Alt + C`, see below) |
 | `O` | Server devcommands | Admin bundle: `debugmode` + `nocost` + `god` | Admins only |
 | `K` | Server devcommands | Admin `fly` toggle | Admins only |
@@ -183,10 +182,13 @@ NoRainDamage and NullReferenceFix declare **no** keybinds at all, so the entire 
   `Alt + Z/X/C` preserves the muscle memory from the old pack's AzuExtendedPlayerInventory binds.
 - **HUDCompass `Alt + C` collided with ExtraSlots `Quickslot 3`.** The compass moved to bare `J` --
   a documented free key -- since quickslot Z/X/C matches the old pack.
-- **ExtraSlots `Rebind Connect Panel` was on `F2`**, which Valheim 1.0 uses to display the active
-  world modifiers. Moved to `F6` (free now that AutomaticFuel is gone).
+- **`Rebind Connect Panel` stays on `F2` -- an earlier audit pass wrongly moved it to `F6`.** That
+  setting is ExtraSlots exposing the key for *vanilla's* Connect Panel (the F2 FPS / ping / ZDO HUD,
+  which in 1.0 also shows the active world modifiers). Its `F2` default means "leave vanilla alone";
+  there was no conflict. Moving it relocated the performance HUD, which players noticed as it having
+  "disappeared". Do not re-flag this in future audits.
 - All remaining ExtraSlots binds are `Alt`-modified, so none shadow a bare vanilla key. `Delete` and
-  `J` are unclaimed in vanilla. Free keys remaining for future mods: `U`(bare), `Y`(bare), `F4`, `F7`,
+  `J` are unclaimed in vanilla. Free keys remaining for future mods: `U`(bare), `Y`(bare), `F4`, `F6`, `F7`,
   `F8`, `F10`, `F11`.
 
 Also tuned: CraftFromChests `SearchRadius` 40 -> 30, matching the old pack's AzuCraftyBoxes container
