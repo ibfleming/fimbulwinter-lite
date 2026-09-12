@@ -2,8 +2,8 @@ name: Check Mod Updates
 
 on:
   schedule:
-    # Every Monday at 09:00 UTC
-    - cron: "0 9 * * 1"
+    # Every day at 08:00 UTC
+    - cron: "0 8 * * *"
   workflow_dispatch:
 
 jobs:
@@ -25,8 +25,9 @@ jobs:
         id: check
         run: make updates
 
-      - name: Create or update tracking issue
-        if: steps.check.outputs.updates_available != '0' && steps.check.outputs.updates_available != ''
+      # Always runs: with updates it files/supersedes the single open
+      # mod-updates issue, with none it closes any that are still open.
+      - name: Sync tracking issue
         env:
           GH_TOKEN: ${{ github.token }}
           UPDATE_LIST: ${{ steps.check.outputs.update_list }}
