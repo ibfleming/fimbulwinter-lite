@@ -8,7 +8,7 @@
 #   r2modman → Profiles → Import / Update → From file
 #
 # Usage: scripts/export-profile.sh [output.r2z]
-#   Default output: dist/Fimbulwinter_Minimal-v<version>-profile.r2z
+#   Default output: dist/Fimbulwinter_Lite-v<version>-profile.r2z
 #
 # Requires: bash, python3
 # ═══════════════════════════════════════════════════════════════
@@ -40,10 +40,10 @@ skipped = [f for f, _ in deps if f in SERVER_ONLY_MODS]
 deps = [(f, v) for f, v in deps if f not in SERVER_ONLY_MODS]
 
 if not out:
-    out = os.path.join(repo, "dist", f"Fimbulwinter_Minimal-v{version}-profile.r2z")
+    out = os.path.join(repo, "dist", f"Fimbulwinter_Lite-v{version}-profile.r2z")
 os.makedirs(os.path.dirname(os.path.abspath(out)) or ".", exist_ok=True)
 
-lines = [f"profileName: Fimbulwinter-Minimal-v{version}", "mods:"]
+lines = [f"profileName: Fimbulwinter-Lite-v{version}", "mods:"]
 for full, ver in deps:
     major, minor, patch = ver.split(".")
     lines += [f"  - name: {full}",

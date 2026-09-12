@@ -5,10 +5,10 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.0] - UNRELEASED - branch `lite-minimal`, local only, DO NOT PUBLISH
+## [2.0.0] - UNRELEASED - branch `lite-minimal`, local only, DO NOT PUBLISH
 
 > Not a release. A ground-up rebuild for Valheim 1.0 with zero Azumatt mods and
-> most QoL moved server-side. 17 packages, down from 58.
+> most QoL moved server-side. 19 packages, down from 58.
 
 ### Removed
 - **All nine Azumatt mods.** None have shipped a Valheim 1.0 build (newest is
@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`scripts/export-profile.sh` learned `SERVER_ONLY_MODS`** - server-side
   packages are excluded from the generated client profile, so `make profile`
   emits 10 packages while the toml carries 17. Profile is now named
-  `Fimbulwinter-Minimal-v<version>`.
+  `Fimbulwinter-Lite-v<version>`.
 - **`CLIENT_ONLY_MODS` in `scripts/install-mods.sh`** trimmed to the three
   genuinely client-only mods: MyLittleUI, HUDCompass, RecyclePlus.
 - TeleportEverything dropped entirely in favour of the vanilla

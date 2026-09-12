@@ -1,11 +1,11 @@
 meta:
   version: PLCN_v3
 exported_at: "2026-09-11T00:00:00+00:00"
-name: "Fimbulwinter Minimal — Valheim BepInEx"
+name: "Fimbulwinter Lite — Valheim BepInEx"
 author: ibfleming@github.com
 uuid: 3f6c1d24-90ab-4c7e-b1f5-2d8e41a7c603
 description: |-
-  Valheim dedicated server with BepInEx, for the Fimbulwinter Minimal modpack.
+  Valheim dedicated server with BepInEx, for the Fimbulwinter Lite modpack.
   Installs the game and the loader; mods and configs are pushed from the repo
   with scripts/deploy.sh. Every world modifier is its own panel field, and
   admins are set from a Steam ID list.

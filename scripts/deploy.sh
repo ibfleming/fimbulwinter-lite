@@ -125,7 +125,7 @@ set_startup_variable() {
 # supposed to make it skip that, but don't rely on it -- disable the
 # auto-update outright so the restart can never touch this deploy).
 disable_auto_update() {
-    # The vanilla/minimal egg is self-contained and has no boot-time mod
+    # The self-contained egg and has no boot-time mod
     # re-sync, so it declares no AUTO_UPDATE_MODS variable at all. Setting a
     # variable the egg doesn't declare returns HTTP 400 -- skip cleanly rather
     # than aborting a deploy that was never at risk of being reverted.

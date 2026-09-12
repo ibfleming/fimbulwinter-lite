@@ -1,4 +1,4 @@
-# Fimbulwinter Minimal - server-side-first QoL for Valheim 1.0
+# Fimbulwinter Lite 2.0.0 - server-side-first QoL for Valheim 1.0
 
 **Branch: `lite-minimal`. Temporary, local-only. Never pushed to `main`, never tagged, never published.**
 
@@ -37,7 +37,7 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 
 | Module | Version | Replaces |
 |---|---|---|
-| ArgusMagnus-ServersideQoL | 2.0.6 | (suite core) |
+| ArgusMagnus-ServersideQoL | 2.0.7 | (suite core) |
 | `_AutoStore` | 2.0.0 | AzuAutoStore |
 | `_ContainerSizes` | 2.0.1 | AzuContainerSizes |
 | `_AutoProcess` | 2.0.0 | AutomaticFuel |
@@ -230,7 +230,7 @@ since `portals casual` sets the `teleportall` global key and makes the mod moot.
 ## Deploying
 
 ```bash
-make profile                 # client -> dist/Fimbulwinter_Minimal-v3.0.0-profile.r2z
+make profile                 # client -> dist/Fimbulwinter_Lite-v2.0.0-profile.r2z
 bash scripts/deploy.sh full  # server (.env SERVER_ID must point at the right instance)
 ```
 
