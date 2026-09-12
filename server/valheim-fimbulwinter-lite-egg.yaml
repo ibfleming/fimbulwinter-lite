@@ -256,7 +256,7 @@ variables:
     description: |-
       Enemy damage, health pool and starred-variant spawn chance.
       Leave EMPTY for normal -- the game REJECTS an explicit "normal" value
-    ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: veryeasy, easy, hard, veryhard (omit = normal)
+      ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: veryeasy, easy, hard, veryhard (omit = normal)
     env_variable: MODIFIER_COMBAT
     default_value: ""
     user_viewable: true
@@ -270,7 +270,7 @@ variables:
     description: |-
       Skill loss on death and what happens to your items (tombstone / kept / destroyed).
       Leave EMPTY for normal -- the game REJECTS an explicit "normal" value
-    ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: casual, veryeasy, easy, hard, hardcore (omit = normal)
+      ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: casual, veryeasy, easy, hard, hardcore (omit = normal)
     env_variable: MODIFIER_DEATHPENALTY
     default_value: ""
     user_viewable: true
@@ -285,7 +285,7 @@ variables:
       Drop-quantity multiplier for harvesting, mining and enemy drops (0.5x up to 3x).
       Boss trophies and fish are unaffected.
       Leave EMPTY for normal -- the game REJECTS an explicit "normal" value
-    ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: muchless, less, more, muchmore, most (omit = normal)
+      ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: muchless, less, more, muchmore, most (omit = normal)
     env_variable: MODIFIER_RESOURCES
     default_value: ""
     user_viewable: true
@@ -299,7 +299,7 @@ variables:
     description: |-
       How often base raids trigger, or none to disable raids entirely.
       Leave EMPTY for normal -- the game REJECTS an explicit "normal" value
-    ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: none, muchless, less, more, muchmore (omit = normal)
+      ("Could not parse ... as a world modifier"), so normal is expressed by omission. Values: none, muchless, less, more, muchmore (omit = normal)
     env_variable: MODIFIER_RAIDS
     default_value: ""
     user_viewable: true
