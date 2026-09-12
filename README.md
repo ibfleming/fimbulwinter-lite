@@ -140,9 +140,22 @@ rejected in v1.4.2.
 
 ## Crystal-DeathPenalty tuning
 
-`SkillLossPercent` is the dial: 0 disables skill loss, 50 halves all skills, 100 wipes them. Vanilla
-is 5. The old pack's SmartSkills gave "75% skill recovery after death", which lands around **1-2**
-here. Server-enforced, so the server's copy wins -- change it with `scripts/deploy.sh configs`.
+Shipped in `config/dev.crystal.deathpenalty.cfg`, section `[Death]`. All four keys are
+`AlwaysServerControlled` via ConditionalConfigSync -- the server copy wins, change it with
+`scripts/deploy.sh configs`.
+
+| Key | Value | Vanilla | Why |
+|---|---|---|---|
+| `SkillLossPercent` | **2** | 5 | the one deliberate dial -- see below |
+| `MercyEffectDuration` | 600 | 600 | post-death no-loss window, blocks chained-death spirals |
+| `SafetyEffectDuration` | 50 | 50 | "Corpse Run" buff on looting your tombstone |
+| `ResetLevelProgress` | true | true | partial next-level progress still wiped |
+
+**Why 2.** Vanilla 5% compounds harshly on a fresh world running combat hard (150% enemy damage,
+85% player damage). The old pack's SmartSkills gave "75% recovery", roughly 1.25% effective -- but
+that was paired with combat *veryhard*. Combat is a notch easier now, so a slightly higher loss keeps
+the overall stakes of dying about where they were: a level-30 skill loses ~0.6 levels per death.
+Noticeable, recoverable. Untested in play -- adjust after a few deaths if it feels off.
 
 ## Keyboard Shortcuts
 
