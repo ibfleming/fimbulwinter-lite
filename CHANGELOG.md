@@ -10,6 +10,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > Not a release. A ground-up rebuild for Valheim 1.0 with zero Azumatt mods and
 > most QoL moved server-side. 19 packages, down from 58.
 
+### Changed (2026-09-12) -- dependency bump
+- **shudnal-ConditionalConfigSync 1.0.5 -> 1.0.6.** The config-sync library that
+  ExtraSlots, MyLittleUI and DeathPenalty all run on, so it got a full changelog
+  read rather than a blind bump. 1.0.6 adds an optional *mod-requirement policy*
+  system: `ModRequirementMode.Fixed`/`.Conditional` for mod authors, and a new
+  server-only `ConditionalConfigSync.ModRequirements.cfg` where `+ ModGuid`
+  requires a mod for connecting clients and `- ModGuid` allows clients without it.
+  Explicitly backward compatible -- "existing consumers remain fixed by default
+  and keep their previous ModRequired behavior without recompilation" -- and the
+  wire protocol is unchanged, so a 1.0.5 client can still talk to a 1.0.6 server
+  during the rollover. None of this pack's consumers opt into Conditional mode,
+  so the new file is inert for us.
+  **Config regeneration checked:** after deploy the server generated
+  `ModRequirements.cfg` alongside the pre-existing `SyncPolicy.cfg` and
+  `HiddenConfigs.cfg`. All three are comment-only templates with no rules -- pure
+  defaults with nothing customized to carry forward -- so they are deliberately
+  not added to `config/`. `ConditionalConfigSync.Debug.cfg`, the one file this
+  pack does ship, is unchanged.
+  Deployed and verified live: `Conditional Config Sync 1.0.6` loaded, 15/15
+  plugins, 0 NullReference, 0 MissingMethod, no non-graphics errors. Client
+  profile and export rebuilt. `make updates`: other 18 packages current.
+
 ### Removed
 - **All nine Azumatt mods.** None have shipped a Valheim 1.0 build (newest is
   AzuExtendedPlayerInventory, 2026-08-31, pre-1.0): AzuAutoStore, AzuCraftyBoxes,
