@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - UNRELEASED - branch `lite-minimal`, local only, DO NOT PUBLISH
 
+### Fixed/Added (2026-09-16) -- club test passed, RecycleItemsIntoParts config shipped
+User ran the club test in-game: crafted a plain club, recycled it, got wood
+back and nothing else -- no idol. Cleared. `config/cjayride.RecycleItemsIntoParts.cfg`
+shipped for the first time, all mod defaults (`ReturnResources = 1`, coins
+excluded, consumables/trophies/shards included). Checked the full config (8
+keys, verified against the DLL) for a "discard anything, return nothing"
+toggle -- doesn't exist; the mod needs some resolvable recipe to act at all,
+recipe-less items are left alone. Also found while checking: the DLL has a
+`Discarding {item}` string next to `Idol` references -- independent evidence
+this mod already patches the same Forge-of-Potential idol bug that got
+RecyclePlus removed. README's "Caveat" section retitled and rewritten now
+that this is resolved rather than pending.
+
+Also fixed live, at user request, in `vapok.mods.adventurebackpacks.cfg`
+(`[Local Config]`, not server-synced):
+- `Outward Mode` false -> true -- this is the actual gate on the quick-drop
+  feature; `Quickdrop Backpack = Y` was already correctly bound, but the
+  feature itself was off, which is why Y did nothing in testing.
+- `Open with Inventory` false -> true -- backpack now opens automatically
+  alongside the player inventory.
+Both applied directly to the live client profile as well as `config/`.
+
 ### Verified (2026-09-15, later still) -- first server boot with Jotunn + AdventureBackpacks
 Deployed `f3ae3b0` and boot-verified: 17/17 plugins including `Jotunn 2.30.0`
 and `Adventure Backpacks 2.0.4`, Jotunn's ModCompatibility/Synchronization/

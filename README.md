@@ -34,7 +34,7 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 | **korCaptain-NullReferenceFix** | 1.0.20 | stability |
 | **JereKuusela-Server_devcommands** | 1.113.0 | admin console on a dedicated server (see below) |
 | **Crystal-DeathPenalty** | 1.3.1 | tunes skill loss on death -- replaces SmartSkills |
-| **cjayride-RecycleItemsIntoParts** | 1.7.3 | recycle items into parts (drag + `Delete`) -- see caveat |
+| **cjayride-RecycleItemsIntoParts** | 1.7.3 | recycle items into parts (drag + `Delete`) |
 | **ComfyMods-Gizmo** | 1.16.0 | free build-piece rotation on all three axes |
 | **Searica-Extra_Snap_Points_Made_Easy** | 2.1.0 | extra snap points, manual/grid snapping |
 | **Ostrix-AdvancedTerrainModifiersCompatible** | 1.4.8 | square hoe/cultivator tools, radius + hardness scroll, precision raise, terrain reset |
@@ -269,28 +269,29 @@ No upstream fix: 1.3.2 is the latest published version. Removing it is the only 
 directly breaks design principle 1 (no game-breaking shortcuts) and nothing in its config can gate it
 (`ReturnResources` only scales the return rate, there is no exclusion list).
 
-The pack now has **no recycle or trash function**. Candidates if you want one back -- each needs the
-club test run against it first, because they may share the same 1.0 recipe-resolution bug:
+Replaced by `cjayride-RecycleItemsIntoParts` -- see below. That mod's own changelog independently fixed
+the same idol bug (a `Discarding` path that drops the idol result instead of returning it), and it
+passed the club test here too.
 
-```
-cjayride-<DiscardInventoryItem fork>   1.7.3   "Updated for Valheim 1.0"
-Ketanol-<RecyclePlus-based>            1.0.1   explicitly "Based on RecyclePlus" -- likely same bug
-MainStreetGaming-<recycler>            1.0.1
-```
+## cjayride-RecycleItemsIntoParts
 
-## Caveat: cjayride-RecycleItemsIntoParts
+Added to fill the recycle gap left by RecyclePlus (removed: recycling a plain club returned a Wooden
+Battle Idol 100% of the time -- Valheim 1.0's Forge of Potential registers recipes that consume idols,
+and a recycle mod resolving materials through `GetRecipe` can pick those up instead of the crafting
+recipe). **Cleared the club test 2026-09-16** -- crafted a plain club, recycled it, got wood back and
+nothing else. Its changelog (1.7.2) lists exactly this fix: a `Discarding {item}` path that deletes the
+source item but discards an idol result instead of handing it back, rather than blocking the recycle
+outright.
 
-Added at user request to fill the recycle gap left by RecyclePlus. **Not yet cleared by the club
-test.** RecyclePlus was removed because recycling a plain club returned a Wooden Battle Idol 100% of
-the time -- Valheim 1.0's Forge of Potential (`Upgrader (Refinement Forge)`) registers recipes that
-consume idols, and a recycle mod resolving materials through `GetRecipe` can pick those up instead of
-the crafting recipe. Any recycle mod is a suspect until proven otherwise.
+Config shipped at `config/cjayride.RecycleItemsIntoParts.cfg`, all mod defaults -- `RecycleHotkey =
+delete`, `ReturnResources = 1` (100%), coins excluded, consumables/trophies/shards included. **No
+"discard anything, return nothing" option exists** -- checked the full config (8 keys, confirmed
+against the DLL) and it isn't there. The mod needs *some* resolvable recipe to do anything; raw
+materials and recipe-less drops just print "Cannot be recycled or unknown recipe" and are left alone.
+Not a general trash/junk function.
 
-Before trusting it: craft a plain club from wood, recycle it, and confirm you get **wood back and
-nothing else**. If an idol appears, remove it the same way RecyclePlus was removed.
-
-It also carries Thunderstore's "AI Generated" tag -- the same flag that got VitByr-VBNetTweaks
-rejected in v1.4.2.
+Still carries Thunderstore's "AI Generated" tag -- the same flag that got VitByr-VBNetTweaks rejected
+in v1.4.2 -- but the club test is the concrete pass/fail bar that mattered here, and it passed.
 
 ## Crystal-DeathPenalty tuning
 
@@ -401,8 +402,8 @@ vs. `Alt + Q/E/R`. `L` is unclaimed. `Y` and `L` are no longer free for future m
 | AzuExtendedPlayerInventory | shudnal-ExtraSlots |
 | AzuHoverStats | MyLittleUI (tooltips) |
 | AAA_Crafting | MyLittleUI (multicraft) |
-| Recycle_N_Reclaim | *nothing* - see "RecyclePlus removed" |
-| Quick Stack Store Sort Trash | RecyclePlus (trash) + `_AutoStore` (stacking) |
+| Recycle_N_Reclaim | `cjayride-RecycleItemsIntoParts` (via RecyclePlus, since removed) |
+| Quick Stack Store Sort Trash | `cjayride-RecycleItemsIntoParts` (trash) + `_AutoStore` (stacking) |
 | AzuAreaRepair, AzuMiscPatches | nothing - dropped |
 | MultiUserChest | nothing - only an unofficial rebuild exists |
 | SleepSkip | `ServersideQoL_JustSleep` (server) |
