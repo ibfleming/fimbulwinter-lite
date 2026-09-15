@@ -62,7 +62,7 @@ ArgusMagnus-ServersideQoL_MultiplayerTweaks = "2.0.0"
 communities = ["valheim"]
 
 [publish.categories]
-valheim = ["modpacks", "tweaks", "server-side"]
+valheim = ["modpacks", "tweaks", "server-side", "deep-north-update"]
 
 [build]
 
