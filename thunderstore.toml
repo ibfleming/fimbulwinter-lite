@@ -1,9 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
 # Fimbulwinter Lite — server-side-first QoL for Valheim 1.0
 #
-# Local branch (lite-minimal), pinned at 2.0.0. Do not tag, do not
-# push to main, do not publish to Thunderstore.
-#
 # If the server can do it, the server does it -- players install as
 # little as possible and console/vanilla clients are never locked out,
 # except AdventureBackpacks (ModRequired on both sides, see README).
