@@ -7,23 +7,25 @@ A ground-up rebuild of the pack for Valheim 1.0 "Deep North", built on two rules
 1. **Zero Azumatt mods.** None of the nine in the old pack have shipped a 1.0 build.
 2. **If the server can do it, the server does it.** Players install as little as possible.
 
-**24 packages, down from 58.** Every package verified against the Thunderstore API as published
+**25 packages, down from 58.** Every package verified against the Thunderstore API as published
 on/after 2026-09-09 (Valheim 1.0.0) - except the two pure serialization libraries, which contain no
-game code. **The server runs no Jotunn.** Jotunn exists on clients only, as the dependency of one
-building mod (see "Building mods" below).
+game code. **One exception to "server-side-first":** Jotunn and Vapok-AdventureBackpacks now run on
+both sides -- see "AdventureBackpacks" below for why.
 
 ## The split
 
-Only 17 packages reach players. The other 7 live on the dedicated server and are excluded from the
+Only 18 packages reach players. The other 7 live on the dedicated server and are excluded from the
 client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`).
 
-### Client (17) - `make profile`
+### Client (18) - `make profile`
 
 | Package | Version | Role |
 |---|---|---|
 | denikson-BepInExPack_Valheim | 5.4.2350 | loader |
 | ValheimModding-YamlDotNet | 16.3.1 | library |
 | shudnal-ConditionalConfigSync | 1.0.8 | server-enforced config |
+| ValheimModding-Jotunn | 2.30.0 | library -- now **both sides**, see "AdventureBackpacks" |
+| **Vapok-AdventureBackpacks** | 2.0.4 | tiered biome backpacks -- ModRequired, see below |
 | **shudnal-MyLittleUI** | 1.2.19 | tooltips, production timers, chest preview, multicraft, weather |
 | **shudnal-ExtraSlots** | 1.2.6 | equipment + quick slots |
 | **Toxo-CraftFromChests** | 0.4.0 | craft/build/fuel from nearby chests |
@@ -35,7 +37,6 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 | **cjayride-RecycleItemsIntoParts** | 1.7.3 | recycle items into parts (drag + `Delete`) -- see caveat |
 | **ComfyMods-Gizmo** | 1.16.0 | free build-piece rotation on all three axes |
 | **Searica-Extra_Snap_Points_Made_Easy** | 2.1.0 | extra snap points, manual/grid snapping |
-| ValheimModding-Jotunn | 2.30.0 | library -- **client only**, needed by the terrain fork |
 | **Ostrix-AdvancedTerrainModifiersCompatible** | 1.4.8 | square hoe/cultivator tools, radius + hardness scroll, precision raise, terrain reset |
 | **Zenox-ServerConnect** | 1.0.7 | one-click main-menu connect button -- see caveat |
 
@@ -57,7 +58,7 @@ above costs a player anything to install.
 ## Building mods (added 2026-09-14)
 
 The three building mods the old pack was built around are back, now that all three have 1.0
-builds. All are **client-only** -- the server does not run any of them, or Jotunn.
+builds. All three are **client-only**.
 
 | Mod | Why this one |
 |---|---|
@@ -65,13 +66,8 @@ builds. All are **client-only** -- the server does not run any of them, or Jotun
 | Searica-Extra_Snap_Points_Made_Easy 2.1.0 | "Updated for Deep North Update", 1.0.12. Author notes new 1.0 pieces get automated snap points only, no hand-placed ones yet. No dependencies. |
 | Ostrix-AdvancedTerrainModifiersCompatible 1.4.8 | The original Searica-AdvancedTerrainModifiers is dead (last release 2024-12, pinned to Jotunn 2.22). This is a fork of ATM 1.4.1 at commit `e773c62`, same plugin GUID, rebuilt for Valheim 1.0 / BepInEx 5.4.2350 / Jotunn 2.30.0. **It is the only 1.0-ready mod that gives square hoe and cultivator brushes**, which was the deciding requirement. |
 
-Two deliberate exceptions to this pack's rules, recorded here so they are not re-litigated:
+One deliberate exception to this pack's rules, recorded here so it is not re-litigated:
 
-- **Jotunn is back, on clients only.** The fork's README: *"does work as a client-side only mod and only
-  needs to be installed on the server if you wish to enforce configuration settings."* Terrain
-  changes propagate through vanilla's own terrain RPCs, so other players see them without the mod. Jotunn
-  performs its mod-compatibility handshake only when both sides run it; with a Jotunn-free server it is
-  skipped. **Verify on the first connect** that a client with the fork joins the server cleanly.
 - **The fork carries Thunderstore's "AI Generated" tag.** Unlike SwmarlyValheimQOL and VBNetTweaks
   (rejected: AI-written from scratch), this tag is on a compatibility shim over Searica's original
   gameplay code -- the square tools, precision raise and reset are the real ATM 1.4.1 implementation.
@@ -164,6 +160,45 @@ import the `.r2z`), never in `config/` here.
 Carries Thunderstore's "AI Generated" tag at 396 downloads and two days old -- noted rather than a
 blocker, given the DLL audit above and how small and easily verified its entire feature surface is (one
 button, one connect call).
+
+## AdventureBackpacks (added 2026-09-15)
+
+Restores biome-tiered backpacks -- the one content mod in this pack, and the one deliberate break from
+"no content mods, no game-breaking shortcuts". Actively maintained (not deprecated, updated as recently
+as 2026-09-15) and confirmed 1.0-ready since its 2.0.0 rewrite ("Updated all Transpilers and Harmony
+References... Fixed: Drop rates now properly account for World Scaling and Level/Star creature
+ratings"); 2.0.1-2.0.4 are follow-up mod-compatibility and item-duplication fixes. Current: 2.0.4.
+
+**Why this reopens the Jotunn question.** The README is explicit: *"Required on Both Client & Server:
+Adventure Backpacks must be present on the server and all connecting clients. Built-in version checking
+ensures game-state and inventory consistency."* Unlike the ATM fork (client-only, Jotunn skips its
+handshake against a Jotunn-free server), this mod needs Jotunn as a real **server** dependency too --
+the same reason AdventureBackpacks (and Jotunn entirely) was removed in the original lite-minimal
+rebuild. Re-added anyway at user request, aware of the tradeoff: `ValheimModding-Jotunn` moved from
+the client-only building-mod group into the shared "both sides" block in `thunderstore.toml`, and out of
+`CLIENT_ONLY_MODS` in `scripts/install-mods.sh`. **This is now a ModRequired mod for every player** --
+unlike the rest of this pack, a console or vanilla client cannot join without it.
+
+**Tiers:** Satchel (Meadows) -> Rugged Backpack (Black Forest) -> Bloodbag Wetpack (Swamp, Waterproof)
+-> Arctic Sherpa Pack (Mountain, Frost/Cold Resistance) -> Lox Hide Knappsack (Plains) -> Explorers
+Wisppack (Mistlands, built-in Demister + Slow Fall). Ashlands and Deep North packs are marked "coming
+soon" upstream. Legacy Iron/Silver packs exist only for pre-2.0 saves -- irrelevant on a fresh world.
+
+**Keybinds, checked against every existing bind in this pack -- no conflicts found:**
+
+| Key | Action |
+|---|---|
+| `I` | Toggle equipped backpack open/closed (not a vanilla key -- vanilla inventory is `Tab`) |
+| `Y` (bare) | Outward quick-drop -- detach and drop the backpack behind you. Distinct from ExtraSlots' `Alt + Y` (quickslot 6); same accepted bare-vs-modified pattern as `Alt + Q/E/R` vs a future bare `Q`/`E`/`R`. |
+| `L` | Toggle the Explorers Wisppack's built-in Demister (Mistlands only) |
+
+**Config: do not carry forward the old pack's `vapok.mods.adventurebackpacks.cfg` (1.9.13).** The
+2.0.0 rewrite changed backpack naming (old "Legacy" Iron/Silver split into the new tiered names) and
+added new World-Scaling/Level-Factor drop settings -- the schema has almost certainly drifted. Standard
+procedure applies instead: deploy at 2.0.4, let it generate fresh on first boot, then diff and tune
+(crafting costs, drop tables, weight multipliers) from the regenerated file, not the stale one.
+
+**Not yet boot-tested** -- added the same session it was researched, config not yet regenerated.
 
 ## Why Server_devcommands is required
 
@@ -276,9 +311,9 @@ Noticeable, recoverable. Untested in play -- adjust after a few deaths if it fee
 
 ## Keyboard Shortcuts
 
-Audited 2026-09-11 against the mods' freshly generated configs; building mods audited 2026-09-14.
-MyLittleUI, CraftFromChests, NoRainDamage, NullReferenceFix and Jotunn declare **no** keybinds at all,
-so the entire bind surface is below.
+Audited 2026-09-11 against the mods' freshly generated configs; building mods audited 2026-09-14;
+AdventureBackpacks audited 2026-09-15. MyLittleUI, CraftFromChests, NoRainDamage, NullReferenceFix and
+Jotunn declare **no** keybinds at all, so the entire bind surface is below.
 
 | Key | Mod | Action | Context |
 |-----|-----|--------|---------|
@@ -302,6 +337,9 @@ so the entire bind surface is below.
 | `Q` / `E` | ExtraSnapPointsMadeEasy | Iterate placing / targeted snap points | Manual snap modes only |
 | `LeftAlt` (hold) + scroll | AdvancedTerrainModifiers | Change tool radius | Hoe / cultivator / shovel out |
 | `LeftControl` (hold) + scroll | AdvancedTerrainModifiers | Change tool hardness | Hoe / cultivator / shovel out |
+| `I` | AdventureBackpacks | Toggle equipped backpack | Anywhere |
+| `Y` (bare) | AdventureBackpacks | Outward quick-drop the backpack | Anywhere (distinct from ExtraSlots' `Alt + Y`) |
+| `L` | AdventureBackpacks | Toggle Demister (Explorers Wisppack only) | Mistlands |
 | `O` | Server devcommands | Admin bundle: `debugmode` + `nocost` + `god` | Admins only |
 | `K` | Server devcommands | Admin `fly` toggle | Admins only |
 
@@ -340,10 +378,16 @@ forward unchanged:
 - `LeftShift` (Gizmo x-rotate) and `LeftControl` (ATM hardness) are vanilla run/crouch, used here only
   as held scroll-modifiers in build mode -- same as the old pack.
 - Newly claimed: `G`, `T`, `P`, `` ` ``, `PageUp`, `PageDown`, `B`, `CapsLock`, `F4`, `F11`. Free keys
-  remaining for future mods: `U`(bare), `Y`(bare), `F3`, `F6`, `F7`, `F8`, `F10`.
+  remaining for future mods: `U`(bare), `F3`, `F6`, `F7`, `F8`, `F10`.
 
 Also tuned: CraftFromChests `SearchRadius` 40 -> 30, matching the old pack's AzuCraftyBoxes container
 range rather than the mod's more generous default.
+
+**AdventureBackpacks (2026-09-15 audit):** all three keys (`I`, bare `Y`, `L`) checked against every
+bind already in this table -- none claimed. `I` isn't a vanilla key (vanilla inventory toggle is
+`Tab`). Bare `Y` and ExtraSlots' `Alt + Y` are different key events (a bare press vs. an Alt-held
+chord), so no collision -- the same accepted separation this pack already relies on for `Q`/`E`/`R`
+vs. `Alt + Q/E/R`. `L` is unclaimed. `Y` and `L` are no longer free for future mods.
 
 ## Old pack -> new pack
 
@@ -366,6 +410,7 @@ range rather than the mod's more generous default.
 | TeleportEverything | vanilla `-modifier portals casual` - no mod needed |
 | Gizmo, ExtraSnapPointsMadeEasy | same mods, 1.0 builds (2026-09-14) |
 | AdvancedTerrainModifiers | Ostrix-AdvancedTerrainModifiersCompatible fork (2026-09-14) |
+| AdventureBackpacks | same mod, 1.0 build (2026-09-15) -- see "AdventureBackpacks" |
 
 ## What you lose, honestly
 
@@ -374,7 +419,7 @@ Building: **Gizmo, ExtraSnapPointsMadeEasy and AdvancedTerrainModifiers are back
 build, but it writes custom prefabs into the world, so removing it later leaves holes in builds).
 
 Also dropped: ProjectileTweaks, ShieldBash, SmartSkills, Seasons, TargetPortal, SpeedyPaths,
-StumpsAreOneHp, LocalizationCache, AdventureBackpacks, Groups, VNEI, ConfigurationManager,
+StumpsAreOneHp, LocalizationCache, Groups, VNEI, ConfigurationManager,
 PlantEverything/PlantEasily/MassFarming.
 
 ## Verified 1.0-ready, available as one-line adds

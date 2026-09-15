@@ -8,7 +8,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] - UNRELEASED - branch `lite-minimal`, local only, DO NOT PUBLISH
 
 > Not a release. A ground-up rebuild for Valheim 1.0 with zero Azumatt mods and
-> most QoL moved server-side. 24 packages, down from 58.
+> most QoL moved server-side. 25 packages, down from 58.
+
+### Added (2026-09-15, later) -- Vapok-AdventureBackpacks, both sides -- Jotunn returns to the server
+Researched at user request; asked explicitly before proceeding since this
+reverses part of the original lite-minimal rebuild (see the `[2.0.0]`
+"Removed" entry below: "Jotunn, and everything that needed it... The new
+dependency graph has no Jotunn at all"). User chose to proceed and accept
+Jotunn back on the server.
+
+Not deprecated, actively maintained (updated as recently as 2026-09-15).
+Confirmed 1.0-ready since its 2.0.0 rewrite ("Updated all Transpilers and
+Harmony References... Fixed: Drop rates now properly account for World
+Scaling and Level/Star creature ratings"); 2.0.1-2.0.4 are follow-up
+mod-compatibility and duplication-guard fixes. Pinned at **2.0.4**.
+
+Its own README is explicit: "Required on Both Client & Server... Built-in
+version checking ensures game-state and inventory consistency" -- this is a
+ModRequired content mod, not a QoL mod console/vanilla clients can skip.
+`ValheimModding-Jotunn` (already pinned at 2.30.0 for the ATM fork) moved
+from the client-only building-mod group into the shared "both sides" block
+in `thunderstore.toml`, and removed from `CLIENT_ONLY_MODS` in
+`scripts/install-mods.sh` -- it now installs on the server too.
+
+Keybind audit: `I` (toggle backpack), bare `Y` (quick-drop), `L` (Demister,
+Mistlands-only tier) -- none collide with any existing bind. Bare `Y` and
+ExtraSlots' `Alt + Y` are distinct key events, same accepted pattern as
+`Q/E/R` vs `Alt + Q/E/R` elsewhere in this pack.
+
+**Config: the old pack's `vapok.mods.adventurebackpacks.cfg` (1.9.13) is NOT
+carried forward** -- the 2.0.0 rewrite changed backpack tier naming and added
+new drop-scaling settings, so the schema has likely drifted. Will regenerate
+fresh on first server boot and be tuned from that copy per the standard
+procedure, not from the stale file.
+
+Not yet boot-tested or deployed -- added same session as researched. Full
+writeup in README "AdventureBackpacks".
 
 ### Added (2026-09-15) -- Zenox-ServerConnect, client-only
 One-click main-menu server connect button, replacing QuickConnect's old role.

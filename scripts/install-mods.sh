@@ -44,7 +44,6 @@ CLIENT_ONLY_MODS=(
     "cjayride-RecycleItemsIntoParts"
     "ComfyMods-Gizmo"
     "Searica-Extra_Snap_Points_Made_Easy"
-    "ValheimModding-Jotunn"
     "Ostrix-AdvancedTerrainModifiersCompatible"
     "Zenox-ServerConnect"
 )
