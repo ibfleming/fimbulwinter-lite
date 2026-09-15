@@ -3,9 +3,9 @@
 # Run `make` (or `make help`) to list targets.
 # Pass script flags through ARGS, e.g.:  make deploy-full ARGS='--yes --no-restart'
 #
-# Note: server-install.sh and server-autoupdate.sh are server-side scripts
-# executed by the Pelican egg on the game server; they are intentionally not
-# exposed as targets here.
+# Note: server-install.sh and server-autoupdate.sh run on the game server via
+# the Pelican egg, and ci-update-issue.sh is CI glue for the check-updates
+# workflow; none of them are exposed as targets here.
 
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help

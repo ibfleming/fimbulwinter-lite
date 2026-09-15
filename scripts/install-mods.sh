@@ -39,21 +39,13 @@ THUNDERSTORE_API="https://thunderstore.io/api/experimental/package"
 # Client-only mods — never installed on a dedicated server.
 # THIS LIST IS THE SINGLE SOURCE OF TRUTH (the egg no longer embeds it).
 CLIENT_ONLY_MODS=(
-    "shudnal-ConfigurationManager"
     "shudnal-MyLittleUI"
-    "MSchmoecker-VNEI"
     "Neobotics-HUDCompass"
-    "Azumatt-AzuHoverStats"
+    "cjayride-RecycleItemsIntoParts"
     "ComfyMods-Gizmo"
-    "ComfyMods-ComfyAutoRepair"
     "Searica-Extra_Snap_Points_Made_Easy"
-    "Goldenrevolver-Quick_Stack_Store_Sort_Trash_Restock"
-    "Advize-PlantEasily"
-    "k942-MassFarming"
-    "bdew-QuickConnect"
-    "VentureValheim-Venture_Logout_Tweaks"
-    "Azumatt-ChangelogEditor"
-    "Crystal-DigDeeper"
+    "Ostrix-AdvancedTerrainModifiersCompatible"
+    "Zenox-ServerConnect"
 )
 
 log()   { echo -e "[INFO] $*"; }
@@ -225,7 +217,7 @@ else
     log "Resolving dependencies from ${REPO_DIR}/thunderstore.toml (local working state)..."
     dependencies=$(sed -n '/^\[package.dependencies\]/,/^\[/p' "${REPO_DIR}/thunderstore.toml" \
         | grep -E '^[A-Za-z0-9_]+-[A-Za-z0-9_]+ = "' \
-        | sed -E 's/^([A-Za-z0-9_]+-[A-Za-z0-9_]+) = "([^"]+)"/\1-\2/')
+        | sed -E 's/^([A-Za-z0-9_]+-[A-Za-z0-9_]+) = "([^"]+)".*$/\1-\2/')
     config_source="${REPO_DIR}/config"
 fi
 

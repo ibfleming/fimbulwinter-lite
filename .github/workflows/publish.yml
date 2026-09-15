@@ -32,9 +32,7 @@ jobs:
       - name: Extract & Verify Version
         id: version
         run: |
-          pip install tomli
-
-          TOML_VERSION=$(python3 -c "import tomli; print(tomli.load(open('thunderstore.toml', 'rb'))['package']['versionNumber'])")
+          TOML_VERSION=$(make -s version)
 
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             TAG_VERSION="${{ github.ref_name }}"
@@ -49,7 +47,7 @@ jobs:
           fi
 
           # Ensure version exists in CHANGELOG
-          if ! grep -q "$VERSION" CHANGELOG.md; then
+          if ! grep -q "^## \[$VERSION\]" CHANGELOG.md; then
             echo "::error::Version $VERSION not found in CHANGELOG.md"
             exit 1
           fi
@@ -64,13 +62,14 @@ jobs:
           tar xzf tcli.tar.gz
           find . -maxdepth 2 -name "tcli" -type f -exec mv {} . \;
           chmod +x tcli
+          echo "$PWD" >> "$GITHUB_PATH"
           ./tcli --version || true
 
       - name: Build Package
-        run: ./tcli build --config-path thunderstore.toml
+        run: make build
 
       - name: Build r2modman Profile (.r2z)
-        run: bash scripts/export-profile.sh "build/Fimbulwinter_Lite-v${{ steps.version.outputs.version }}-profile.r2z"
+        run: make profile OUT="build/Fimbulwinter_Lite-v${{ steps.version.outputs.version }}-profile.r2z"
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
@@ -87,7 +86,7 @@ jobs:
           TCLI_AUTH_TOKEN: ${{ secrets.TCLI_AUTH_TOKEN }}
         run: |
           PACKAGE=$(ls build/*.zip | head -1)
-          ./tcli publish --config-path thunderstore.toml --file "$PACKAGE" --token "$TCLI_AUTH_TOKEN"
+          tcli publish --config-path thunderstore.toml --file "$PACKAGE" --token "$TCLI_AUTH_TOKEN"
 
   create-release:
     name: Create GitHub Release
@@ -106,12 +105,20 @@ jobs:
           name: thunderstore-package
           path: dist/
 
+      - name: Extract Release Notes
+        run: |
+          VERSION="${{ needs.build-and-publish.outputs.version }}"
+          awk -v ver="[$VERSION]" '
+            /^## \[/ { if (found) exit; if (index($0, ver)) { found=1; next } }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.zip
             dist/*.r2z
-          body_path: CHANGELOG.md
+          body_path: release-notes.md
           name: Fimbulwinter Lite v${{ needs.build-and-publish.outputs.version }}
           generate_release_notes: true

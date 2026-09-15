@@ -6,6 +6,7 @@ CLAUDE.md
 # Player-specific data
 *.dat
 config/quick_connect_servers.cfg
+config/zenox.serverconnect.cfg
 
 # Runtime logs
 *.log

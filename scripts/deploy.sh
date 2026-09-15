@@ -125,6 +125,14 @@ set_startup_variable() {
 # supposed to make it skip that, but don't rely on it -- disable the
 # auto-update outright so the restart can never touch this deploy).
 disable_auto_update() {
+    # The self-contained egg and has no boot-time mod
+    # re-sync, so it declares no AUTO_UPDATE_MODS variable at all. Setting a
+    # variable the egg doesn't declare returns HTTP 400 -- skip cleanly rather
+    # than aborting a deploy that was never at risk of being reverted.
+    if ! api GET "" | grep -q '"AUTO_UPDATE_MODS"'; then
+        log "Egg declares no AUTO_UPDATE_MODS (self-contained egg) -- nothing to disable."
+        return 0
+    fi
     log "Disabling AUTO_UPDATE_MODS so the restart below can't revert this deploy..."
     set_startup_variable "AUTO_UPDATE_MODS" "0"
     log "AUTO_UPDATE_MODS is now 0 -- re-enable it yourself once you're done testing and ready to publish."
