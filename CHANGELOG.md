@@ -5,326 +5,65 @@ All notable changes to Fimbulwinter Lite will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - UNRELEASED - branch `lite-minimal`, local only, DO NOT PUBLISH
 
-### Fixed/Added (2026-09-16) -- club test passed, RecycleItemsIntoParts config shipped
-User ran the club test in-game: crafted a plain club, recycled it, got wood
-back and nothing else -- no idol. Cleared. `config/cjayride.RecycleItemsIntoParts.cfg`
-shipped for the first time, all mod defaults (`ReturnResources = 1`, coins
-excluded, consumables/trophies/shards included). Checked the full config (8
-keys, verified against the DLL) for a "discard anything, return nothing"
-toggle -- doesn't exist; the mod needs some resolvable recipe to act at all,
-recipe-less items are left alone. Also found while checking: the DLL has a
-`Discarding {item}` string next to `Idol` references -- independent evidence
-this mod already patches the same Forge-of-Potential idol bug that got
-RecyclePlus removed. README's "Caveat" section retitled and rewritten now
-that this is resolved rather than pending.
+## [2.0.0] - 2026-09-16
 
-Also fixed live, at user request, in `vapok.mods.adventurebackpacks.cfg`
-(`[Local Config]`, not server-synced):
-- `Outward Mode` false -> true -- this is the actual gate on the quick-drop
-  feature; `Quickdrop Backpack = Y` was already correctly bound, but the
-  feature itself was off, which is why Y did nothing in testing.
-- `Open with Inventory` false -> true -- backpack now opens automatically
-  alongside the player inventory.
-Both applied directly to the live client profile as well as `config/`.
-
-### Verified (2026-09-15, later still) -- first server boot with Jotunn + AdventureBackpacks
-Deployed `f3ae3b0` and boot-verified: 17/17 plugins including `Jotunn 2.30.0`
-and `Adventure Backpacks 2.0.4`, Jotunn's ModCompatibility/Synchronization/
-Network/Localization managers all initialized clean, 0 exceptions -- the
-server's first boot with Jotunn present on this branch.
-
-Pulled every regenerated config off the live server and diffed against
-`config/`, not just AdventureBackpacks:
-- **`vapok.mods.adventurebackpacks.cfg` added, shipped for the first time.**
-  All six backpack tiers (Satchel 5 -> Rugged 10 -> Bloodbag Wetpack 15 ->
-  Arctic Sherpa 20 -> Lox Hide Knappsack 25 -> Explorers Wisppack 30 carry
-  bonus) came back at the mod's own defaults -- and for every tier the old
-  pre-1.0 pack also shipped, those defaults are **identical** to what ran
-  for months there (same costs, same -15% speed tradeoff, same
-  `Drops Enabled = false`). The two genuinely new keys from the 2.0.0
-  rewrite (`Adjust Drop Count By Level`, `...by World Scaling`) both landed
-  at `false`. Keybinds confirmed exactly as documented: `I` / `Y` / `L`.
-  Nothing to tune.
-- **`server_devcommands.cfg` gained a real key we missed at the 1.113.0 bump
-  on 2026-09-12**: `Disable cheat tracking` (default `true`, "prevents
-  commands from marking the character as having used cheats"). Added
-  explicitly to `config/` now, at its default.
-- Six other files showed a diff (`dev.crystal.deathpenalty.cfg`,
-  `shudnal.ExtraSlots.cfg`, `ArgusMagnus.ServersideQoL.cfg`/`.AutoStore.cfg`/
-  `.ContainerSizes.cfg`) -- all cosmetic. BepInEx rewrites its own
-  auto-generated comment banner (plugin name + version) and description text
-  on every save; actual key=value pairs were checked separately and are
-  byte-identical. `DeathPenalty`'s custom prose comments in `config/` get
-  overwritten by the mod's own boilerplate the moment it boots -- known,
-  harmless, comments only.
-- Confirmed client-only mods' config files (Gizmo, HUDCompass, MyLittleUI,
-  ESPME, the ATM fork) exist on the server's filesystem too -- `deploy.sh`
-  copies the whole flat `config/` tree verbatim regardless of which plugins
-  are actually installed. Expected; those files are inert since the
-  corresponding plugin DLLs are never installed server-side.
-
-> Not a release. A ground-up rebuild for Valheim 1.0 with zero Azumatt mods and
-> most QoL moved server-side. 25 packages, down from 58.
-
-### Added (2026-09-15, later) -- Vapok-AdventureBackpacks, both sides -- Jotunn returns to the server
-Researched at user request; asked explicitly before proceeding since this
-reverses part of the original lite-minimal rebuild (see the `[2.0.0]`
-"Removed" entry below: "Jotunn, and everything that needed it... The new
-dependency graph has no Jotunn at all"). User chose to proceed and accept
-Jotunn back on the server.
-
-Not deprecated, actively maintained (updated as recently as 2026-09-15).
-Confirmed 1.0-ready since its 2.0.0 rewrite ("Updated all Transpilers and
-Harmony References... Fixed: Drop rates now properly account for World
-Scaling and Level/Star creature ratings"); 2.0.1-2.0.4 are follow-up
-mod-compatibility and duplication-guard fixes. Pinned at **2.0.4**.
-
-Its own README is explicit: "Required on Both Client & Server... Built-in
-version checking ensures game-state and inventory consistency" -- this is a
-ModRequired content mod, not a QoL mod console/vanilla clients can skip.
-`ValheimModding-Jotunn` (already pinned at 2.30.0 for the ATM fork) moved
-from the client-only building-mod group into the shared "both sides" block
-in `thunderstore.toml`, and removed from `CLIENT_ONLY_MODS` in
-`scripts/install-mods.sh` -- it now installs on the server too.
-
-Keybind audit: `I` (toggle backpack), bare `Y` (quick-drop), `L` (Demister,
-Mistlands-only tier) -- none collide with any existing bind. Bare `Y` and
-ExtraSlots' `Alt + Y` are distinct key events, same accepted pattern as
-`Q/E/R` vs `Alt + Q/E/R` elsewhere in this pack.
-
-**Config: the old pack's `vapok.mods.adventurebackpacks.cfg` (1.9.13) is NOT
-carried forward** -- the 2.0.0 rewrite changed backpack tier naming and added
-new drop-scaling settings, so the schema has likely drifted. Will regenerate
-fresh on first server boot and be tuned from that copy per the standard
-procedure, not from the stale file.
-
-Not yet boot-tested or deployed -- added same session as researched. Full
-writeup in README "AdventureBackpacks".
-
-### Added (2026-09-15) -- Zenox-ServerConnect, client-only
-One-click main-menu server connect button, replacing QuickConnect's old role.
-Client-side, only depends on BepInEx. Audited before adding: no outbound
-HTTP/webhook strings in the DLL, single Harmony postfix on the vanilla
-main-menu class, nothing else touched. Carries the "AI Generated" tag (396
-downloads, 2 days old) -- noted, not a blocker, given how small and easily
-audited the whole feature is.
-`config/zenox.serverconnect.cfg` holds a real address+password in plain text
-and is now gitignored (added to `.gitignore`, same as the old pack's
-`quick_connect_servers.cfg`); it does not exist in this working tree and is
-never committed. Added to `CLIENT_ONLY_MODS`.
-
-### Changed (2026-09-15) -- Gizmo / ESPME / ATM cooperative config audit
-Requested explicitly: verify the three building mods are configured well
-*together*, not just each present. Full findings and rationale in README
-"Cooperative tuning pass". Summary:
-- **Real bug found and fixed, predates this session.** ATM's
-  `Searica.Valheim.TerrainTools.cfg` (carried forward verbatim from the old
-  111-mod pack) had leftover zero-width-space characters on several section
-  headers -- a ConfigurationManager reordering artifact from before that mod
-  was dropped. Three keys were orphaned by it (`RadiusModifier`,
-  `HardnessModifier`, `Shovel` each had a stray zero-width prefix not present
-  in the DLL's real bind name) -- their configured values were silently never
-  being read, falling back to mod defaults. Happened to match by coincidence
-  (all `true`), which is why it went unnoticed. Stripped from every section
-  header and all three keys; re-verified 0/28 keys missing against the 1.4.8
-  DLL.
-- **ESPME <-> ATM snap-point integration enabled.** ESPME ships per-piece
-  extra-snap-point toggles for every ATM terrain-tool variant, all
-  individually on at default -- but the master switch,
-  `Extra Snap Points: Terrain`, was at its own default of `false`, gating all
-  of them off. Flipped to `true`: terrain-tool ghosts now snap to nearby
-  building pieces.
-- **Six plain-circle ATM tools added** (`raise_v2`, `mud_road_v2`, `path_v2`,
-  `paved_road_v2`, `cultivate_v2`, `replant_v2`) -- exist in the 1.4.8 DLL,
-  absent from the carried-forward config (predates them). Added explicitly at
-  their default (`true`) rather than leaving them to silently auto-populate
-  on first regen; both circular and square variants of every tool are now
-  available.
-- **ATM `MaxRadius` 10 -> 20** (mod's own max). Widens scrollable range only;
-  starting radius and scroll-tick size unchanged.
-- **Gizmo `isRoofModeEnabled` / `isLocalFrameModeEnabled` false -> true.**
-  Both are extra rotation schemes reachable via the existing BackQuote cycle
-  key -- previously excluded from the cycle. `isOldRotationModeEnabled` left
-  off (superseded, no capability gap).
-- No new keybind conflicts: the added tools/modes use existing keys/cycles;
-  ServerConnect adds none.
-Not yet boot-tested -- server and client both in active use during this
-pass. `.r2z` rebuilt; live profile and server not touched.
-
-### Changed (2026-09-15) -- dependency bumps, two packages
-`make updates`: 21/23 already current. Both remaining bumps read against their
-changelogs; every other shipped config key checked present in the new DLLs.
-**Not yet deployed or boot-tested** -- both client and server were in active
-use during this pass. Client `.r2z` rebuilt; live profile not patched, server
-not redeployed.
-- **shudnal-MyLittleUI 1.2.18 -> 1.2.19.** Adds contextual radial-menu hints
-  for stations/fermenters, a few new display options, and Seasons-aware
-  plant/pickable/beehive timers in the existing hover formatters (Seasons
-  isn't in this pack, so that part is inert). **Two config keys removed
-  upstream and pruned from `config/shudnal.MyLittleUI.cfg`:**
-  `Cooking station next item` (superseded by Valheim's own contextual radial
-  menu) and `Cooking station Remove last item` (split out to a new standalone
-  mod, `StationItemReturn`). Both were shipped at their default (`true`), so
-  nothing customized was lost -- but the remove-last-item convenience itself
-  is gone unless `StationItemReturn` is added separately (not done here; not
-  asked for).
-- **shudnal-ExtraSlots 1.2.5 -> 1.2.6.** "Fixed compatibility with
-  Jewelcrafting and other mods that replace crafting, so intentionally
-  destroyed items in ExtraSlots are not restored" -- Jewelcrafting isn't in
-  this pack, but the underlying crafting-replacement-mod fix is general and
-  harmless here. No config changes.
-
-### Added (2026-09-14) -- building mods return, client-only
-- **ComfyMods-Gizmo 1.16.0**, **Searica-Extra_Snap_Points_Made_Easy 2.1.0**,
-  **Ostrix-AdvancedTerrainModifiersCompatible 1.4.8** (+ its client dependency
-  **ValheimModding-Jotunn 2.30.0**). All four go in `CLIENT_ONLY_MODS`; the
-  server installs none of them and stays Jotunn-free. 23 packages, 16 on the
-  client.
-- Gizmo 1.16.0's changelog is "Fixed for v1.0 patch" -- 1.15.0 was the
-  bisected 1.0 menu-freeze culprit, this is the upstream fix. ESPME 2.1.0 is
-  "Updated for Deep North Update" (1.0.12), no deps.
-- The original Searica-AdvancedTerrainModifiers is dead (2024-12, Jotunn
-  2.22). The Ostrix fork is ATM 1.4.1 at `e773c62`, same GUID, rebuilt for
-  1.0 / BepInEx 5.4.2350 / Jotunn 2.30.0. Chosen because it is the only
-  1.0-ready mod with **square hoe and cultivator brushes**, which was the
-  hard requirement. Two rule exceptions, recorded in the README: Jotunn is
-  back on clients only (the fork works client-side, terrain syncs through
-  vanilla RPCs, Jotunn's compat handshake is skipped against a Jotunn-free
-  server -- verify on first connect), and the fork carries the "AI Generated"
-  tag on what is a compat shim over Searica's original code, not a rewrite.
-- Rejected: Heimlife-Flattenheim (its square option is pickaxe-flatten only,
-  the hoe radius hook never sets `m_square` -- checked in the DLL; 4 days old),
-  VentureValheim Pathside_Assistance + Venture_Terrain_Reset (circular only),
-  PreciseRotation / TerrainShaperPlus / PlanBuild (Jotunn for less).
-- Configs: the old pack's tuned `bruce.valheim.comfymods.gizmo.cfg`,
-  `Searica.Valheim.ExtraSnapPointsMadeEasy.cfg` and
-  `Searica.Valheim.TerrainTools.cfg` restored from `main` verbatim. Every key
-  verified present in the new DLLs (24/24, ESPME globals 8/8, 22/22; ATM tool
-  list unchanged). Keybinds are the old pack's resolved values (Gizmo reset
-  V->G, ESPME Manual+ Alt->B, grid F3->F11, Gizmo `ignoreTerrainOpPrefab`
-  arbitrates Alt+scroll between Gizmo and ATM); full table in the README.
-- Fixed while auditing: ExtraSlots `Quickslot 5 Text` / `Quickslot 6 Text`
-  still read "Alt + Q" / "Alt + R" after the binds moved to Alt+U / Alt+Y on
-  2026-09-11. Labels now match.
-- **Not boot-tested yet.** Added while the server and client were in use.
-  Static validation only: all 23 pins exist on Thunderstore, dependency
-  closure satisfied, no deprecated packages, new DLLs reference only soft
-  GUIDs (searscatalog, configurationmanager). Live test order is in the
-  README "Building mods" section. Server not deployed; live profile not
-  patched; `.r2z` rebuilt.
-
-### Changed (2026-09-14) -- dependency bumps, six packages
-Changelogs read for each; every shipped config key verified present in the
-new DLLs (ExtraSlots 213/213, DeathPenalty 4/4, AutoStore 11/11,
-ContainerSizes dynamic `InventorySize_{prefab}` keys intact, core 3/3, CCS
-Debug 3/3). Nothing to carry forward. **Not yet deployed or boot-tested** --
-server in use at the time; the client `.r2z` is rebuilt, the live profile is
-not patched.
-- **shudnal-ConditionalConfigSync 1.0.6 -> 1.0.8.** 1.0.7: version
-  handshakes re-sent immediately before vanilla `PeerInfo`, cutting false
-  `HandshakeMissing` rejections after transient transport recovery on
-  connect. 1.0.8 (published during this pass): bare mod GUID in
-  `HiddenConfigs.cfg` now hides a whole mod's settings; `SyncPolicy.cfg`
-  unchanged. Both additive.
-- **shudnal-ExtraSlots 1.2.3 -> 1.2.5.** 1.2.4: ValheimPlus compat. 1.2.5:
-  ServerCharacters compat (slot placement across reconnects). Neither mod is
-  in this pack; inert here.
-- **Crystal-DeathPenalty 1.3.0 -> 1.3.1.** "Updated mod package and
-  documentation. No functional changes."
-- **ArgusMagnus-ServersideQoL 2.0.7 -> 2.0.10.** 2.0.8: an exception in one
-  SQoL module no longer kills the others. 2.0.9: "hard crash that stopped all
-  SQoL mods" (#214) -- the reason this bump matters. 2.0.10: required by
-  PrefabConfigurator (not used here).
-- **`_AutoStore` 2.0.0 -> 2.0.8**, **`_ContainerSizes` 2.0.1 -> 2.0.8.**
-  "Bugfixes", no detail published; taken with the core bump since the suite
-  versions together.
-
-### Changed (2026-09-12) -- dependency bump
-- **shudnal-ConditionalConfigSync 1.0.5 -> 1.0.6.** The config-sync library that
-  ExtraSlots, MyLittleUI and DeathPenalty all run on, so it got a full changelog
-  read rather than a blind bump. 1.0.6 adds an optional *mod-requirement policy*
-  system: `ModRequirementMode.Fixed`/`.Conditional` for mod authors, and a new
-  server-only `ConditionalConfigSync.ModRequirements.cfg` where `+ ModGuid`
-  requires a mod for connecting clients and `- ModGuid` allows clients without it.
-  Explicitly backward compatible -- "existing consumers remain fixed by default
-  and keep their previous ModRequired behavior without recompilation" -- and the
-  wire protocol is unchanged, so a 1.0.5 client can still talk to a 1.0.6 server
-  during the rollover. None of this pack's consumers opt into Conditional mode,
-  so the new file is inert for us.
-  **Config regeneration checked:** after deploy the server generated
-  `ModRequirements.cfg` alongside the pre-existing `SyncPolicy.cfg` and
-  `HiddenConfigs.cfg`. All three are comment-only templates with no rules -- pure
-  defaults with nothing customized to carry forward -- so they are deliberately
-  not added to `config/`. `ConditionalConfigSync.Debug.cfg`, the one file this
-  pack does ship, is unchanged.
-  Deployed and verified live: `Conditional Config Sync 1.0.6` loaded, 15/15
-  plugins, 0 NullReference, 0 MissingMethod, no non-graphics errors. Client
-  profile and export rebuilt. `make updates`: other 18 packages current.
-
-### Removed
-- **All nine Azumatt mods.** None have shipped a Valheim 1.0 build (newest is
-  AzuExtendedPlayerInventory, 2026-08-31, pre-1.0): AzuAutoStore, AzuCraftyBoxes,
-  AzuContainerSizes, AzuExtendedPlayerInventory, AzuHoverStats, AzuAreaRepair,
-  AzuMiscPatches, AAA_Crafting, Recycle_N_Reclaim.
-- **Jotunn, and everything that needed it** (VNEI, MissingPieces,
-  AdventureBackpacks). The new dependency graph has no Jotunn at all.
-- Building mods (Gizmo, ExtraSnapPointsMadeEasy, AdvancedTerrainModifiers),
-  combat (ProjectileTweaks, ShieldBash), Seasons, SmartSkills, TargetPortal,
-  SpeedyPaths, StumpsAreOneHp, LocalizationCache, Groups, MultiUserChest,
-  Quick Stack Store, ComfyAutoRepair, ConfigurationManager, farming mods.
+Ground-up rebuild for Valheim 1.0 "Deep North". Not compatible with 1.x --
+see README "Upgrading from 1.x" before updating an existing install.
 
 ### Added
-- **ArgusMagnus ServersideQoL 2.0.x, seven modules, server-side only** - core,
-  `_AutoStore`, `_ContainerSizes`, `_AutoProcess`, `_LetItFloat`, `_JustSleep`,
-  `_MultiplayerTweaks`. Server-authoritative and compatible with unmodded and
-  console clients, so they cost players nothing to install. Between them they
-  replace AzuAutoStore, AzuContainerSizes, AutomaticFuel, Venture Floating
-  Items, SleepSkip, NetworkTweaks and TimeoutLimit.
-- **shudnal-ExtraSlots 1.2.3** replaces AzuExtendedPlayerInventory (equipment +
-  quick slots). Fits the existing shudnal/ConditionalConfigSync stack.
-- **Toxo-CraftFromChests 0.4.0** replaces AzuCraftyBoxes.
-- **TastyChickenLegs-RecyclePlus 1.3.2** replaces Recycle_N_Reclaim and Quick
-  Stack Store's trash function.
-- MyLittleUI now also covers AzuHoverStats (tooltips) and AAA_Crafting
-  (multicraft), so both came out with no functional loss.
+- Server-side QoL suite (ArgusMagnus ServersideQoL and its AutoStore /
+  ContainerSizes / AutoProcess / LetItFloat / JustSleep / MultiplayerTweaks
+  modules) -- replaces AzuAutoStore, AzuContainerSizes, AutomaticFuel,
+  Venture Floating Items, SleepSkip, NetworkTweaks and TimeoutLimit, all
+  server-authoritative so unmodded and console clients lose nothing.
+- shudnal-ExtraSlots (equipment + quick slots), Toxo-CraftFromChests
+  (craft/build/fuel from nearby chests), Crystal-DeathPenalty (tuned skill
+  loss on death), cjayride-RecycleItemsIntoParts (recycle items into
+  parts), Zenox-ServerConnect (one-click server connect button).
+- Building tools are back: ComfyMods-Gizmo (free piece rotation),
+  Searica-Extra_Snap_Points_Made_Easy (manual/grid snapping), and a square
+  hoe/cultivator brush via Ostrix-AdvancedTerrainModifiersCompatible.
+- Vapok-AdventureBackpacks -- six biome-tiered backpacks with unique perks.
+  **Required on every connecting client and the server** -- see README.
+- korCaptain-NullReferenceFix, JoelOliMclean-NoRainDamage, Neobotics-HUDCompass,
+  shudnal-MyLittleUI, JereKuusela-Server_devcommands for a working admin
+  console on a dedicated server.
 
 ### Changed
-- **`scripts/export-profile.sh` learned `SERVER_ONLY_MODS`** - server-side
-  packages are excluded from the generated client profile, so `make profile`
-  emits 10 packages while the toml carries 17. Profile is now named
-  `Fimbulwinter-Lite-v<version>`.
-- **`CLIENT_ONLY_MODS` in `scripts/install-mods.sh`** trimmed to the three
-  genuinely client-only mods: MyLittleUI, HUDCompass, RecyclePlus.
-- TeleportEverything dropped entirely in favour of the vanilla
-  `-modifier portals casual` world modifier - same capability, zero mods.
+- Ore-transport teleport restriction replaced by vanilla's own
+  `-modifier portals casual` world modifier -- no mod needed.
+- Death skill loss tuned to 2% (vanilla 5%) to keep dying meaningful without
+  being crushing under this pack's combat-hard preset.
+- Several ServersideQoL module settings turned on from their inert
+  shipped defaults (auto-pickup, auto-sort, wider feed range, majority-vote
+  sleep skip) -- see README "ServersideQoL tuning" for the full table.
 
-### Evaluated and rejected
-- **Swmarly-SwmarlyValheimQOL 1.0.5 -- not added.** Deployed alongside
-  ServersideQoL and boot-tested live: the two load together cleanly (14 plugins,
-  0 NullReference, 0 MissingMethod, no Harmony conflict warnings, server reached
-  "Opened Steam server"), so there is no *load-time* incompatibility. It was
-  rejected on two other grounds.
-  First, it duplicates four behaviours this pack already has -- floating items
-  (`ServersideQoL_LetItFloat`), sleep-skip voting (`_JustSleep`), no-rain-damage
-  (JoelOliMclean-NoRainDamage, both patching `WearNTear`) and eternal fires
-  (`_AutoProcess`, both touching `Fireplace`). Duplicate implementations of one
-  behaviour do not error, they double-apply, and that only surfaces in gameplay
-  where a boot test cannot see it.
-  Second, it carries Thunderstore's "AI Generated" tag with 1,692 downloads and
-  a two-day-old release, against ServersideQoL's 38,783 and a months-long
-  history, and registers 47 Harmony patch classes. This is the same test the
-  v1.4.2 entry applied when rejecting VitByr-VBNetTweaks.
-  Worth revisiting if it matures: it is the only 1.0-ready package found that
-  covers MultiUserChest, ComfyAutoRepair, WieldEquipmentWhileSwimming and
-  SpeedyPaths, none of which have a 1.0 build.
+### Removed
+- Every Azumatt mod (none had a Valheim 1.0 build): AzuAutoStore,
+  AzuCraftyBoxes, AzuContainerSizes, AzuExtendedPlayerInventory,
+  AzuHoverStats, AzuAreaRepair, AzuMiscPatches, AAA_Crafting,
+  Recycle_N_Reclaim.
+- TastyChickenLegs-RecyclePlus -- recycling a plain club returned a Wooden
+  Battle Idol 100% of the time (a Valheim 1.0 Forge-of-Potential
+  recipe-resolution bug). Replaced by cjayride-RecycleItemsIntoParts, which
+  independently fixed the same class of bug and passed the same test here.
+- Jotunn-dependent content (VNEI, MissingPieces) and several building/combat
+  mods without 1.0 builds: Gizmo and AdvancedTerrainModifiers came back
+  once fixed versions existed (see "Added"); ProjectileTweaks, ShieldBash,
+  SmartSkills, Seasons, TargetPortal, SpeedyPaths, StumpsAreOneHp,
+  LocalizationCache, Groups, VNEI, ConfigurationManager,
+  PlantEverything/PlantEasily/MassFarming did not come back.
 
-### Not tested
-- Selection came from Thunderstore metadata (publish dates, dependency graphs,
-  deprecation flags), not from running the game. During the 1.0 investigation
-  both Gizmo and Groups loaded cleanly and still broke the main menu and
-  Settings screen, so metadata alone is not sufficient - boot-test before use.
+### Fixed
+- A latent config bug in `Searica.Valheim.TerrainTools.cfg` (leftover
+  invisible characters from a mod no longer in this pack) meant three
+  settings were silently never being read; fixed and reverified.
+- `AdventureBackpacks` quick-drop (`Y`) and auto-open-with-inventory now
+  work out of the box -- both are separate toggles from their keybinds and
+  shipped off by the mod's own defaults.
+
+Full research/rationale trail for the calls above: `docs/DECISIONS.md`.
 
 
 ## [vanilla] - UNRELEASED - branch `vanilla`, local only, DO NOT PUBLISH
