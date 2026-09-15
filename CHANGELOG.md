@@ -8,7 +8,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0] - UNRELEASED - branch `lite-minimal`, local only, DO NOT PUBLISH
 
 > Not a release. A ground-up rebuild for Valheim 1.0 with zero Azumatt mods and
-> most QoL moved server-side. 19 packages, down from 58.
+> most QoL moved server-side. 24 packages, down from 58.
+
+### Added (2026-09-15) -- Zenox-ServerConnect, client-only
+One-click main-menu server connect button, replacing QuickConnect's old role.
+Client-side, only depends on BepInEx. Audited before adding: no outbound
+HTTP/webhook strings in the DLL, single Harmony postfix on the vanilla
+main-menu class, nothing else touched. Carries the "AI Generated" tag (396
+downloads, 2 days old) -- noted, not a blocker, given how small and easily
+audited the whole feature is.
+`config/zenox.serverconnect.cfg` holds a real address+password in plain text
+and is now gitignored (added to `.gitignore`, same as the old pack's
+`quick_connect_servers.cfg`); it does not exist in this working tree and is
+never committed. Added to `CLIENT_ONLY_MODS`.
+
+### Changed (2026-09-15) -- Gizmo / ESPME / ATM cooperative config audit
+Requested explicitly: verify the three building mods are configured well
+*together*, not just each present. Full findings and rationale in README
+"Cooperative tuning pass". Summary:
+- **Real bug found and fixed, predates this session.** ATM's
+  `Searica.Valheim.TerrainTools.cfg` (carried forward verbatim from the old
+  111-mod pack) had leftover zero-width-space characters on several section
+  headers -- a ConfigurationManager reordering artifact from before that mod
+  was dropped. Three keys were orphaned by it (`RadiusModifier`,
+  `HardnessModifier`, `Shovel` each had a stray zero-width prefix not present
+  in the DLL's real bind name) -- their configured values were silently never
+  being read, falling back to mod defaults. Happened to match by coincidence
+  (all `true`), which is why it went unnoticed. Stripped from every section
+  header and all three keys; re-verified 0/28 keys missing against the 1.4.8
+  DLL.
+- **ESPME <-> ATM snap-point integration enabled.** ESPME ships per-piece
+  extra-snap-point toggles for every ATM terrain-tool variant, all
+  individually on at default -- but the master switch,
+  `Extra Snap Points: Terrain`, was at its own default of `false`, gating all
+  of them off. Flipped to `true`: terrain-tool ghosts now snap to nearby
+  building pieces.
+- **Six plain-circle ATM tools added** (`raise_v2`, `mud_road_v2`, `path_v2`,
+  `paved_road_v2`, `cultivate_v2`, `replant_v2`) -- exist in the 1.4.8 DLL,
+  absent from the carried-forward config (predates them). Added explicitly at
+  their default (`true`) rather than leaving them to silently auto-populate
+  on first regen; both circular and square variants of every tool are now
+  available.
+- **ATM `MaxRadius` 10 -> 20** (mod's own max). Widens scrollable range only;
+  starting radius and scroll-tick size unchanged.
+- **Gizmo `isRoofModeEnabled` / `isLocalFrameModeEnabled` false -> true.**
+  Both are extra rotation schemes reachable via the existing BackQuote cycle
+  key -- previously excluded from the cycle. `isOldRotationModeEnabled` left
+  off (superseded, no capability gap).
+- No new keybind conflicts: the added tools/modes use existing keys/cycles;
+  ServerConnect adds none.
+Not yet boot-tested -- server and client both in active use during this
+pass. `.r2z` rebuilt; live profile and server not touched.
 
 ### Changed (2026-09-15) -- dependency bumps, two packages
 `make updates`: 21/23 already current. Both remaining bumps read against their

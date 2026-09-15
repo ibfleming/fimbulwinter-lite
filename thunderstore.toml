@@ -45,6 +45,7 @@ ComfyMods-Gizmo = "1.16.0"
 Searica-Extra_Snap_Points_Made_Easy = "2.1.0"
 ValheimModding-Jotunn = "2.30.0"
 Ostrix-AdvancedTerrainModifiersCompatible = "1.4.8"
+Zenox-ServerConnect = "1.0.7"
 
 # ── Server-side only (never shipped to clients) ────────────────
 # Mirrored by SERVER_ONLY_MODS in scripts/export-profile.sh.

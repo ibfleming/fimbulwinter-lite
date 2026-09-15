@@ -7,17 +7,17 @@ A ground-up rebuild of the pack for Valheim 1.0 "Deep North", built on two rules
 1. **Zero Azumatt mods.** None of the nine in the old pack have shipped a 1.0 build.
 2. **If the server can do it, the server does it.** Players install as little as possible.
 
-**23 packages, down from 58.** Every package verified against the Thunderstore API as published
+**24 packages, down from 58.** Every package verified against the Thunderstore API as published
 on/after 2026-09-09 (Valheim 1.0.0) - except the two pure serialization libraries, which contain no
 game code. **The server runs no Jotunn.** Jotunn exists on clients only, as the dependency of one
 building mod (see "Building mods" below).
 
 ## The split
 
-Only 16 packages reach players. The other 7 live on the dedicated server and are excluded from the
+Only 17 packages reach players. The other 7 live on the dedicated server and are excluded from the
 client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`).
 
-### Client (16) - `make profile`
+### Client (17) - `make profile`
 
 | Package | Version | Role |
 |---|---|---|
@@ -37,6 +37,7 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 | **Searica-Extra_Snap_Points_Made_Easy** | 2.1.0 | extra snap points, manual/grid snapping |
 | ValheimModding-Jotunn | 2.30.0 | library -- **client only**, needed by the terrain fork |
 | **Ostrix-AdvancedTerrainModifiersCompatible** | 1.4.8 | square hoe/cultivator tools, radius + hardness scroll, precision raise, terrain reset |
+| **Zenox-ServerConnect** | 1.0.7 | one-click main-menu connect button -- see caveat |
 
 ### Server only (7) - players install none of these
 
@@ -94,6 +95,75 @@ piece classes.
 **Not yet boot-tested on this branch** -- added while the server was in use. Test order when free:
 client boot -> main menu -> Settings opens -> join server -> place a piece with Gizmo -> square-pave a
 tile -> confirm the other player sees the terrain change.
+
+### Cooperative tuning pass (2026-09-15)
+
+Requested explicitly: make sure Gizmo, ESPME and the ATM fork are configured well together, not just
+each installed. Two real findings, both fixed:
+
+- **ATM's shipped config had a latent binding bug, unrelated to anything we changed.** Its
+  `Searica.Valheim.TerrainTools.cfg` (carried forward from the old 111-mod pack, which used to run
+  ConfigurationManager alongside it) had leading zero-width-space characters on several section headers
+  --  a ConfigurationManager section-reordering artifact left over from before that mod was dropped.
+  Three keys were affected badly enough to be orphaned outright: `RadiusModifier`, `HardnessModifier`
+  and `Shovel` each had a stray zero-width space prefix that does not exist in the mod's real (plain)
+  bind name, confirmed against the DLL's literal strings -- meaning our configured values for those
+  three were **silently not being read at all**, falling back to the mod's own defaults. They happened
+  to match by coincidence (all `true`), which is exactly how this went unnoticed. All zero-width
+  characters stripped from every section header and from these three keys; verified 0/28 keys missing
+  against the 1.4.8 DLL afterward. Worth knowing for any future ATM config edit: verify a change
+  actually took effect in-game rather than trusting the file.
+- **ESPME and ATM's snap-point integration was present but switched off.** ESPME ships per-piece extra
+  snap-point toggles for every ATM terrain-tool variant by name (`raise_v2`, `paved_road_v2_square`,
+  `cultivate_v2_path`, etc.) -- genuine built-in cooperation between the two mods, all individually
+  enabled at their defaults -- but the master category switch, `Extra Snap Points: Terrain`, was at the
+  mod's own default of `false`, gating all of them off at once. Flipped to `true`: terrain-tool ghosts
+  (raise/level/pave/path/cultivate) now snap to nearby building pieces, so terraforming can be aligned
+  precisely against an existing foundation or wall instead of eyeballed.
+- **ATM's config was missing the plain circular tool variants entirely.** `raise_v2`, `mud_road_v2`,
+  `path_v2`, `paved_road_v2`, `cultivate_v2`, `replant_v2` exist as toggles in the 1.4.8 DLL (confirmed)
+  but were absent from the file -- the old pack's config predates them and was never regenerated, so
+  they'd have been silently auto-added at their default (`true`) on first real boot anyway. Added
+  explicitly instead of leaving that implicit, so both the circular (radius/hardness-adjustable) and
+  square (grid-aligned) version of every tool are available side by side -- more flexibility, no
+  downside, and it's now documented rather than a surprise on first regen.
+- **ATM `MaxRadius` 10 -> 20** (the mod's own cap). Only raises how far the radius *can* be scrolled
+  out to; the starting radius and per-scroll-tick step (`RadiusScrollScale`) are unchanged, so this is
+  strictly more range, not less precision.
+- **Gizmo `isRoofModeEnabled` and `isLocalFrameModeEnabled`: both `false` -> `true`.** Both are extra
+  rotation schemes cycled with the existing `` ` `` (BackQuote) key alongside the default rotator --
+  Roof Mode shifts the rotation axes 45 degrees for corner roof pieces, Local Frame rotates around a
+  piece's own Y-axis instead of world-Y (useful once terrain or a foundation is angled). No new
+  keybind; both were simply excluded from the cycle before. Left `isOldRotationModeEnabled` off -- it's
+  a superseded pre-1.4.0 scheme with no capability the current default rotator lacks.
+- **Zenox-ServerConnect adds no keybinds** (a main-menu mouse-click button only) -- nothing to audit
+  against the rest of the table.
+
+None of the three mods' *own* held-modifier keys collide once accounting for context: Gizmo's
+`LeftAlt`/`LeftShift` axis-holds only fire while placing a hammer piece (`ignoreTerrainOpPrefab = true`
+excludes it from hoe/cultivator/shovel entirely), so ATM's `LeftAlt`/`LeftControl` radius/hardness
+scroll owns those same keys cleanly whenever a terrain tool is equipped instead. ESPME's manual-snap
+keys (`B`/`CapsLock`/`F11`/`F4`/`Q`/`E`) are a disjoint key set from both. Confirmed still true after
+this pass; not re-litigated further.
+
+## One-click server connect (Zenox-ServerConnect)
+
+Adds a button above "Start Game" on the main menu that connects straight to a configured `ip:port` and
+submits a password automatically, skipping the server browser -- the same role QuickConnect played in
+the old pack, as a single small mod (client-side, only depends on BepInEx). Checked before adding: no
+outbound HTTP/webhook calls in the DLL, a single Harmony postfix patch on the vanilla main-menu class,
+nothing else touched.
+
+**Config holds a real server address and password in plain text and is never checked into this repo.**
+`config/zenox.serverconnect.cfg` is gitignored (same treatment as the old pack's
+`quick_connect_servers.cfg`) and is not present in this working tree -- the mod generates its own
+placeholder defaults (`127.0.0.1:2456` / `changeme`) on first run in whichever profile installs it.
+Fill in the real address/password directly in the live r2modman profile (or the recipient's, after they
+import the `.r2z`), never in `config/` here.
+
+Carries Thunderstore's "AI Generated" tag at 396 downloads and two days old -- noted rather than a
+blocker, given the DLL audit above and how small and easily verified its entire feature surface is (one
+button, one connect call).
 
 ## Why Server_devcommands is required
 

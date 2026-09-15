@@ -46,6 +46,7 @@ CLIENT_ONLY_MODS=(
     "Searica-Extra_Snap_Points_Made_Easy"
     "ValheimModding-Jotunn"
     "Ostrix-AdvancedTerrainModifiersCompatible"
+    "Zenox-ServerConnect"
 )
 
 log()   { echo -e "[INFO] $*"; }
