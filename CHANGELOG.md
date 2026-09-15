@@ -49,6 +49,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   README "Building mods" section. Server not deployed; live profile not
   patched; `.r2z` rebuilt.
 
+### Changed (2026-09-14) -- dependency bumps, six packages
+Changelogs read for each; every shipped config key verified present in the
+new DLLs (ExtraSlots 213/213, DeathPenalty 4/4, AutoStore 11/11,
+ContainerSizes dynamic `InventorySize_{prefab}` keys intact, core 3/3, CCS
+Debug 3/3). Nothing to carry forward. **Not yet deployed or boot-tested** --
+server in use at the time; the client `.r2z` is rebuilt, the live profile is
+not patched.
+- **shudnal-ConditionalConfigSync 1.0.6 -> 1.0.8.** 1.0.7: version
+  handshakes re-sent immediately before vanilla `PeerInfo`, cutting false
+  `HandshakeMissing` rejections after transient transport recovery on
+  connect. 1.0.8 (published during this pass): bare mod GUID in
+  `HiddenConfigs.cfg` now hides a whole mod's settings; `SyncPolicy.cfg`
+  unchanged. Both additive.
+- **shudnal-ExtraSlots 1.2.3 -> 1.2.5.** 1.2.4: ValheimPlus compat. 1.2.5:
+  ServerCharacters compat (slot placement across reconnects). Neither mod is
+  in this pack; inert here.
+- **Crystal-DeathPenalty 1.3.0 -> 1.3.1.** "Updated mod package and
+  documentation. No functional changes."
+- **ArgusMagnus-ServersideQoL 2.0.7 -> 2.0.10.** 2.0.8: an exception in one
+  SQoL module no longer kills the others. 2.0.9: "hard crash that stopped all
+  SQoL mods" (#214) -- the reason this bump matters. 2.0.10: required by
+  PrefabConfigurator (not used here).
+- **`_AutoStore` 2.0.0 -> 2.0.8**, **`_ContainerSizes` 2.0.1 -> 2.0.8.**
+  "Bugfixes", no detail published; taken with the core bump since the suite
+  versions together.
+
 ### Changed (2026-09-12) -- dependency bump
 - **shudnal-ConditionalConfigSync 1.0.5 -> 1.0.6.** The config-sync library that
   ExtraSlots, MyLittleUI and DeathPenalty all run on, so it got a full changelog

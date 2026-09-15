@@ -26,17 +26,17 @@ websiteUrl = "https://github.com/ibfleming/fimbulwinter-lite"
 # ── Loader + shared libraries (both sides) ─────────────────────
 denikson-BepInExPack_Valheim = "5.4.2350"
 ValheimModding-YamlDotNet = "16.3.1"
-shudnal-ConditionalConfigSync = "1.0.6"
+shudnal-ConditionalConfigSync = "1.0.8"
 
 # ── Client UI / QoL ───────────────────────────────────────────
 shudnal-MyLittleUI = "1.2.18"
-shudnal-ExtraSlots = "1.2.3"
+shudnal-ExtraSlots = "1.2.5"
 Toxo-CraftFromChests = "0.4.0"
 Neobotics-HUDCompass = "1.2.0"
 JoelOliMclean-NoRainDamage = "1.3.0"
 korCaptain-NullReferenceFix = "1.0.20"
 JereKuusela-Server_devcommands = "1.113.0"
-Crystal-DeathPenalty = "1.3.0"
+Crystal-DeathPenalty = "1.3.1"
 cjayride-RecycleItemsIntoParts = "1.7.3"
 
 # ── Client-only building (Jotunn is a client dependency of the
@@ -48,9 +48,9 @@ Ostrix-AdvancedTerrainModifiersCompatible = "1.4.8"
 
 # ── Server-side only (never shipped to clients) ────────────────
 # Mirrored by SERVER_ONLY_MODS in scripts/export-profile.sh.
-ArgusMagnus-ServersideQoL = "2.0.7"
-ArgusMagnus-ServersideQoL_AutoStore = "2.0.0"
-ArgusMagnus-ServersideQoL_ContainerSizes = "2.0.1"
+ArgusMagnus-ServersideQoL = "2.0.10"
+ArgusMagnus-ServersideQoL_AutoStore = "2.0.8"
+ArgusMagnus-ServersideQoL_ContainerSizes = "2.0.8"
 ArgusMagnus-ServersideQoL_AutoProcess = "2.0.0"
 ArgusMagnus-ServersideQoL_LetItFloat = "2.0.4"
 ArgusMagnus-ServersideQoL_JustSleep = "2.0.0"

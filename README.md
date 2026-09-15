@@ -23,15 +23,15 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 |---|---|---|
 | denikson-BepInExPack_Valheim | 5.4.2350 | loader |
 | ValheimModding-YamlDotNet | 16.3.1 | library |
-| shudnal-ConditionalConfigSync | 1.0.6 | server-enforced config |
+| shudnal-ConditionalConfigSync | 1.0.8 | server-enforced config |
 | **shudnal-MyLittleUI** | 1.2.18 | tooltips, production timers, chest preview, multicraft, weather |
-| **shudnal-ExtraSlots** | 1.2.3 | equipment + quick slots |
+| **shudnal-ExtraSlots** | 1.2.5 | equipment + quick slots |
 | **Toxo-CraftFromChests** | 0.4.0 | craft/build/fuel from nearby chests |
 | **Neobotics-HUDCompass** | 1.2.0 | compass bar |
 | **JoelOliMclean-NoRainDamage** | 1.3.0 | no weather decay on builds |
 | **korCaptain-NullReferenceFix** | 1.0.20 | stability |
 | **JereKuusela-Server_devcommands** | 1.113.0 | admin console on a dedicated server (see below) |
-| **Crystal-DeathPenalty** | 1.3.0 | tunes skill loss on death -- replaces SmartSkills |
+| **Crystal-DeathPenalty** | 1.3.1 | tunes skill loss on death -- replaces SmartSkills |
 | **cjayride-RecycleItemsIntoParts** | 1.7.3 | recycle items into parts (drag + `Delete`) -- see caveat |
 | **ComfyMods-Gizmo** | 1.16.0 | free build-piece rotation on all three axes |
 | **Searica-Extra_Snap_Points_Made_Easy** | 2.1.0 | extra snap points, manual/grid snapping |
@@ -42,9 +42,9 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 
 | Module | Version | Replaces |
 |---|---|---|
-| ArgusMagnus-ServersideQoL | 2.0.7 | (suite core) |
-| `_AutoStore` | 2.0.0 | AzuAutoStore |
-| `_ContainerSizes` | 2.0.1 | AzuContainerSizes |
+| ArgusMagnus-ServersideQoL | 2.0.10 | (suite core) |
+| `_AutoStore` | 2.0.8 | AzuAutoStore |
+| `_ContainerSizes` | 2.0.8 | AzuContainerSizes |
 | `_AutoProcess` | 2.0.0 | AutomaticFuel |
 | `_LetItFloat` | 2.0.4 | Venture Floating Items |
 | `_JustSleep` | 2.0.0 | SleepSkip |
