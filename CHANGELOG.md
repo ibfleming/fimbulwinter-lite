@@ -10,6 +10,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > Not a release. A ground-up rebuild for Valheim 1.0 with zero Azumatt mods and
 > most QoL moved server-side. 19 packages, down from 58.
 
+### Changed (2026-09-15) -- dependency bumps, two packages
+`make updates`: 21/23 already current. Both remaining bumps read against their
+changelogs; every other shipped config key checked present in the new DLLs.
+**Not yet deployed or boot-tested** -- both client and server were in active
+use during this pass. Client `.r2z` rebuilt; live profile not patched, server
+not redeployed.
+- **shudnal-MyLittleUI 1.2.18 -> 1.2.19.** Adds contextual radial-menu hints
+  for stations/fermenters, a few new display options, and Seasons-aware
+  plant/pickable/beehive timers in the existing hover formatters (Seasons
+  isn't in this pack, so that part is inert). **Two config keys removed
+  upstream and pruned from `config/shudnal.MyLittleUI.cfg`:**
+  `Cooking station next item` (superseded by Valheim's own contextual radial
+  menu) and `Cooking station Remove last item` (split out to a new standalone
+  mod, `StationItemReturn`). Both were shipped at their default (`true`), so
+  nothing customized was lost -- but the remove-last-item convenience itself
+  is gone unless `StationItemReturn` is added separately (not done here; not
+  asked for).
+- **shudnal-ExtraSlots 1.2.5 -> 1.2.6.** "Fixed compatibility with
+  Jewelcrafting and other mods that replace crafting, so intentionally
+  destroyed items in ExtraSlots are not restored" -- Jewelcrafting isn't in
+  this pack, but the underlying crafting-replacement-mod fix is general and
+  harmless here. No config changes.
+
 ### Added (2026-09-14) -- building mods return, client-only
 - **ComfyMods-Gizmo 1.16.0**, **Searica-Extra_Snap_Points_Made_Easy 2.1.0**,
   **Ostrix-AdvancedTerrainModifiersCompatible 1.4.8** (+ its client dependency

@@ -24,8 +24,8 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 | denikson-BepInExPack_Valheim | 5.4.2350 | loader |
 | ValheimModding-YamlDotNet | 16.3.1 | library |
 | shudnal-ConditionalConfigSync | 1.0.8 | server-enforced config |
-| **shudnal-MyLittleUI** | 1.2.18 | tooltips, production timers, chest preview, multicraft, weather |
-| **shudnal-ExtraSlots** | 1.2.5 | equipment + quick slots |
+| **shudnal-MyLittleUI** | 1.2.19 | tooltips, production timers, chest preview, multicraft, weather |
+| **shudnal-ExtraSlots** | 1.2.6 | equipment + quick slots |
 | **Toxo-CraftFromChests** | 0.4.0 | craft/build/fuel from nearby chests |
 | **Neobotics-HUDCompass** | 1.2.0 | compass bar |
 | **JoelOliMclean-NoRainDamage** | 1.3.0 | no weather decay on builds |
