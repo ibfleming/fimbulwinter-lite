@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - UNRELEASED - branch `lite-minimal`, local only, DO NOT PUBLISH
 
+### Verified (2026-09-15, later still) -- first server boot with Jotunn + AdventureBackpacks
+Deployed `f3ae3b0` and boot-verified: 17/17 plugins including `Jotunn 2.30.0`
+and `Adventure Backpacks 2.0.4`, Jotunn's ModCompatibility/Synchronization/
+Network/Localization managers all initialized clean, 0 exceptions -- the
+server's first boot with Jotunn present on this branch.
+
+Pulled every regenerated config off the live server and diffed against
+`config/`, not just AdventureBackpacks:
+- **`vapok.mods.adventurebackpacks.cfg` added, shipped for the first time.**
+  All six backpack tiers (Satchel 5 -> Rugged 10 -> Bloodbag Wetpack 15 ->
+  Arctic Sherpa 20 -> Lox Hide Knappsack 25 -> Explorers Wisppack 30 carry
+  bonus) came back at the mod's own defaults -- and for every tier the old
+  pre-1.0 pack also shipped, those defaults are **identical** to what ran
+  for months there (same costs, same -15% speed tradeoff, same
+  `Drops Enabled = false`). The two genuinely new keys from the 2.0.0
+  rewrite (`Adjust Drop Count By Level`, `...by World Scaling`) both landed
+  at `false`. Keybinds confirmed exactly as documented: `I` / `Y` / `L`.
+  Nothing to tune.
+- **`server_devcommands.cfg` gained a real key we missed at the 1.113.0 bump
+  on 2026-09-12**: `Disable cheat tracking` (default `true`, "prevents
+  commands from marking the character as having used cheats"). Added
+  explicitly to `config/` now, at its default.
+- Six other files showed a diff (`dev.crystal.deathpenalty.cfg`,
+  `shudnal.ExtraSlots.cfg`, `ArgusMagnus.ServersideQoL.cfg`/`.AutoStore.cfg`/
+  `.ContainerSizes.cfg`) -- all cosmetic. BepInEx rewrites its own
+  auto-generated comment banner (plugin name + version) and description text
+  on every save; actual key=value pairs were checked separately and are
+  byte-identical. `DeathPenalty`'s custom prose comments in `config/` get
+  overwritten by the mod's own boilerplate the moment it boots -- known,
+  harmless, comments only.
+- Confirmed client-only mods' config files (Gizmo, HUDCompass, MyLittleUI,
+  ESPME, the ATM fork) exist on the server's filesystem too -- `deploy.sh`
+  copies the whole flat `config/` tree verbatim regardless of which plugins
+  are actually installed. Expected; those files are inert since the
+  corresponding plugin DLLs are never installed server-side.
+
 > Not a release. A ground-up rebuild for Valheim 1.0 with zero Azumatt mods and
 > most QoL moved server-side. 25 packages, down from 58.
 

@@ -192,13 +192,15 @@ soon" upstream. Legacy Iron/Silver packs exist only for pre-2.0 saves -- irrelev
 | `Y` (bare) | Outward quick-drop -- detach and drop the backpack behind you. Distinct from ExtraSlots' `Alt + Y` (quickslot 6); same accepted bare-vs-modified pattern as `Alt + Q/E/R` vs a future bare `Q`/`E`/`R`. |
 | `L` | Toggle the Explorers Wisppack's built-in Demister (Mistlands only) |
 
-**Config: do not carry forward the old pack's `vapok.mods.adventurebackpacks.cfg` (1.9.13).** The
-2.0.0 rewrite changed backpack naming (old "Legacy" Iron/Silver split into the new tiered names) and
-added new World-Scaling/Level-Factor drop settings -- the schema has almost certainly drifted. Standard
-procedure applies instead: deploy at 2.0.4, let it generate fresh on first boot, then diff and tune
-(crafting costs, drop tables, weight multipliers) from the regenerated file, not the stale one.
+**Config regenerated fresh and shipped (2026-09-15), not carried forward from the old pack's 1.9.13
+file.** All six tiers came back at the mod's own defaults, and for every tier the old pack also shipped,
+those defaults are identical to what ran there for months -- carry bonus, `Drops Enabled = false`, the
+-15% speed tradeoff, all unchanged. The two genuinely new keys from the 2.0.0 rewrite
+(`Adjust Drop Count By Level` / `...by World Scaling`) both landed at `false`. Nothing needed tuning.
 
-**Not yet boot-tested** -- added the same session it was researched, config not yet regenerated.
+**Boot-verified 2026-09-15**: server's first boot with Jotunn present on this branch -- 17/17 plugins,
+Jotunn's ModCompatibility/Synchronization/Network/Localization managers all initialized clean, 0
+exceptions.
 
 ## Why Server_devcommands is required
 
