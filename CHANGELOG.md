@@ -10,6 +10,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > Not a release. A ground-up rebuild for Valheim 1.0 with zero Azumatt mods and
 > most QoL moved server-side. 19 packages, down from 58.
 
+### Added (2026-09-14) -- building mods return, client-only
+- **ComfyMods-Gizmo 1.16.0**, **Searica-Extra_Snap_Points_Made_Easy 2.1.0**,
+  **Ostrix-AdvancedTerrainModifiersCompatible 1.4.8** (+ its client dependency
+  **ValheimModding-Jotunn 2.30.0**). All four go in `CLIENT_ONLY_MODS`; the
+  server installs none of them and stays Jotunn-free. 23 packages, 16 on the
+  client.
+- Gizmo 1.16.0's changelog is "Fixed for v1.0 patch" -- 1.15.0 was the
+  bisected 1.0 menu-freeze culprit, this is the upstream fix. ESPME 2.1.0 is
+  "Updated for Deep North Update" (1.0.12), no deps.
+- The original Searica-AdvancedTerrainModifiers is dead (2024-12, Jotunn
+  2.22). The Ostrix fork is ATM 1.4.1 at `e773c62`, same GUID, rebuilt for
+  1.0 / BepInEx 5.4.2350 / Jotunn 2.30.0. Chosen because it is the only
+  1.0-ready mod with **square hoe and cultivator brushes**, which was the
+  hard requirement. Two rule exceptions, recorded in the README: Jotunn is
+  back on clients only (the fork works client-side, terrain syncs through
+  vanilla RPCs, Jotunn's compat handshake is skipped against a Jotunn-free
+  server -- verify on first connect), and the fork carries the "AI Generated"
+  tag on what is a compat shim over Searica's original code, not a rewrite.
+- Rejected: Heimlife-Flattenheim (its square option is pickaxe-flatten only,
+  the hoe radius hook never sets `m_square` -- checked in the DLL; 4 days old),
+  VentureValheim Pathside_Assistance + Venture_Terrain_Reset (circular only),
+  PreciseRotation / TerrainShaperPlus / PlanBuild (Jotunn for less).
+- Configs: the old pack's tuned `bruce.valheim.comfymods.gizmo.cfg`,
+  `Searica.Valheim.ExtraSnapPointsMadeEasy.cfg` and
+  `Searica.Valheim.TerrainTools.cfg` restored from `main` verbatim. Every key
+  verified present in the new DLLs (24/24, ESPME globals 8/8, 22/22; ATM tool
+  list unchanged). Keybinds are the old pack's resolved values (Gizmo reset
+  V->G, ESPME Manual+ Alt->B, grid F3->F11, Gizmo `ignoreTerrainOpPrefab`
+  arbitrates Alt+scroll between Gizmo and ATM); full table in the README.
+- Fixed while auditing: ExtraSlots `Quickslot 5 Text` / `Quickslot 6 Text`
+  still read "Alt + Q" / "Alt + R" after the binds moved to Alt+U / Alt+Y on
+  2026-09-11. Labels now match.
+- **Not boot-tested yet.** Added while the server and client were in use.
+  Static validation only: all 23 pins exist on Thunderstore, dependency
+  closure satisfied, no deprecated packages, new DLLs reference only soft
+  GUIDs (searscatalog, configurationmanager). Live test order is in the
+  README "Building mods" section. Server not deployed; live profile not
+  patched; `.r2z` rebuilt.
+
 ### Changed (2026-09-12) -- dependency bump
 - **shudnal-ConditionalConfigSync 1.0.5 -> 1.0.6.** The config-sync library that
   ExtraSlots, MyLittleUI and DeathPenalty all run on, so it got a full changelog

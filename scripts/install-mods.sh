@@ -42,6 +42,10 @@ CLIENT_ONLY_MODS=(
     "shudnal-MyLittleUI"
     "Neobotics-HUDCompass"
     "cjayride-RecycleItemsIntoParts"
+    "ComfyMods-Gizmo"
+    "Searica-Extra_Snap_Points_Made_Easy"
+    "ValheimModding-Jotunn"
+    "Ostrix-AdvancedTerrainModifiersCompatible"
 )
 
 log()   { echo -e "[INFO] $*"; }

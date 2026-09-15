@@ -7,31 +7,36 @@ A ground-up rebuild of the pack for Valheim 1.0 "Deep North", built on two rules
 1. **Zero Azumatt mods.** None of the nine in the old pack have shipped a 1.0 build.
 2. **If the server can do it, the server does it.** Players install as little as possible.
 
-**19 packages, down from 58.** Every package verified against the Thunderstore API as published
+**23 packages, down from 58.** Every package verified against the Thunderstore API as published
 on/after 2026-09-09 (Valheim 1.0.0) - except the two pure serialization libraries, which contain no
-game code. **No Jotunn anywhere in the dependency graph.**
+game code. **The server runs no Jotunn.** Jotunn exists on clients only, as the dependency of one
+building mod (see "Building mods" below).
 
 ## The split
 
-Only 12 packages reach players. The other 7 live on the dedicated server and are excluded from the
+Only 16 packages reach players. The other 7 live on the dedicated server and are excluded from the
 client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`).
 
-### Client (12) - `make profile`
+### Client (16) - `make profile`
 
 | Package | Version | Role |
 |---|---|---|
 | denikson-BepInExPack_Valheim | 5.4.2350 | loader |
 | ValheimModding-YamlDotNet | 16.3.1 | library |
-| shudnal-ConditionalConfigSync | 1.0.5 | server-enforced config |
+| shudnal-ConditionalConfigSync | 1.0.6 | server-enforced config |
 | **shudnal-MyLittleUI** | 1.2.18 | tooltips, production timers, chest preview, multicraft, weather |
 | **shudnal-ExtraSlots** | 1.2.3 | equipment + quick slots |
 | **Toxo-CraftFromChests** | 0.4.0 | craft/build/fuel from nearby chests |
 | **Neobotics-HUDCompass** | 1.2.0 | compass bar |
 | **JoelOliMclean-NoRainDamage** | 1.3.0 | no weather decay on builds |
 | **korCaptain-NullReferenceFix** | 1.0.20 | stability |
-| **JereKuusela-Server_devcommands** | 1.112.0 | admin console on a dedicated server (see below) |
+| **JereKuusela-Server_devcommands** | 1.113.0 | admin console on a dedicated server (see below) |
 | **Crystal-DeathPenalty** | 1.3.0 | tunes skill loss on death -- replaces SmartSkills |
 | **cjayride-RecycleItemsIntoParts** | 1.7.3 | recycle items into parts (drag + `Delete`) -- see caveat |
+| **ComfyMods-Gizmo** | 1.16.0 | free build-piece rotation on all three axes |
+| **Searica-Extra_Snap_Points_Made_Easy** | 2.1.0 | extra snap points, manual/grid snapping |
+| ValheimModding-Jotunn | 2.30.0 | library -- **client only**, needed by the terrain fork |
+| **Ostrix-AdvancedTerrainModifiersCompatible** | 1.4.8 | square hoe/cultivator tools, radius + hardness scroll, precision raise, terrain reset |
 
 ### Server only (7) - players install none of these
 
@@ -47,6 +52,48 @@ client profile automatically (`SERVER_ONLY_MODS` in `scripts/export-profile.sh`)
 
 ServersideQoL is server-authoritative and works with **unmodded and console clients**, so none of the
 above costs a player anything to install.
+
+## Building mods (added 2026-09-14)
+
+The three building mods the old pack was built around are back, now that all three have 1.0
+builds. All are **client-only** -- the server does not run any of them, or Jotunn.
+
+| Mod | Why this one |
+|---|---|
+| ComfyMods-Gizmo 1.16.0 | Changelog: "Fixed for v1.0 patch". 1.15.0 (built for 0.220.3) is the version that broke the 1.0 main menu during the September bisection; 1.16.0 is the upstream fix. No dependencies. |
+| Searica-Extra_Snap_Points_Made_Easy 2.1.0 | "Updated for Deep North Update", 1.0.12. Author notes new 1.0 pieces get automated snap points only, no hand-placed ones yet. No dependencies. |
+| Ostrix-AdvancedTerrainModifiersCompatible 1.4.8 | The original Searica-AdvancedTerrainModifiers is dead (last release 2024-12, pinned to Jotunn 2.22). This is a fork of ATM 1.4.1 at commit `e773c62`, same plugin GUID, rebuilt for Valheim 1.0 / BepInEx 5.4.2350 / Jotunn 2.30.0. **It is the only 1.0-ready mod that gives square hoe and cultivator brushes**, which was the deciding requirement. |
+
+Two deliberate exceptions to this pack's rules, recorded here so they are not re-litigated:
+
+- **Jotunn is back, on clients only.** The fork's README: *"does work as a client-side only mod and only
+  needs to be installed on the server if you wish to enforce configuration settings."* Terrain
+  changes propagate through vanilla's own terrain RPCs, so other players see them without the mod. Jotunn
+  performs its mod-compatibility handshake only when both sides run it; with a Jotunn-free server it is
+  skipped. **Verify on the first connect** that a client with the fork joins the server cleanly.
+- **The fork carries Thunderstore's "AI Generated" tag.** Unlike SwmarlyValheimQOL and VBNetTweaks
+  (rejected: AI-written from scratch), this tag is on a compatibility shim over Searica's original
+  gameplay code -- the square tools, precision raise and reset are the real ATM 1.4.1 implementation.
+  9.9K downloads across eight 1.0-era releases, the most-iterated terrain mod on Thunderstore.
+
+Alternatives checked and passed over: `Heimlife-Flattenheim 1.0.0` (no Jotunn, but its `Shape:
+Square/Circle` option applies only to its pickaxe-flatten tool -- the hoe/cultivator radius hook never
+sets `m_square`, confirmed in the DLL; also four days old at 1K downloads); the VentureValheim pair
+`Pathside_Assistance` + `Venture_Terrain_Reset` (trusted author, no deps, but circular brushes only --
+Pathside clones vanilla `TerrainOp.Settings` and touches just the four radius fields);
+`disregardthatisuck-PreciseRotation`, `PONEIS-TerrainShaperPlus`, `MathiasDecrock-PlanBuild` (Jotunn,
+and for PlanBuild HookGenPatcher, for less than the fork gives).
+
+Configs are the old pack's tuned files carried forward verbatim -- every key was checked against the
+new DLLs and all still exist (Gizmo 24/24, ATM 22/22, ESPME global keys 8/8; the ATM tool list is
+unchanged). Key values: Gizmo `snapDivisions = 16`, `ignoreTerrainOpPrefab = true` (no gizmo on hoe /
+cultivator / shovel, so `Alt + scroll` goes to ATM's radius control when a terrain tool is out); ATM
+`MaxRadius = 10`, every square/precision/path tool enabled, shovel on; ESPME manual snapping on all
+piece classes.
+
+**Not yet boot-tested on this branch** -- added while the server was in use. Test order when free:
+client boot -> main menu -> Settings opens -> join server -> place a piece with Gizmo -> square-pave a
+tile -> confirm the other player sees the terrain change.
 
 ## Why Server_devcommands is required
 
@@ -159,8 +206,9 @@ Noticeable, recoverable. Untested in play -- adjust after a few deaths if it fee
 
 ## Keyboard Shortcuts
 
-Audited 2026-09-11 against the mods' freshly generated configs. MyLittleUI, CraftFromChests,
-NoRainDamage and NullReferenceFix declare **no** keybinds at all, so the entire bind surface is below.
+Audited 2026-09-11 against the mods' freshly generated configs; building mods audited 2026-09-14.
+MyLittleUI, CraftFromChests, NoRainDamage, NullReferenceFix and Jotunn declare **no** keybinds at all,
+so the entire bind surface is below.
 
 | Key | Mod | Action | Context |
 |-----|-----|--------|---------|
@@ -171,6 +219,19 @@ NoRainDamage and NullReferenceFix declare **no** keybinds at all, so the entire 
 | `Alt + Q / E / R` | ExtraSlots | Food slots 1-3 | Anywhere |
 | `Alt` (hold) | ExtraSlots | Drag item between equipment slots | Inventory open |
 | `J` | HUDCompass | Toggle the compass bar | Anywhere (moved off `Alt + C`, see below) |
+| `Delete` | RecycleItemsIntoParts | Recycle the item on the cursor | Inventory open |
+| `LeftShift` (hold) + scroll | Gizmo | Rotate piece on X axis | Build mode |
+| `LeftAlt` (hold) + scroll | Gizmo | Rotate piece on Z axis | Build mode (hammer only -- ignored for terrain tools) |
+| `G` / `T` | Gizmo | Reset selected axis / reset all axes | Build mode |
+| `` ` `` (BackQuote) | Gizmo | Cycle rotation mode | Build mode |
+| `P` | Gizmo | Copy targeted piece's rotation | Build mode |
+| `PageUp` / `PageDown` | Gizmo | Snap divisions +/- (16 per 180 deg shipped) | Build mode |
+| `B` | ExtraSnapPointsMadeEasy | Toggle Manual+ snap mode | Build mode |
+| `CapsLock` | ExtraSnapPointsMadeEasy | Toggle Manual snap mode | Build mode |
+| `F11` / `F4` | ExtraSnapPointsMadeEasy | Toggle grid snap / cycle grid precision | Build mode |
+| `Q` / `E` | ExtraSnapPointsMadeEasy | Iterate placing / targeted snap points | Manual snap modes only |
+| `LeftAlt` (hold) + scroll | AdvancedTerrainModifiers | Change tool radius | Hoe / cultivator / shovel out |
+| `LeftControl` (hold) + scroll | AdvancedTerrainModifiers | Change tool hardness | Hoe / cultivator / shovel out |
 | `O` | Server devcommands | Admin bundle: `debugmode` + `nocost` + `god` | Admins only |
 | `K` | Server devcommands | Admin `fly` toggle | Admins only |
 
@@ -188,8 +249,28 @@ NoRainDamage and NullReferenceFix declare **no** keybinds at all, so the entire 
   there was no conflict. Moving it relocated the performance HUD, which players noticed as it having
   "disappeared". Do not re-flag this in future audits.
 - All remaining ExtraSlots binds are `Alt`-modified, so none shadow a bare vanilla key. `Delete` and
-  `J` are unclaimed in vanilla. Free keys remaining for future mods: `U`(bare), `Y`(bare), `F4`, `F6`, `F7`,
-  `F8`, `F10`, `F11`.
+  `J` are unclaimed in vanilla.
+- **ExtraSlots quickslot 5/6 labels fixed (2026-09-14).** The binds had been moved to `Alt + U` /
+  `Alt + Y` on 2026-09-11 but the on-slot label keys (`Quickslot 5 Text` / `Quickslot 6 Text`) still
+  read "Alt + Q" / "Alt + R". Labels now match the binds.
+
+**Building mods (2026-09-14 audit)** -- all binds are the old pack's already-resolved values, carried
+forward unchanged:
+
+- Gizmo `resetRotationKey` `V` -> `G` (V = vanilla voice chat); `resetAllRotationKey` `T`; `copyPieceRotation`
+  left empty, `selectTargetPieceKey` `P`.
+- ESPME Manual+ `LeftAlt` -> `B` (LeftAlt = Gizmo z-rotate + ATM radius scroll); grid snap `F3` -> `F11`
+  (F3 was ConfigurationManager in the old pack -- kept on F11 anyway, F3 stays free). Iterate keys `Q` /
+  `E` fire only inside manual snap modes -- accepted 2026-07-15, do not re-flag.
+- Gizmo `Alt + scroll` vs ATM `Alt + scroll`: both in build mode, resolved by Gizmo
+  `ignoreTerrainOpPrefab = true` -- terrain-op prefabs get no gizmo, so the scroll goes to ATM.
+- Gizmo/ATM hold `LeftAlt` while ExtraSlots binds `Alt + <letter>` globally. They only collide if a
+  quickslot / food / ammo letter is pressed *while* rotating or resizing -- same context-overlap class
+  as the old pack. Accepted; if it bites in play, ExtraSlots' `Drag key` and chords are the ones to move.
+- `LeftShift` (Gizmo x-rotate) and `LeftControl` (ATM hardness) are vanilla run/crouch, used here only
+  as held scroll-modifiers in build mode -- same as the old pack.
+- Newly claimed: `G`, `T`, `P`, `` ` ``, `PageUp`, `PageDown`, `B`, `CapsLock`, `F4`, `F11`. Free keys
+  remaining for future mods: `U`(bare), `Y`(bare), `F3`, `F6`, `F7`, `F8`, `F10`.
 
 Also tuned: CraftFromChests `SearchRadius` 40 -> 30, matching the old pack's AzuCraftyBoxes container
 range rather than the mod's more generous default.
@@ -213,12 +294,14 @@ range rather than the mod's more generous default.
 | Venture Floating Items | `ServersideQoL_LetItFloat` (server) |
 | NetworkTweaks, TimeoutLimit | `ServersideQoL_MultiplayerTweaks` (server) |
 | TeleportEverything | vanilla `-modifier portals casual` - no mod needed |
+| Gizmo, ExtraSnapPointsMadeEasy | same mods, 1.0 builds (2026-09-14) |
+| AdvancedTerrainModifiers | Ostrix-AdvancedTerrainModifiersCompatible fork (2026-09-14) |
 
 ## What you lose, honestly
 
-Building goes back to vanilla: **Gizmo, ExtraSnapPointsMadeEasy, AzuAreaRepair, AdvancedTerrainModifiers,
-MissingPieces** are all gone (only MissingPieces has a 1.0 build, and it writes custom prefabs into the
-world, so removing it later leaves holes in builds).
+Building: **Gizmo, ExtraSnapPointsMadeEasy and AdvancedTerrainModifiers are back** as of 2026-09-14
+(see "Building mods"). Still gone: **AzuAreaRepair** (no 1.0 build) and **MissingPieces** (has a 1.0
+build, but it writes custom prefabs into the world, so removing it later leaves holes in builds).
 
 Also dropped: ProjectileTweaks, ShieldBash, SmartSkills, Seasons, TargetPortal, SpeedyPaths,
 StumpsAreOneHp, LocalizationCache, AdventureBackpacks, Groups, VNEI, ConfigurationManager,
@@ -251,7 +334,8 @@ bash scripts/deploy.sh full  # server (.env SERVER_ID must point at the right in
 
 ## Test results (2026-09-11)
 
-Both sides booted and verified live.
+Both sides booted and verified live. **The four building packages added 2026-09-14 are not covered by
+this section yet** -- see "Building mods" for the pending test order.
 
 **Server** (14 packages - the 17 minus the 3 client-only): 13/13 plugins loaded, 0 NullReference,
 0 MissingMethod, world reached `Opened Steam server` / `Game server connected`. ServersideQoL reports
